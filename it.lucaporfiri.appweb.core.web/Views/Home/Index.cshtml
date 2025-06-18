@@ -1,9 +1,122 @@
-﻿
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@model DashboardViewModel
 @{
+    var title = DateTime.Now.Hour < 12 ? "Buongiorno, Riccardo" : DateTime.Now.Hour < 19 ? "Buon pomeriggio, Riccardo" : "Buonasera, Riccardo";
+
     ViewData["Title"] = "Home Page";
+
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Coach</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-dumbbell"></i> @title</h1>
+            <p>Gestione Atleti - Panoramica Generale</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Metriche Principali -->
+            <div class="metrics-grid">
+                <div class="metric-card total">
+                    <div class="metric-number">47</div>
+                    <div class="metric-label">Totale Atleti</div>
+                </div>
+
+                <div class="metric-card active">
+                    <div class="metric-number">42</div>
+                    <div class="metric-label">Atleti Attivi</div>
+                </div>
+
+                <div class="metric-card payments">
+                    <div class="metric-number">7</div>
+                    <div class="metric-label">Pagamenti Arretrati</div>
+                </div>
+
+                <div class="metric-card sheets">
+                    <div class="metric-number">3</div>
+                    <div class="metric-label">Schede Scadute</div>
+                </div>
+            </div>
+
+            <!-- Sezione Ricerca -->
+            <div class="search-section">
+                <input type="text" class="search-bar" placeholder="🔍 Cerca atleta per nome...">
+            </div>
+
+            <!-- Alert Situazioni Critiche -->
+            <div class="alerts-section">
+                <div class="alerts-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Situazioni che Richiedono Attenzione</h3>
+                </div>
+
+                <div class="alert-item critical">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">MR</div>
+                        <div class="athlete-details">
+                            <h4>Mario Rossi</h4>
+                            <span>Personal • Pagamento scaduto il 10/06 • Scheda scaduta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item warning">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">LV</div>
+                        <div class="athlete-details">
+                            <h4>Laura Verdi</h4>
+                            <span>Corso • Pagamento scaduto il 15/06</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item warning">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">GB</div>
+                        <div class="athlete-details">
+                            <h4>Giulia Bianchi</h4>
+                            <span>Solo Scheda • Scheda scaduta il 12/06</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item info">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">AN</div>
+                        <div class="athlete-details">
+                            <h4>Andrea Neri</h4>
+                            <span>Personal • Abbonamento scade tra 3 giorni</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Azioni Rapide -->
+            <div class="quick-actions">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nuovo Atleta
+                </button>
+
+                <button class="btn btn-secondary">
+                    <i class="fas fa-list"></i>
+                    Tutti gli Atleti
+                </button>
+
+                <button class="btn btn-secondary">
+                    <i class="fas fa-bell"></i>
+                    Notifiche
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

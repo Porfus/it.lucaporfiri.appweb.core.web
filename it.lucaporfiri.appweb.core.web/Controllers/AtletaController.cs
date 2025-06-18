@@ -14,13 +14,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class AtletaController : Controller
     {
-        private readonly ContestoApp _context;
+        private readonly ILogger<HomeController> _logger;
         private readonly ServiziAtleta _serviziAtleta; // Add this field
-
-        public AtletaController(ContestoApp context)
+        private readonly ContestoApp _context;
+        public AtletaController(ContestoApp _context, ILogger<HomeController> logger, ServiziAtleta serviziAtleta)
         {
-            _context = context;
-            _serviziAtleta = new ServiziAtleta(context); // Initialize the instance
+            this._context = _context;
+            this._logger = logger;
+            _serviziAtleta = serviziAtleta; // Initialize the instance
         }
         // GET: Abbonamento
         public async Task<IActionResult> Index()
