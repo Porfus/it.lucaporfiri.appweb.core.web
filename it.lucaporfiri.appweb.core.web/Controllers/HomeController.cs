@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
@@ -15,7 +16,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            DashboardViewModel vm = new DashboardViewModel();
+            return View(vm);
         }
 
         public IActionResult Privacy()

@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using it.lucaporfiri.appweb.core.web.Data;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ContestoApp>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ContestoApp") ?? throw new InvalidOperationException("Connection string 'ContestoApp' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
