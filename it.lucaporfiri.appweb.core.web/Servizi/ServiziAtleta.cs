@@ -64,7 +64,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public int DaiNumeroAtletiConAbbonamentiScaduti()
         {
             return _context.Atleta.Count(a =>
-                a.Abbonamenti != null && a.Abbonamenti.Any(ab => ab.DataInizio <= DateTime.Now && ab.DataFine >= DateTime.Now)
+                a.Abbonamenti != null && !a.Abbonamenti.Any(ab => ab.DataInizio <= DateTime.Now && ab.DataFine >= DateTime.Now)
             );
         }
     }

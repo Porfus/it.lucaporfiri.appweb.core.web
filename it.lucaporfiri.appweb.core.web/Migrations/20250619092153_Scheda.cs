@@ -5,7 +5,7 @@
 namespace it.lucaporfiri.appweb.core.web.Migrations
 {
     /// <inheritdoc />
-    public partial class db : Migration
+    public partial class Scheda : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,6 +13,10 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Appuntamento_Atleta_AtletaId",
                 table: "Appuntamento");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Scheda_Atleta_AtletaId",
+                table: "Scheda");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Appuntamento",
@@ -27,6 +31,14 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                 table: "Abbonamento",
                 newName: "IX_Abbonamento_AtletaId");
 
+            migrationBuilder.AlterColumn<int>(
+                name: "AtletaId",
+                table: "Scheda",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Abbonamento",
                 table: "Abbonamento",
@@ -39,6 +51,13 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                 principalTable: "Atleta",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Scheda_Atleta_AtletaId",
+                table: "Scheda",
+                column: "AtletaId",
+                principalTable: "Atleta",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -47,6 +66,10 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Abbonamento_Atleta_AtletaId",
                 table: "Abbonamento");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Scheda_Atleta_AtletaId",
+                table: "Scheda");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Abbonamento",
@@ -61,6 +84,16 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                 table: "Appuntamento",
                 newName: "IX_Appuntamento_AtletaId");
 
+            migrationBuilder.AlterColumn<int>(
+                name: "AtletaId",
+                table: "Scheda",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Appuntamento",
                 table: "Appuntamento",
@@ -69,6 +102,14 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_Appuntamento_Atleta_AtletaId",
                 table: "Appuntamento",
+                column: "AtletaId",
+                principalTable: "Atleta",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Scheda_Atleta_AtletaId",
+                table: "Scheda",
                 column: "AtletaId",
                 principalTable: "Atleta",
                 principalColumn: "Id",

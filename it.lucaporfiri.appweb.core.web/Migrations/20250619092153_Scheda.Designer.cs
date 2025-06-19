@@ -12,8 +12,8 @@ using it.lucaporfiri.appweb.core.web.Data;
 namespace it.lucaporfiri.appweb.core.web.Migrations
 {
     [DbContext(typeof(ContestoApp))]
-    [Migration("20250618090832_db")]
-    partial class db
+    [Migration("20250619092153_Scheda")]
+    partial class Scheda
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,7 +94,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AtletaId")
+                    b.Property<int?>("AtletaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataFine")
@@ -131,9 +131,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                 {
                     b.HasOne("it.lucaporfiri.appweb.core.web.Models.Atleta", "Cliente")
                         .WithMany("Schede")
-                        .HasForeignKey("AtletaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AtletaId");
 
                     b.Navigation("Cliente");
                 });

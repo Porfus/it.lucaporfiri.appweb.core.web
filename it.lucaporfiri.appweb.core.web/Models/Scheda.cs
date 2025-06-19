@@ -11,7 +11,7 @@ namespace it.lucaporfiri.appweb.core.web.Models
         public DateTime DataFine { get; set; }
 
         // Chiave esterna
-        public int AtletaId { get; set; }
+        public int? AtletaId { get; set; }
         public virtual Atleta? Cliente { get; set; } // Proprietà di navigazione
     }
 }

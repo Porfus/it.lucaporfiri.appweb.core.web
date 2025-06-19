@@ -91,7 +91,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AtletaId")
+                    b.Property<int?>("AtletaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataFine")
@@ -128,9 +128,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                 {
                     b.HasOne("it.lucaporfiri.appweb.core.web.Models.Atleta", "Cliente")
                         .WithMany("Schede")
-                        .HasForeignKey("AtletaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AtletaId");
 
                     b.Navigation("Cliente");
                 });
