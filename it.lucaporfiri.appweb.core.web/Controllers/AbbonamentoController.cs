@@ -5,31 +5,25 @@ using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class AbbonamentoController : Controller
-    {
-        private readonly ContestoApp _context;
-        private readonly ServiziAbbonamento _serviziAbbonamento;
-        private readonly ILogger<AbbonamentoController> logger;
+    {    
+        private readonly ServiziAbbonamento serviziAbbonamento;
+        private readonly ServiziAtleta serviziAtleta;
 
-        public AbbonamentoController(ContestoApp context, ILogger<AbbonamentoController> _logger)
+        public AbbonamentoController(ServiziAbbonamento serviziAbbonamento, ServiziAtleta serviziAtleta)
         {
-            this.logger = _logger;
-            _context = context;
-            _serviziAbbonamento = new ServiziAbbonamento(context);
+            this.serviziAbbonamento = serviziAbbonamento;
+            this.serviziAtleta = serviziAtleta;
         }
 
         // GET: Abbonamento
         public async Task<IActionResult> Index()
         {
-            var contestoApp = _context.Abbonamento.Include(a => a.Atleta);
-            return View(await contestoApp.ToListAsync());
+            var abbonamenti = await serviziAbbonamento.GetAbbonamentiAsync();/*_context.Abbonamento.Include(a => a.Atleta)*/;
+            return View(abbonamenti);
         }
 
         // GET: Abbonamento/Details/5
@@ -39,10 +33,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
-            var abbonamento = await _context.Abbonamento
-                .Include(a => a.Atleta)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var abbonamento = await serviziAbbonamento.DaiAbbonamentoAsync(id);
             if (abbonamento == null)
             {
                 return NotFound();
@@ -54,7 +45,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // GET: Abbonamento/Create
         public IActionResult Create()
         {
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id");
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "Id")*/;
             AbbonamentoCreateViewModel vm = new AbbonamentoCreateViewModel();
             return View(vm);
         }
@@ -66,7 +57,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DataInizio,DataFine,AtletaId")] AbbonamentoCreateViewModel vm)
         {
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "NomeCompleto", vm.AtletaId); // Uso NomeCompleto per essere più user-friendly
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "NomeCompleto", vm.AtletaId);*/
             if (ModelState.IsValid)
             {
                 if (vm.DataFine < vm.DataInizio)
@@ -74,7 +65,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     ModelState.AddModelError("DataFine", "La data di fine deve essere successiva alla data di inizio.");
                     return View(vm);
                 }
-                var atleta = await _context.Atleta.FindAsync(vm.AtletaId);
+                var atleta = await Task.Run(() =>serviziAtleta.DaiAtleta(vm.AtletaId));/*_context.Atleta.FindAsync(vm.AtletaId)*/
                 if (atleta == null)
                 {
                     ModelState.AddModelError("AtletaId", "Atleta non trovato.");
@@ -87,8 +78,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     AtletaId = vm.AtletaId,
                     Atleta = atleta
                 };
-                _context.Add(nuovoAbbonamento);
-                await _context.SaveChangesAsync();
+                await serviziAbbonamento.CreaAbbonamento(nuovoAbbonamento);
                 return RedirectToAction(nameof(Index));
             }
             return View(vm);
@@ -102,12 +92,12 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var abbonamento = await _context.Abbonamento.FindAsync(id);
+            var abbonamento = await serviziAbbonamento.DaiAbbonamentoAsync(id);/*_context.Abbonamento.FindAsync(id)*/;
             if (abbonamento == null)
             {
                 return NotFound();
             }
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", abbonamento.AtletaId);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "Id", abbonamento.AtletaId)*/;
             return View(abbonamento);
         }
 
@@ -127,8 +117,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 try
                 {
-                    _context.Update(abbonamento);
-                    await _context.SaveChangesAsync();
+                   await serviziAbbonamento.ModificaAbbonamento(abbonamento);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,7 +132,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", abbonamento.AtletaId);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti(); /*new SelectList(_context.Atleta, "Id", "Id", abbonamento.AtletaId)*/;
             return View(abbonamento);
         }
 
@@ -155,9 +144,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var abbonamento = await _context.Abbonamento
-                .Include(a => a.Atleta)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var abbonamento = await serviziAbbonamento.DaiAbbonamentoAsync(id);
             if (abbonamento == null)
             {
                 return NotFound();
@@ -171,19 +158,13 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var abbonamento = await _context.Abbonamento.FindAsync(id);
-            if (abbonamento != null)
-            {
-                _context.Abbonamento.Remove(abbonamento);
-            }
-
-            await _context.SaveChangesAsync();
+            await serviziAbbonamento.EliminaAbbonamento(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool AbbonamentoExists(int id)
         {
-            return _context.Abbonamento.Any(e => e.Id == id);
+            return serviziAbbonamento.DaiAbbonamento(id) != null;
         }
     }
 }

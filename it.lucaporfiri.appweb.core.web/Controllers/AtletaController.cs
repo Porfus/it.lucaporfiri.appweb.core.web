@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using it.lucaporfiri.appweb.core.web.Data;
+using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.Servizi;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using it.lucaporfiri.appweb.core.web.Data;
-using it.lucaporfiri.appweb.core.web.Models;
-using it.lucaporfiri.appweb.core.web.ViewModels;
-using it.lucaporfiri.appweb.core.web.Servizi;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class AtletaController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ServiziAtleta _serviziAtleta; // Add this field
-        private readonly ContestoApp _context;
-        public AtletaController(ContestoApp _context, ILogger<HomeController> logger, ServiziAtleta serviziAtleta)
+        //private readonly ILogger<HomeController> _logger;
+        //private readonly ContestoApp _context;
+        private readonly ServiziAtleta serviziAtleta;
+        
+        public AtletaController(/*ContestoApp _context,*/ ServiziAtleta serviziAtleta1)
         {
-            this._context = _context;
-            this._logger = logger;
-            _serviziAtleta = serviziAtleta; // Initialize the instance
+            //this._context = _context;
+            //this._logger = logger;
+            serviziAtleta = serviziAtleta1; 
         }
         // GET: Abbonamento
         public async Task<IActionResult> Index()
         {
-            var contestoApp = _context.Atleta;
-            return View(await contestoApp.ToListAsync());
+            var atleti = await serviziAtleta.GetAllAtletiAsync();
+            return View(atleti);
         }
         // GET: Atleta/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -36,9 +33,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
-            var atleta = await _context.Atleta.Include(a => a.Abbonamenti)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var atleta =await Task.Run(() =>serviziAtleta.DaiAtleta(id));
+            // _context.Atleta.Include(a => a.Abbonamenti)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
 
             if (atleta == null)
             {
@@ -50,13 +47,13 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 Id = atleta.Id,
                 NomeCompleto = $"{atleta.Nome} {atleta.Cognome}",
-                Eta = _serviziAtleta.CalcolaEta(atleta),
+                Eta = serviziAtleta.CalcolaEta(atleta),
                 Email = atleta.Email,
                 Telefono = atleta.Telefono,
                 DataIscrizioneAtleta = atleta.DataInizioIscrizione,
                 Tipo = atleta.Tipo,
                 Stato = atleta.Stato,
-                Abbonamento = _serviziAtleta.CalcolaStatoAbbonamento(atleta),
+                Abbonamento = serviziAtleta.CalcolaStatoAbbonamento(atleta),
                 Abbonamenti = atleta.Abbonamenti,
                 Schede = atleta.Schede
             };
@@ -79,8 +76,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(atleta);
-                await _context.SaveChangesAsync();
+                //_context.Add(atleta);
+                //await _context.SaveChangesAsync();
+                await serviziAtleta.CreaAtleta(atleta);
                 return RedirectToAction(nameof(Index));
             }
             return View(atleta);
@@ -94,11 +92,13 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var atleta = await _context.Atleta.FindAsync(id);
+            var atleta = await Task.Run(() => serviziAtleta.DaiAtleta(id)); /*_context.Atleta.FindAsync(id);*/
             if (atleta == null)
             {
                 return NotFound();
             }
+            ViewBag.Tipo = new SelectList(serviziAtleta.DaiTipiAtleta(), "Value", "Text", atleta.Tipo);
+            ViewBag.Stato = new SelectList(serviziAtleta.DaiStatiAtleta(), "Value", "Text", atleta.Stato);
             return View(atleta);
         }
 
@@ -118,8 +118,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 try
                 {
-                    _context.Update(atleta);
-                    await _context.SaveChangesAsync();
+                    //_context.Update(atleta);
+                    //await _context.SaveChangesAsync();
+                    await serviziAtleta.ModificaAtleta(atleta);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,9 +145,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
-            var atleta = await _context.Atleta
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var atleta = await Task.Run(()=>serviziAtleta.DaiAtleta(id));
+            // _context.Atleta
+            //    .FirstOrDefaultAsync(m => m.Id == id);
             if (atleta == null)
             {
                 return NotFound();
@@ -160,19 +161,20 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var atleta = await _context.Atleta.FindAsync(id);
-            if (atleta != null)
-            {
-                _context.Atleta.Remove(atleta);
-            }
+            //var atleta = await _context.Atleta.FindAsync(id);
+            //if (atleta != null)
+            //{
+            //    _context.Atleta.Remove(atleta);
+            //}
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
+            await serviziAtleta.EliminaAtleta(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool AtletaExists(int id)
         {
-            return _context.Atleta.Any(e => e.Id == id);
+            return serviziAtleta.DaiAtleta(id)!=null;
         }
     }
 }

@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.Servizi;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class SchedaController : Controller
     {
-        private readonly ContestoApp _context;
+        //private readonly ContestoApp _context;
+        private readonly ServiziScheda serviziScheda;
+        private readonly ServiziAtleta serviziAtleta;
 
-        public SchedaController(ContestoApp context)
+        public SchedaController(/*ContestoApp context,*/ServiziScheda serviziScheda, ServiziAtleta serviziAtleta)
         {
-            _context = context;
+            //_context = context;
+            this.serviziScheda = serviziScheda;
+            this.serviziAtleta = serviziAtleta;
         }
 
         // GET: Scheda
         public async Task<IActionResult> Index()
         {
-            var contestoApp = _context.Scheda.Include(s => s.Cliente);
-            return View(await contestoApp.ToListAsync());
+            // Utilizzo di Task.Run per eseguire l'elaborazione in un thread in background
+            var schede = await Task.Run(() => serviziScheda.DaiSchede());
+            return View(schede);
         }
 
         // GET: Scheda/Details/5
@@ -34,21 +34,23 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await _context.Scheda
-                .Include(s => s.Cliente)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var scheda = await _context.Scheda
+            //    .Include(s => s.Cliente)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+
+            var scheda = await Task.Run(() =>serviziScheda.DaiScheda(id));
             if (scheda == null)
             {
                 return NotFound();
             }
-
+            ViewData["Cliente"] = serviziAtleta.DaiSelectListAtleti();
             return View(scheda);
         }
 
         // GET: Scheda/Create
         public IActionResult Create()
         {
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id");
+            ViewBag.AtletaId = serviziAtleta.DaiSelectListAtleti();
             return View();
         }
 
@@ -59,13 +61,20 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Descrizione,DataInizio,DataFine,AtletaId")] Scheda scheda)
         {
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(scheda);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);
+            //return View(scheda);
             if (ModelState.IsValid)
             {
-                _context.Add(scheda);
-                await _context.SaveChangesAsync();
+                await serviziScheda.AggiungiSchedaAsync(scheda);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
             return View(scheda);
         }
 
@@ -77,12 +86,12 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await _context.Scheda.FindAsync(id);
+            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id)); /*await _context.Scheda.FindAsync(id);*/
             if (scheda == null)
             {
                 return NotFound();
             }
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti(); /*new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);*/
             return View(scheda);
         }
 
@@ -102,8 +111,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 try
                 {
-                    _context.Update(scheda);
-                    await _context.SaveChangesAsync();
+                    //_context.Update(scheda);
+                    //await _context.SaveChangesAsync();
+                  await serviziScheda.AggiornaSchedaAsync(scheda);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,7 +128,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);*/ 
             return View(scheda);
         }
 
@@ -130,9 +140,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await _context.Scheda
-                .Include(s => s.Cliente)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id)); // Ensure this is awaited and not null.
             if (scheda == null)
             {
                 return NotFound();
@@ -146,19 +154,15 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var scheda = await _context.Scheda.FindAsync(id);
-            if (scheda != null)
-            {
-                _context.Scheda.Remove(scheda);
-            }
+            await serviziScheda.EliminaSchedaAsync(id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool SchedaExists(int id)
         {
-            return _context.Scheda.Any(e => e.Id == id);
+            return serviziScheda.DaiScheda(id) != null;
+                /*_context.Scheda.Any(e => e.Id == id)*/
         }
     }
 }

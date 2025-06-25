@@ -1,6 +1,7 @@
 ﻿using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Migrations;
 using it.lucaporfiri.appweb.core.web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace it.lucaporfiri.appweb.core.web.Servizi
 {
@@ -17,5 +18,38 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                return null;
             return _context.Abbonamento.FirstOrDefault(s => s.Id == IdAbbonamento);
         }
+        public async Task<Abbonamento?> DaiAbbonamentoAsync(int? idAbbonamento)
+        {
+            if (idAbbonamento == null)
+                return null;
+
+            return await _context.Abbonamento.Include(a => a.Atleta).FirstOrDefaultAsync(s => s.Id == idAbbonamento);
+        }
+        public async Task<List<Abbonamento>> GetAbbonamentiAsync()
+        {
+             return await _context.Abbonamento.Include(a => a.Atleta).ToListAsync();  
+        }
+        public async Task CreaAbbonamento(Abbonamento abbonamento)
+        {
+            _context.Abbonamento.Add(abbonamento);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ModificaAbbonamento(Abbonamento abbonamento)
+        {
+            _context.Update(abbonamento);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EliminaAbbonamento(int id)
+        {
+            var abbonamento = await _context.Abbonamento.FindAsync(id);
+            if (abbonamento != null)
+            {
+                _context.Abbonamento.Remove(abbonamento);
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
