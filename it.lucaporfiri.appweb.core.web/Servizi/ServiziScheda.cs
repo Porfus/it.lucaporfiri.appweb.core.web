@@ -1,7 +1,9 @@
 ﻿using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using static it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewModel;
 
 namespace it.lucaporfiri.appweb.core.web.Servizi
 {
@@ -19,6 +21,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return _context.Scheda.Include(s => s.Cliente).FirstOrDefault(s => s.Id == IdScheda);
         }
 
+        public StatoScheda CalcolaStatoScheda(Scheda scheda)
+        {
+            var stato = scheda.DataInizio > DateTime.Today
+            ? SchedaAllenamentoViewModel.StatoScheda.NonAttiva
+            : scheda.DataFine > DateTime.Today ? SchedaAllenamentoViewModel.StatoScheda.Attiva
+            : SchedaAllenamentoViewModel.StatoScheda.Scaduta;
+            return stato;
+        }
         public List<Scheda> DaiSchede()
         {
             var schede = _context.Scheda.Include(s => s.Cliente).ToList(); 

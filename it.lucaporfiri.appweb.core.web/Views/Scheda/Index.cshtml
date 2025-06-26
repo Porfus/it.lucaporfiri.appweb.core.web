@@ -1,4 +1,5 @@
-﻿@model IEnumerable<it.lucaporfiri.appweb.core.web.Models.Scheda>
+﻿@using static it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewModel
+@model IEnumerable<it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +14,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                Nome
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Descrizione)
+                Descrizione
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataInizio)
+                DataInizio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataFine)
+                DataFine
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cliente)
+                Cliente
+            </th>
+            <th>
+                Stato Scheda
             </th>
             <th></th>
         </tr>
@@ -34,24 +38,38 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nome)
+                @Html.DisplayFor(modelItem => item.Scheda.Nome)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Descrizione)
+                @Html.DisplayFor(modelItem => item.Scheda.Descrizione)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataInizio)
+                @Html.DisplayFor(modelItem => item.Scheda.DataInizio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataFine)
+                @Html.DisplayFor(modelItem => item.Scheda.DataFine)
             </td>
             <td>
-                @item.Cliente?.Nome @item.Cliente?.Cognome
+                @item.Scheda.Cliente?.Nome @item.Scheda.Cliente?.Cognome
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @if(item.Stato == StatoScheda.Scaduta)
+                    {
+                        <span class="c-error">@item.Stato</span>
+                    }else if(item.Stato == StatoScheda.Attiva)
+                    {
+                        <span class="c-success">@item.Stato</span>
+                    }
+                    else
+                    {
+                        <span class="c-warning">@item.Stato</span>
+                    }
+
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Scheda.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Scheda.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Scheda.Id">Delete</a>
             </td>
         </tr>
 }

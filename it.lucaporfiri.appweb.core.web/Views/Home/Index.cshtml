@@ -34,9 +34,9 @@
                 </div>
 
 
-                <div class="metric-card active">
-                    <div class="metric-number">@Model.AtletiAttivi</div>
-                    <div class="metric-label">Atleti Attivi</div>
+                <div class="metric-card active" onclick="jCaricaAtletiAttivi()" style="cursor:pointer;">
+                        <div class="metric-number">@Model.AtletiAttivi</div>
+                        <div class="metric-label">Atleti Attivi</div>
                 </div>
 
                 <div class="metric-card payments">
@@ -47,8 +47,10 @@
                 </div>
 
                 <div class="metric-card sheets">
+                    <a href="/Scheda/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
                     <div class="metric-number">@Model.SchedeScadute</div>
                     <div class="metric-label">Schede Scadute</div>
+                    </a>
                 </div>
             </div>
 
@@ -63,8 +65,25 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Situazioni che Richiedono Attenzione</h3>
                 </div>
-
-                <div class="alert-item critical">
+                @if(Model.AlertAtleti != null)
+                {
+                      @foreach (var alert in Model.AlertAtleti)
+                     {
+                        <a href="/Atleta/Details/@alert.IdCliente" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
+                        <div class="alert-item @alert.Tipo">
+                            <div class="athlete-info">
+                                <div class="athlete-avatar">@alert.Iniziali</div>
+                                <div class="athlete-details">
+                                    <h4>@alert.Nome</h4>
+                                    <span>@alert.Dettagli</span>
+                                </div>
+                            </div>
+                            </div>
+                        </a>
+                     }  
+                }
+                
+                @* <div class="alert-item critical">
                     <div class="athlete-info">
                         <div class="athlete-avatar">MR</div>
                         <div class="athlete-details">
@@ -101,8 +120,8 @@
                             <h4>Andrea Neri</h4>
                             <span>Personal • Abbonamento scade tra 3 giorni</span>
                         </div>
-                    </div>
-                </div>
+                    </div> 
+                </div>*@
             </div>
 
             <!-- Azioni Rapide -->
@@ -127,5 +146,13 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        function jCaricaAtletiAttivi() {
+          window.location.href = '/Atleta/Index?soloAttivi=true';
+        }
+    </script>
 </body>
+
 </html>

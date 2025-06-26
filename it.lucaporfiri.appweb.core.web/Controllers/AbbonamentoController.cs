@@ -1,9 +1,7 @@
-﻿using it.lucaporfiri.appweb.core.web.Data;
-using it.lucaporfiri.appweb.core.web.Models;
+﻿using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
@@ -112,12 +110,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
+                       
             if (ModelState.IsValid)
             {
+                // Fix for CS8601: Possibile assegnazione di riferimento Null.
                 try
                 {
                    await serviziAbbonamento.ModificaAbbonamento(abbonamento);
+ 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -130,7 +130,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));       
             }
             ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti(); /*new SelectList(_context.Atleta, "Id", "Id", abbonamento.AtletaId)*/;
             return View(abbonamento);

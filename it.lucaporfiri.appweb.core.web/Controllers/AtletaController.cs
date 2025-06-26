@@ -1,5 +1,4 @@
-﻿using it.lucaporfiri.appweb.core.web.Data;
-using it.lucaporfiri.appweb.core.web.Models;
+﻿using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +20,13 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             serviziAtleta = serviziAtleta1; 
         }
         // GET: Abbonamento
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool soloAttivi=false)
         {
             var atleti = await serviziAtleta.GetAllAtletiAsync();
+            if (soloAttivi)
+            {
+                atleti = atleti.Where(a => a.Stato == Atleta.StatoCliente.Attivo).ToList();
+            }
             return View(atleti);
         }
         // GET: Atleta/Details/5
@@ -176,5 +179,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             return serviziAtleta.DaiAtleta(id)!=null;
         }
+
     }
 }
