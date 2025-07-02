@@ -8,7 +8,7 @@
 
         //Chiave esterna per collegarlo al Cliente
         public int AtletaId { get; set; }
-        public virtual required Atleta Atleta { get; set; } // Proprietà di navigazione
+        public virtual Atleta? Atleta { get; set; }  // Proprietà di navigazione
         //Commento di prova per il controllo del commit
     }
 }

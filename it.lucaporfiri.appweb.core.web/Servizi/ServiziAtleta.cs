@@ -44,6 +44,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         {
             var atleta = _context.Atleta
                 .Include(a => a.Schede)
+                .Include(b => b.Abbonamenti)
                 .FirstOrDefault(a => a.Id == id);
 
             if (atleta == null) return;
@@ -130,12 +131,12 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         }
         public ICollection<Atleta> DaiAtleti()
         {
-            return _context.Atleta.ToList();
+            return [.. _context.Atleta.Include(a => a.Abbonamenti).Include(a => a.Schede)];
         }
         public int DaiNumeroAtletiConAbbonamentiScaduti()
         {
             return _context.Atleta.Count(a =>
-                a.Abbonamenti != null && !a.Abbonamenti.Any(ab => ab.DataInizio <= DateTime.Now && ab.DataFine >= DateTime.Now)
+                a.Abbonamenti != null && a.Abbonamenti.Any() && !a.Abbonamenti.Any(ab => ab.DataInizio <= DateTime.Now && ab.DataFine >= DateTime.Now)
             );
         }
     }

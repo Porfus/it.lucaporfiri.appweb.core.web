@@ -37,7 +37,11 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
         public async Task ModificaAbbonamento(Abbonamento abbonamento)
         {
-            _context.Update(abbonamento);
+            var entity = await _context.Abbonamento.FindAsync(abbonamento.Id);
+            if (entity == null) return;
+            entity.DataInizio = abbonamento.DataInizio;
+            entity.DataFine = abbonamento.DataFine;
+            entity.AtletaId = abbonamento.AtletaId;
             await _context.SaveChangesAsync();
         }
 

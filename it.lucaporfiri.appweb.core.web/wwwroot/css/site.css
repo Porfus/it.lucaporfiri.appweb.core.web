@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.c-success {
+    color: #28a745; /* verde */
+}
+
+.c-error {
+    color: #dc3545; /* rosso */
+}
+
+.c-warning {
+    color: #ffc107; /* giallo/arancione */
+}
+

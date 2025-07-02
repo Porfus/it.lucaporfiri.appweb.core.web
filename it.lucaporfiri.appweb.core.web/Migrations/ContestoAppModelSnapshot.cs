@@ -43,7 +43,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     b.HasIndex("AtletaId");
 
-                    b.ToTable("Abbonamento");
+                    b.ToTable("Abbonamento", (string)null);
                 });
 
             modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Atleta", b =>
@@ -80,7 +80,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Atleta");
+                    b.ToTable("Atleta", (string)null);
                 });
 
             modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Scheda", b =>
@@ -110,7 +110,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     b.HasIndex("AtletaId");
 
-                    b.ToTable("Scheda");
+                    b.ToTable("Scheda", (string)null);
                 });
 
             modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Abbonamento", b =>

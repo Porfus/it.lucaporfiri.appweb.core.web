@@ -1,5 +1,5 @@
-﻿@model it.lucaporfiri.appweb.core.web.Models.Scheda
-
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@model SchedaAllenamentoViewModel
 @{
     ViewData["Title"] = "Details";
 }
@@ -11,38 +11,44 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
+            @Html.DisplayNameFor(model => model.Scheda.Nome)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
+            @Html.DisplayFor(model => model.Scheda.Nome)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descrizione)
+            @Html.DisplayNameFor(model => model.Scheda.Descrizione)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descrizione)
+            @Html.DisplayFor(model => model.Scheda.Descrizione)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataInizio)
+            @Html.DisplayNameFor(model => model.Scheda.DataInizio)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataInizio)
+            @Html.DisplayFor(model => model.Scheda.DataInizio)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataFine)
+            @Html.DisplayNameFor(model => model.Scheda.DataFine)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataFine)
+            @Html.DisplayFor(model => model.Scheda.DataFine)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cliente)
+            @Html.DisplayNameFor(model => model.Scheda.Cliente)
         </dt>
         <dd class = "col-sm-10">
-            @Model.Cliente?.Nome @Model.Cliente?.Cognome
+            @Model.Scheda.Cliente?.Nome @Model.Scheda.Cliente?.Cognome
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Stato)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Stato)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Scheda.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

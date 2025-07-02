@@ -6,7 +6,6 @@
         public int AtletiAttivi { get; set; }
         public int AbbonamentiScaduti { get; set; }
         public int SchedeScadute { get; set; }
-
-
+        public List<AlertAtletaViewModel>? AlertAtleti { get; set; }
     }
 }

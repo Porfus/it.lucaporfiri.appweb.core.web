@@ -2,18 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class SchedaController : Controller
     {
-        //private readonly ContestoApp _context;
         private readonly ServiziScheda serviziScheda;
         private readonly ServiziAtleta serviziAtleta;
 
-        public SchedaController(/*ContestoApp context,*/ServiziScheda serviziScheda, ServiziAtleta serviziAtleta)
+        public SchedaController(ServiziScheda serviziScheda, ServiziAtleta serviziAtleta)
         {
-            //_context = context;
             this.serviziScheda = serviziScheda;
             this.serviziAtleta = serviziAtleta;
         }
@@ -23,7 +22,15 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             // Utilizzo di Task.Run per eseguire l'elaborazione in un thread in background
             var schede = await Task.Run(() => serviziScheda.DaiSchede());
-            return View(schede);
+
+            var vm = schede.Select(s => new SchedaAllenamentoViewModel
+            {
+                Scheda = s,
+                Stato = serviziScheda.CalcolaStatoScheda(s)
+            }).ToList();
+
+
+            return View(vm);
         }
 
         // GET: Scheda/Details/5
@@ -34,17 +41,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            //var scheda = await _context.Scheda
-            //    .Include(s => s.Cliente)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-
             var scheda = await Task.Run(() =>serviziScheda.DaiScheda(id));
             if (scheda == null)
             {
                 return NotFound();
             }
             ViewData["Cliente"] = serviziAtleta.DaiSelectListAtleti();
-            return View(scheda);
+            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            vm.Scheda = scheda;
+            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
+            return View(vm);
         }
 
         // GET: Scheda/Create
@@ -61,21 +67,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Descrizione,DataInizio,DataFine,AtletaId")] Scheda scheda)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(scheda);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["AtletaId"] = new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);
-            //return View(scheda);
             if (ModelState.IsValid)
             {
                 await serviziScheda.AggiungiSchedaAsync(scheda);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
-            return View(scheda);
+            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            vm.Scheda = scheda;
+            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
+            return View(vm);
         }
 
         // GET: Scheda/Edit/5
@@ -86,13 +87,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id)); /*await _context.Scheda.FindAsync(id);*/
+            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id));
             if (scheda == null)
             {
                 return NotFound();
             }
-            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti(); /*new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);*/
-            return View(scheda);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            vm.Scheda = scheda;
+            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
+            return View(vm);
         }
 
         // POST: Scheda/Edit/5
@@ -111,8 +115,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 try
                 {
-                    //_context.Update(scheda);
-                    //await _context.SaveChangesAsync();
                   await serviziScheda.AggiornaSchedaAsync(scheda);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -128,8 +130,11 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "Id", scheda.AtletaId);*/ 
-            return View(scheda);
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            vm.Scheda = scheda;
+            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
+            return View(vm);
         }
 
         // GET: Scheda/Delete/5
@@ -145,8 +150,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
-            return View(scheda);
+            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            vm.Scheda = scheda;
+            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
+            return View(vm);
         }
 
         // POST: Scheda/Delete/5
@@ -162,7 +169,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         private bool SchedaExists(int id)
         {
             return serviziScheda.DaiScheda(id) != null;
-                /*_context.Scheda.Any(e => e.Id == id)*/
         }
     }
 }
