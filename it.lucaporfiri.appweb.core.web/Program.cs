@@ -1,7 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using it.lucaporfiri.appweb.core.web.Data;
+using it.lucaporfiri.appweb.core.web.Servizi;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ContestoApp>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ContestoApp") ?? throw new InvalidOperationException("Connection string 'ContestoApp' not found.")));
+
+// Aggiungi i tuoi service come "scoped" o "transient"
+builder.Services.AddScoped<ServiziAtleta>();
+builder.Services.AddScoped<ServiziAbbonamento>();
+builder.Services.AddScoped<ServiziScheda>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
