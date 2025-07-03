@@ -1,5 +1,5 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
-@model SchedaAllenamentoViewModel
+@model SchedaCreateViewModel
 @{
     ViewData["Title"] = "Create";
 }
@@ -10,31 +10,40 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Scheda.Nome" class="control-label"></label>
-                <input asp-for="Scheda.Nome" class="form-control" />
-                <span asp-validation-for="Scheda.Nome" class="text-danger"></span>
+                <label asp-for="AtletaId" class="control-label">
+                    Atleta <span style="color:red">*</span>
+                </label>
+                <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Scheda.Descrizione" class="control-label"></label>
-                <input asp-for="Scheda.Descrizione" class="form-control" />
-                <span asp-validation-for="Scheda.Descrizione" class="text-danger"></span>
+                <label asp-for="Nome" class="control-label">Nome Scheda</label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Scheda.DataInizio" class="control-label"></label>
-                <input asp-for="Scheda.DataInizio" class="form-control" />
-                <span asp-validation-for="Scheda.DataInizio" class="text-danger"></span>
+                <label asp-for="Descrizione" class="control-label">Descrizione Scheda</label>
+                <input asp-for="Descrizione" class="form-control" />
+                <span asp-validation-for="Descrizione" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Scheda.DataFine" class="control-label"></label>
-                <input asp-for="Scheda.DataFine" class="form-control" />
-                <span asp-validation-for="Scheda.DataFine" class="text-danger"></span>
+                <label asp-for="DataInizio" class="control-label">Data Inizio</label>
+                <input asp-for="DataInizio" class="form-control" />
+                <span asp-validation-for="DataInizio" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Scheda.AtletaId" class="control-label"></label>
-                <select asp-for="Scheda.AtletaId" class ="form-control" asp-items="ViewBag.AtletaId"></select>
+                <label asp-for="DataFine" class="control-label">
+                    Data Fine <span style="color:red">*</span>
+                </label>
+                <input asp-for="DataFine" class="form-control" />
+                <span asp-validation-for="DataFine" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="FileCaricato" class="control-label">Carica Scheda (PDF o Word)</label>
+                <input asp-for="FileCaricato" type="file" class="form-control" />
+                <span asp-validation-for="FileCaricato" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

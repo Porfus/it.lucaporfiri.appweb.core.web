@@ -126,8 +126,13 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         }
         public int CalcolaEta(Atleta atleta)
         {
-            return DateTime.Now.Year - atleta.AnnoDiNascita.Year -
-                   (DateTime.Now.DayOfYear < atleta.AnnoDiNascita.DayOfYear ? 1 : 0);
+            if (atleta.AnnoDiNascita.HasValue)
+            {
+                return DateTime.Now.Year - atleta.AnnoDiNascita.Value.Year -
+                       (DateTime.Now.DayOfYear < atleta.AnnoDiNascita.Value.DayOfYear ? 1 : 0);
+            }
+            else
+                return 0; 
         }
         public ICollection<Atleta> DaiAtleti()
         {

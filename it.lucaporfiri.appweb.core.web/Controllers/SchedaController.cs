@@ -8,13 +8,15 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class SchedaController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ServiziScheda serviziScheda;
         private readonly ServiziAtleta serviziAtleta;
 
-        public SchedaController(ServiziScheda serviziScheda, ServiziAtleta serviziAtleta)
+        public SchedaController(ServiziScheda serviziScheda, ServiziAtleta serviziAtleta, IWebHostEnvironment webHostEnvironment)
         {
             this.serviziScheda = serviziScheda;
             this.serviziAtleta = serviziAtleta;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Scheda
@@ -41,7 +43,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await Task.Run(() =>serviziScheda.DaiScheda(id));
+            var scheda = await serviziScheda.DaiSchedaAsync(id);
             if (scheda == null)
             {
                 return NotFound();
@@ -65,20 +67,44 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descrizione,DataInizio,DataFine,AtletaId")] Scheda scheda)
+        public async Task<IActionResult> Create(SchedaCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var scheda = new Scheda
+                {
+                    Nome = viewModel.Nome,
+                    Descrizione = viewModel.Descrizione,
+                    DataInizio = viewModel.DataInizio,
+                    DataFine = viewModel.DataFine,
+                    AtletaId = viewModel.AtletaId
+                };
+                // --- Logica di gestione del file ---
+                if (viewModel.FileCaricato != null && viewModel.FileCaricato.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string nomeFileUnico = Guid.NewGuid().ToString() + Path.GetExtension(viewModel.FileCaricato.FileName);
+                    string percorsoCompletoFile = Path.Combine(uploadsFolder, nomeFileUnico);
+
+                    using (var fileStream = new FileStream(percorsoCompletoFile, FileMode.Create))
+                    {
+                        await viewModel.FileCaricato.CopyToAsync(fileStream);
+                    }
+
+                    scheda.NomeFileOriginale = Path.GetFileName(viewModel.FileCaricato.FileName);
+                    scheda.NomeFileArchiviato = nomeFileUnico;
+                    scheda.ContentType = viewModel.FileCaricato.ContentType;
+                }
+                // --- Fine logica file ---
+
                 await serviziScheda.AggiungiSchedaAsync(scheda);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
-            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
-            vm.Scheda = scheda;
-            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
-            return View(vm);
+            return View(viewModel);
         }
-
+            
         // GET: Scheda/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -87,7 +113,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id));
+            var scheda = await serviziScheda.DaiSchedaAsync(id);
             if (scheda == null)
             {
                 return NotFound();
@@ -145,7 +171,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
 
-            var scheda = await Task.Run(() => serviziScheda.DaiScheda(id)); // Ensure this is awaited and not null.
+            var scheda = await serviziScheda.DaiSchedaAsync(id); 
             if (scheda == null)
             {
                 return NotFound();
@@ -159,9 +185,29 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // POST: Scheda/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            await serviziScheda.EliminaSchedaAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var scheda = await serviziScheda.DaiSchedaAsync(id);
+            if (scheda == null)
+            {
+                return NotFound();
+            }
+            // --- Logica di cancellazione file ---
+            if (!string.IsNullOrEmpty(scheda.NomeFileArchiviato))
+            {
+                string percorsoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede", scheda.NomeFileArchiviato);
+                if (System.IO.File.Exists(percorsoFile))
+                {
+                    System.IO.File.Delete(percorsoFile);
+                }
+            }
+            // --- Fine logica cancellazione file ---
+            await serviziScheda.EliminaSchedaAsync(id.Value);
 
             return RedirectToAction(nameof(Index));
         }
@@ -169,6 +215,26 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         private bool SchedaExists(int id)
         {
             return serviziScheda.DaiScheda(id) != null;
+        }
+        public async Task<IActionResult> Visualizza(int id)
+        {
+            var scheda = await serviziScheda.DaiSchedaAsync(id);
+
+            if (scheda == null || string.IsNullOrEmpty(scheda.NomeFileArchiviato))
+            {
+                return NotFound();
+            }
+
+            string percorsoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede", scheda.NomeFileArchiviato);
+
+            if (!System.IO.File.Exists(percorsoFile))
+            {
+                return NotFound();
+            }
+
+            // Restituisce il file al browser. Il browser deciderà se mostrarlo o scaricarlo
+            // in base al ContentType. Il NomeFileOriginale viene usato per il nome del download.
+            return PhysicalFile(percorsoFile, scheda.ContentType, scheda.NomeFileOriginale);
         }
     }
 }

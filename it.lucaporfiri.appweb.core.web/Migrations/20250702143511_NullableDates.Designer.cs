@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using it.lucaporfiri.appweb.core.web.Data;
 
@@ -11,9 +12,11 @@ using it.lucaporfiri.appweb.core.web.Data;
 namespace it.lucaporfiri.appweb.core.web.Migrations
 {
     [DbContext(typeof(ContestoApp))]
-    partial class ContestoAppModelSnapshot : ModelSnapshot
+    [Migration("20250702143511_NullableDates")]
+    partial class NullableDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,9 +99,6 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                     b.Property<int>("AtletaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DataFine")
                         .HasColumnType("datetime2");
 
@@ -109,12 +109,6 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeFileArchiviato")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeFileOriginale")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

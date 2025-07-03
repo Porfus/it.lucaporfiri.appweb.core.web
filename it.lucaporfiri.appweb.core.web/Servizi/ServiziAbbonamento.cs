@@ -2,7 +2,8 @@
 using it.lucaporfiri.appweb.core.web.Migrations;
 using it.lucaporfiri.appweb.core.web.Models;
 using Microsoft.EntityFrameworkCore;
-
+using static it.lucaporfiri.appweb.core.web.ViewModels.AbbonamentoDetailViewModel;
+using static it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel;
 namespace it.lucaporfiri.appweb.core.web.Servizi
 {
     public class ServiziAbbonamento
@@ -53,6 +54,15 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 _context.Abbonamento.Remove(abbonamento);
             }
             await _context.SaveChangesAsync();
+        }
+        public StatoAbbonamento CalcolaStatoAbbonamento(Abbonamento abbonamento)
+        {
+            if (abbonamento == null)
+            {
+                return StatoAbbonamento.NonDefinito;
+            }
+            var statoAbbonamento = abbonamento.DataInizio <= DateTime.Now && abbonamento.DataFine >= DateTime.Now;
+            return statoAbbonamento ? StatoAbbonamento.Valido : StatoAbbonamento.Scaduto;
         }
 
     }

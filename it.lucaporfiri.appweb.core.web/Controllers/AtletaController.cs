@@ -50,10 +50,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 Id = atleta.Id,
                 NomeCompleto = $"{atleta.Nome} {atleta.Cognome}",
-                Eta = serviziAtleta.CalcolaEta(atleta),
+                Eta = serviziAtleta.CalcolaEta(atleta).Equals(0)? serviziAtleta.CalcolaEta(atleta): null,
                 Email = atleta.Email,
                 Telefono = atleta.Telefono,
-                DataIscrizioneAtleta = atleta.DataInizioIscrizione,
+                DataIscrizioneAtleta = atleta.DataInizioIscrizione.HasValue? atleta.DataInizioIscrizione.Value : DateTime.MinValue,
                 Tipo = atleta.Tipo,
                 Stato = atleta.Stato,
                 Abbonamento = serviziAtleta.CalcolaStatoAbbonamento(atleta),

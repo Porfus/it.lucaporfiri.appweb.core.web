@@ -1,4 +1,5 @@
-﻿@model IEnumerable<it.lucaporfiri.appweb.core.web.Models.Abbonamento>
+﻿@using static it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel
+@model IEnumerable<it.lucaporfiri.appweb.core.web.ViewModels.AbbonamentoDetailViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +14,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DataInizio)
+                Data Inizio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataFine)
+                Data Fine
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Atleta)
+                Atleta
+            </th>
+            <th>
+                Stato Abbonamento
             </th>
             <th></th>
         </tr>
@@ -28,18 +32,33 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DataInizio)
+                @Html.DisplayFor(modelItem => item.abbonamento.DataInizio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DataFine)
+                @Html.DisplayFor(modelItem => item.abbonamento.DataFine)
             </td>
             <td>
-                @($"{item.Atleta?.Nome} {item.Atleta?.Cognome}")
+                @($"{item.abbonamento.Atleta?.Nome} {item.abbonamento.Atleta?.Cognome}")
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if (item.statoAbbonamento == StatoAbbonamento.Scaduto)
+                {
+                    <span class="c-error">@item.statoAbbonamento</span>
+                }
+                    else if (item.statoAbbonamento == StatoAbbonamento.Valido)
+                {
+                    <span class="c-success">@item.statoAbbonamento</span>
+                }
+                else
+                {
+                    <span class="c-warning">@item.statoAbbonamento</span>
+                }
+
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.abbonamento.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.abbonamento.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.abbonamento.Id">Delete</a>
             </td>
         </tr>
 }

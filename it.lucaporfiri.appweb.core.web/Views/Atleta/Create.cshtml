@@ -14,17 +14,21 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
+                <label asp-for="Nome" class="control-label">
+                    Nome <span style="color:red">*</span>
+                </label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Cognome" class="control-label"></label>
+                <label asp-for="Cognome" class="control-label">
+                    Cognome <span style="color:red">*</span>
+                </label>
                 <input asp-for="Cognome" class="form-control" />
                 <span asp-validation-for="Cognome" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AnnoDiNascita" class="control-label"></label>
+                <label asp-for="AnnoDiNascita" class="control-label">Anno Di Nascita</label>
                 <input asp-for="AnnoDiNascita" class="form-control" />
                 <span asp-validation-for="AnnoDiNascita" class="text-danger"></span>
             </div>
@@ -39,17 +43,17 @@
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataInizioIscrizione" class="control-label"></label>
+                <label asp-for="DataInizioIscrizione" class="control-label">Data Inizio Iscrizione</label>
                 <input asp-for="DataInizioIscrizione" class="form-control" />
                 <span asp-validation-for="DataInizioIscrizione" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
+                <label asp-for="Tipo" class="control-label">Categoria Atleta</label>
                 <select asp-for="Tipo" class="form-control" asp-items="Html.GetEnumSelectList<Atleta.TipoCliente>()"></select>
                 <span asp-validation-for="Tipo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Stato" class="control-label"></label>
+                <label asp-for="Stato" class="control-label">Stato Atleta</label>
                 <select asp-for="Stato" class="form-control" asp-items="Html.GetEnumSelectList<Atleta.StatoCliente>()"></select>
                 <span asp-validation-for="Stato" class="text-danger"></span>
             </div>

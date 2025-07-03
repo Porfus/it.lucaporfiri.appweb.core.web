@@ -14,6 +14,12 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         {
             _context = context;
         }
+        public async Task <Scheda?> DaiSchedaAsync(int? IdScheda)
+        {
+            if (IdScheda == null)
+                return null;
+            return await _context.Scheda.FirstOrDefaultAsync(s => s.Id == IdScheda);
+        }
         public Scheda? DaiScheda(int? IdScheda)
         {
             if (IdScheda == null)
@@ -24,9 +30,9 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public StatoScheda CalcolaStatoScheda(Scheda scheda)
         {
             var stato = scheda.DataInizio > DateTime.Today
-            ? SchedaAllenamentoViewModel.StatoScheda.NonAttiva
-            : scheda.DataFine > DateTime.Today ? SchedaAllenamentoViewModel.StatoScheda.Attiva
-            : SchedaAllenamentoViewModel.StatoScheda.Scaduta;
+            ? StatoScheda.NonAttiva
+            : scheda.DataFine > DateTime.Today ? StatoScheda.Attiva
+            : StatoScheda.Scaduta;
             return stato;
         }
         public List<Scheda> DaiSchede()

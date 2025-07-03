@@ -8,7 +8,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
     {
         public int Id { get; set; } 
         public string? NomeCompleto { get; set; }
-        public int Eta { get; set; } // Età calcolata in base alla data di nascita
+        public int? Eta { get; set; } // Età calcolata in base alla data di nascita
         public string? Email { get; set; }
         public string? Telefono { get; set; }
         [DataType(DataType.Date)]

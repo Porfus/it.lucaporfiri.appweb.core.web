@@ -20,8 +20,13 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // GET: Abbonamento
         public async Task<IActionResult> Index()
         {
-            var abbonamenti = await serviziAbbonamento.GetAbbonamentiAsync();/*_context.Abbonamento.Include(a => a.Atleta)*/;
-            return View(abbonamenti);
+            var abbonamenti = await serviziAbbonamento.GetAbbonamentiAsync();/*_context.Abbonamento.Include(a => a.Atleta)*/; 
+            var vm = abbonamenti.Select(s => new AbbonamentoDetailViewModel
+            {
+                abbonamento = s,
+                statoAbbonamento = s.Atleta != null? serviziAbbonamento.CalcolaStatoAbbonamento(s) : AtletaDetailViewModel.StatoAbbonamento.NonDefinito
+            }).ToList();
+            return View(vm);
         }
 
         // GET: Abbonamento/Details/5

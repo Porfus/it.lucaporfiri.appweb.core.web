@@ -19,9 +19,12 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Eta)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Eta)
-        </dd>
+        @if (Model.Eta.HasValue)
+        {
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Eta)
+            </dd>
+        }
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
