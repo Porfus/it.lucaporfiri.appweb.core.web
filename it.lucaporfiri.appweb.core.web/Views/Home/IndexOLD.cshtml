@@ -1,0 +1,158 @@
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@model DashboardViewModel
+@{
+    var title = DateTime.Now.Hour < 12 ? "Buongiorno, Riccardo" : DateTime.Now.Hour < 19 ? "Buon pomeriggio, Riccardo" : "Buonasera, Riccardo";
+
+    ViewData["Title"] = "Home Page";
+
+}
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Coach</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-dumbbell"></i> @title</h1>
+            <p>Gestione Atleti - Panoramica Generale</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Metriche Principali -->
+            <div class="metrics-grid">
+
+                <div class="metric-card total" >
+                    <a href="/Atleta/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
+                        <div class="metric-number">@Model.AtletiTotale</div>
+                        <div class="metric-label">Totale Atleti</div>
+                    </a>
+                </div>
+
+
+                <div class="metric-card active" onclick="jCaricaAtletiAttivi()" style="cursor:pointer;">
+                        <div class="metric-number">@Model.AtletiAttivi</div>
+                        <div class="metric-label">Atleti Attivi</div>
+                </div>
+
+                <div class="metric-card payments">
+                    <a href="/Abbonamento/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
+                        <div class="metric-number">@Model.AbbonamentiScaduti</div>
+                        <div class="metric-label">Pagamenti Arretrati</div>
+                    </a>
+                </div>
+
+                <div class="metric-card sheets">
+                    <a href="/Scheda/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
+                    <div class="metric-number">@Model.SchedeScadute</div>
+                    <div class="metric-label">Schede Scadute</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sezione Ricerca -->
+            <div class="search-section">
+                <input type="text" class="search-bar" placeholder="🔍 Cerca atleta per nome...">
+            </div>
+
+            <!-- Alert Situazioni Critiche -->
+            <div class="alerts-section">
+                <div class="alerts-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Situazioni che Richiedono Attenzione</h3>
+                </div>
+                @if(Model.AlertAtleti != null)
+                {
+                      @foreach (var alert in Model.AlertAtleti)
+                     {
+                        <a href="/Atleta/Details/@alert.IdCliente" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
+                        <div class="alert-item @alert.Tipo">
+                            <div class="athlete-info">
+                                <div class="athlete-avatar">@alert.Iniziali</div>
+                                <div class="athlete-details">
+                                    <h4>@alert.Nome</h4>
+                                    <span>@alert.Dettagli</span>
+                                </div>
+                            </div>
+                            </div>
+                        </a>
+                     }  
+                }
+                
+                @* <div class="alert-item critical">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">MR</div>
+                        <div class="athlete-details">
+                            <h4>Mario Rossi</h4>
+                            <span>Personal • Pagamento scaduto il 10/06 • Scheda scaduta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item warning">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">LV</div>
+                        <div class="athlete-details">
+                            <h4>Laura Verdi</h4>
+                            <span>Corso • Pagamento scaduto il 15/06</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item warning">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">GB</div>
+                        <div class="athlete-details">
+                            <h4>Giulia Bianchi</h4>
+                            <span>Solo Scheda • Scheda scaduta il 12/06</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-item info">
+                    <div class="athlete-info">
+                        <div class="athlete-avatar">AN</div>
+                        <div class="athlete-details">
+                            <h4>Andrea Neri</h4>
+                            <span>Personal • Abbonamento scade tra 3 giorni</span>
+                        </div>
+                    </div> 
+                </div>*@
+            </div>
+
+            <!-- Azioni Rapide -->
+            <div class="quick-actions">
+                <a href="/Atleta/Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nuovo Atleta
+                </a>
+                <a href="/Abbonamento/Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nuovo Abbonamento
+                </a>
+                <a href="/Atleta/Index" class="btn btn-secondary">
+                    <i class="fas fa-list"></i>
+                    Tutti gli Atleti
+                </a>
+
+                <button class="btn btn-secondary">
+                    <i class="fas fa-bell"></i>
+                    Notifiche
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function jCaricaAtletiAttivi() {
+          window.location.href = '/Atleta/Index?soloAttivi=true';
+        }
+    </script>
+</body>
+
+</html>
