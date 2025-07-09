@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using static it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel;
+using static it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewModel;
 
 namespace it.lucaporfiri.appweb.core.web.Servizi
 {
@@ -27,6 +28,16 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public async Task<List<Atleta>> GetAllAtletiConAbbonamentiAsync()
         {
             return await _context.Atleta.Include(a => a.Abbonamenti).ToListAsync();
+        }
+        public ICollection<Atleta> Ricerca(int skip, int pageSize, out int risultatiTotali, string? filtroNome = null)
+        {
+            IQueryable<Atleta> query = _context.Atleta.Include(a => a.Abbonamenti).Include(a => a.Schede);
+            if (!string.IsNullOrEmpty(filtroNome))
+            {
+                query = query.Where(a => a.Nome.Contains(filtroNome) || a.Cognome.Contains(filtroNome));
+            }
+            risultatiTotali = query.Count();
+            return query.Skip(skip).Take(pageSize).ToList();
         }
         public async Task CreaAtleta(Atleta atleta)
         {
@@ -143,6 +154,30 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return _context.Atleta.Count(a =>
                 a.Abbonamenti != null && a.Abbonamenti.Any() && !a.Abbonamenti.Any(ab => ab.DataInizio <= DateTime.Now && ab.DataFine >= DateTime.Now)
             );
+        }
+        public StatoScheda CalcolaStatoUltimaScheda(Atleta atleta)
+        {
+            if (atleta.Schede == null || !atleta.Schede.Any())
+            {
+                return StatoScheda.NonAttiva;
+            }
+            var scheda = atleta.Schede
+                .OrderByDescending(s => s.DataFine)
+                .FirstOrDefault();
+            if (scheda == null)
+                return StatoScheda.NonAttiva;
+            if (scheda.DataInizio > DateTime.Now)
+            {
+                return StatoScheda.NonAttiva;
+            }
+            else if (scheda.DataFine >= DateTime.Now)
+            {
+                return StatoScheda.Attiva;
+            }
+            else
+            {
+                return StatoScheda.Scaduta;
+            }
         }
     }
 }

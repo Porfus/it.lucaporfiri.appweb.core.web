@@ -75,9 +75,9 @@
             <h2><i class="fas fa-list-ul"></i> Lista di Lavoro</h2>
             <div class="table-controls">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Cerca atleta per nome...">
+                <input type="text" id="searchInput" placeholder="Cerca atleta per nome...">
             </div>
-            <table>
+            <table id="atleti-dashboard-table" class="display" style="width:100%">
                 <thead>
                     <tr>
                         <th>Atleta</th>
@@ -87,28 +87,7 @@
                         <th>Azioni</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Mario Rossi</strong></td>
-                        <td>Personal</td>
-                        <td><span class="status status-scaduto">Scaduto</span></td>
-                        <td><span class="status status-scaduto">Scaduta</span></td>
-                        <td><a href="#" class="btn-details">Dettagli</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Laura Bianchi</strong></td>
-                        <td>Corso</td>
-                        <td><span class="status status-scaduto">Scaduto</span></td>
-                        <td><span class="status status-ok">Valida</span></td>
-                        <td><a href="#" class="btn-details">Dettagli</a></td>
-                    </tr>
-                    <tr>
-						<td><strong>Anna Neri</strong></td>
-                        <td>Personal</td>
-                        <td><span class="status status-ok">Attivo</span></td>
-                        <td><span class="status status-ok">Valida</span></td>
-                        <td><a href="#" class="btn-details">Dettagli</a></td>
-                    </tr>
+                <tbody id="atleti-table-body">
                 </tbody>
             </table>
             <div class="main-actions">
@@ -143,7 +122,8 @@
                     </div>
                     <p><i class="fas fa-file-circle-exclamation"></i> Scheda Scaduta</p>
                 </div>
-                @if (Model.AlertAtleti != null)
+                veccia logica per mostrare gli utenti critici
+               @*  @if (Model.AlertAtleti != null)
                 {
                     @foreach (var alert in Model.AlertAtleti)
                     {
@@ -159,26 +139,111 @@
                             </div>
                         </a>
                     }
-                }
+                } *@
             </div>
         </section>
 
     </div>
 
-    <script>
-        const themeSwitcher = document.getElementById('theme-switcher');
-        const body = document.body;
-        const applyTheme = (theme) => { body.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); };
-        const toggleTheme = () => { const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; applyTheme(newTheme); };
-        themeSwitcher.addEventListener('click', toggleTheme);
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme) { applyTheme(savedTheme); } else if (prefersDark) { applyTheme('dark'); } else { applyTheme('light'); }
-    </script>
-    <script>
-        function jCaricaAtletiAttivi() {
-          window.location.href = '/Atleta/Index?soloAttivi=true';
-        }
-    </script>
+	<script>
+		const themeSwitcher = document.getElementById('theme-switcher');
+		const body = document.body;
+		const applyTheme = (theme) => { body.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); };
+		const toggleTheme = () => { const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; applyTheme(newTheme); };
+		themeSwitcher.addEventListener('click', toggleTheme);
+		const savedTheme = localStorage.getItem('theme');
+		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme) { applyTheme(savedTheme); } else if (prefersDark) { applyTheme('dark'); } else { applyTheme('light'); }
+	</script>
+	<script>
+		function jCaricaAtletiAttivi() {
+			window.location.href = '/Atleta/Index?soloAttivi=true';
+		}
+	</script>
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                // Salva un riferimento alla tabella DataTables
+                var table = $('#atleti-dashboard-table').DataTable({
+                    "processing": true,     // Mostra un messaggio "Processing..." durante il caricamento
+                    "serverSide": true,     // Abilita la modalità server-side
+                    "filter": false,        // Disabilitiamo il filtro di default perché usiamo il nostro
+                    "ajax": {
+                        "url": "@Url.Action("FiltraRicerca", "Atleta")", // URL del tuo endpoint
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": function (d) {
+                            // Aggiungi parametri custom alla richiesta
+                            d.filtroNome = $('#searchInput').val(); // Prende il valore dal tuo input di ricerca
+                        }
+                    },
+                    "columns": [
+                        { "data": "nomeCompleto", "name": "NomeCompleto", "className": "dt-body-left" },
+                        { "data": "tipo", "name": "Tipo" },
+                        {
+                            "data": "statoAbbonamento", "name": "StatoAbbonamento",
+                            "render": function (data, type, row) {
+                                // Logica per creare il badge colorato
+                                if (data === "Attivo") {
+                                    return '<span class="status status-ok">Attivo</span>';
+                                } else {
+                                    return '<span class="status status-scaduto">Scaduto</span>';
+                                }
+                            }
+                        },
+                        {
+                            "data": "statoScheda", "name": "StatoScheda",
+                            "render": function (data, type, row) {
+                                // Logica per creare il badge colorato
+                                if (data === "Valida") {
+                                    return '<span class="status status-ok">Valida</span>';
+                                } else if (data === "In Scadenza") { // Esempio
+                                    return '<span class="status status-attenzione">In Scadenza</span>';
+                                }
+                                else {
+                                    return '<span class="status status-scaduto">Scaduta</span>';
+                                }
+                            }
+                        },
+                        {
+                            "data": "id", // Assicurati che il ViewModel abbia un ID!
+                            "render": function (data, type, row) {
+                                // Crea il bottone "Dettagli"
+                                return `<a href="/Atleta/Details/${data}" class="btn-details">Dettagli</a>`;
+                            },
+                            "orderable": false // Questa colonna non è ordinabile
+                        }
+                    ],
+                    // Traduzioni in italiano per i controlli della tabella
+                    "language": {
+                        "processing": "Caricamento...",
+                        "lengthMenu": "Mostra _MENU_ elementi",
+                        "zeroRecords": "Nessun risultato trovato",
+                        "info": "Mostra da _START_ a _END_ di _TOTAL_ elementi",
+                        "infoEmpty": "Nessun elemento disponibile",
+                        "infoFiltered": "(filtrato da _MAX_ elementi totali)",
+                        "search": "Cerca:",
+                        "paginate": {
+                            "first": "Primo",
+                            "previous": "Precedente",
+                            "next": "Successivo",
+                            "last": "Ultimo"
+                        }
+                    }
+                });
+
+                // Event listener per il tuo input di ricerca personalizzato
+                let debounceTimer;
+                $('#searchInput').on('keyup', function () {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(function () {
+                        table.ajax.reload(); // Ricarica i dati della tabella
+                    }, 400); // Aspetta 400ms prima di inviare la richiesta
+                });
+            });
+        </script>
+    }
+    
+
 </body>
 </html>

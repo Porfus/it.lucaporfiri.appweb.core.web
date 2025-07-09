@@ -1,6 +1,7 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         //private readonly ILogger<HomeController> _logger;
         //private readonly ContestoApp _context;
         private readonly ServiziAtleta serviziAtleta;
+        private readonly ServiziAbbonamento serviziAbbonamento;
         
-        public AtletaController(/*ContestoApp _context,*/ ServiziAtleta serviziAtleta1)
+        public AtletaController(/*ContestoApp _context,*/ ServiziAtleta serviziAtleta1, ServiziAbbonamento serviziAbbonamento1)
         {
             //this._context = _context;
             //this._logger = logger;
             serviziAtleta = serviziAtleta1; 
+            serviziAbbonamento = serviziAbbonamento1;
         }
         // GET: Abbonamento
         public async Task<IActionResult> Index(bool soloAttivi=false)
@@ -28,6 +31,37 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 atleti = atleti.Where(a => a.Stato == Atleta.StatoCliente.Attivo).ToList();
             }
             return View(atleti);
+        }
+        [HttpPost]
+        public IActionResult FiltraRicerca()
+        {
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var start = Request.Form["start"].FirstOrDefault();
+            var length = Request.Form["length"].FirstOrDefault();
+
+            string? filtroNome = Request.Form["filtro-nome"].FirstOrDefault();
+
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+
+            int risultatiTotali = 0;
+            IEnumerable<Atleta> atleti = serviziAtleta.Ricerca(skip, pageSize, out risultatiTotali, filtroNome);
+            List<AtletaFiltraRicercaViewModel> listaAtleti = atleti.Select(a => new AtletaFiltraRicercaViewModel
+            {
+                Id = a.Id,
+                NomeCompleto = $"{a.Nome} {a.Cognome}",
+                Tipo = a.Tipo,
+                StatoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(a),
+                StatoScheda = serviziAtleta.CalcolaStatoUltimaScheda(a)
+            }).ToList();
+
+            return Json(new
+            {
+                draw,
+                recordsFiltered = risultatiTotali,
+                recordsTotal = risultatiTotali,
+                data = listaAtleti
+            });
         }
         // GET: Atleta/Details/5
         public async Task<IActionResult> Details(int? id)
