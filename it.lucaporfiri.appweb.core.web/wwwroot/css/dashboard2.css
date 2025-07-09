@@ -397,3 +397,7 @@ h2 {
 .status-attenzione {
     background-color: var(--warning-color);
 }
+
+.status-notdefined {
+    background-color: #b0b4ba;
+}

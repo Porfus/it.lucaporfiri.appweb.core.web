@@ -39,7 +39,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             var start = Request.Form["start"].FirstOrDefault();
             var length = Request.Form["length"].FirstOrDefault();
 
-            string? filtroNome = Request.Form["filtro-nome"].FirstOrDefault();
+            string? filtroNome = Request.Form["filtroNome"].FirstOrDefault();
 
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;

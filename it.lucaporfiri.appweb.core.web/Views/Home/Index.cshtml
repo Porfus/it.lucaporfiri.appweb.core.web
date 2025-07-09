@@ -163,55 +163,57 @@
     @section Scripts {
         <script>
             $(document).ready(function () {
-                // Salva un riferimento alla tabella DataTables
                 var table = $('#atleti-dashboard-table').DataTable({
                     "processing": true,     // Mostra un messaggio "Processing..." durante il caricamento
                     "serverSide": true,     // Abilita la modalità server-side
                     "filter": false,        // Disabilitiamo il filtro di default perché usiamo il nostro
                     "ajax": {
-                        "url": "@Url.Action("FiltraRicerca", "Atleta")", // URL del tuo endpoint
+                        "url": '/Atleta/FiltraRicerca', 
                         "type": "POST",
                         "datatype": "json",
                         "data": function (d) {
                             // Aggiungi parametri custom alla richiesta
-                            d.filtroNome = $('#searchInput').val(); // Prende il valore dal tuo input di ricerca
+                            d.filtroNome = $('#searchInput').val(); 
                         }
                     },
                     "columns": [
                         { "data": "nomeCompleto", "name": "NomeCompleto", "className": "dt-body-left" },
-                        { "data": "tipo", "name": "Tipo" },
+                        { 
+                            "data": "tipo", "name": "Tipo",
+                            "render": function (data, type, row){
+                            }
+                        },
                         {
                             "data": "statoAbbonamento", "name": "StatoAbbonamento",
                             "render": function (data, type, row) {
-                                // Logica per creare il badge colorato
-                                if (data === "Attivo") {
+                                if (data == 0) {
                                     return '<span class="status status-ok">Attivo</span>';
-                                } else {
+                                } else if(data == 1) {
                                     return '<span class="status status-scaduto">Scaduto</span>';
+                                } else {
+									return '<span class="status status-notdefined">Non Definito</span>';
                                 }
                             }
                         },
                         {
                             "data": "statoScheda", "name": "StatoScheda",
                             "render": function (data, type, row) {
-                                // Logica per creare il badge colorato
-                                if (data === "Valida") {
-                                    return '<span class="status status-ok">Valida</span>';
-                                } else if (data === "In Scadenza") { // Esempio
-                                    return '<span class="status status-attenzione">In Scadenza</span>';
+                                if (data == 0) {
+                                    return '<span class="status status-ok">Attiva</span>';
+                                } else if (data == 1) { 
+                                    return '<span class="status status-scaduto">Scaduta</span>';
                                 }
                                 else {
-                                    return '<span class="status status-scaduto">Scaduta</span>';
+                                    return '<span class="status status-notdefined">Non Definita</span>';
                                 }
                             }
                         },
                         {
-                            "data": "id", // Assicurati che il ViewModel abbia un ID!
+                            "data": "id", 
                             "render": function (data, type, row) {
-                                // Crea il bottone "Dettagli"
                                 return `<a href="/Atleta/Details/${data}" class="btn-details">Dettagli</a>`;
                             },
-                            "orderable": false // Questa colonna non è ordinabile
+                            "orderable": false 
                         }
                     ],
                     // Traduzioni in italiano per i controlli della tabella
@@ -238,7 +240,7 @@
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(function () {
                         table.ajax.reload(); // Ricarica i dati della tabella
-                    }, 400); // Aspetta 400ms prima di inviare la richiesta
+                    }, 300); // Aspetta 400ms prima di inviare la richiesta
                 });
             });
         </script>

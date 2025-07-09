@@ -9,7 +9,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
         public int Id { get; set; }
         public string? NomeCompleto { get; set; }
         public TipoCliente Tipo { get; set; }
-        public StatoAbbonamento StatoAbbonamento;
+        public StatoAbbonamento StatoAbbonamento { get; set; }
         public StatoScheda StatoScheda { get; set; }
 
 

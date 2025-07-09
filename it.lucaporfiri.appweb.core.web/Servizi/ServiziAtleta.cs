@@ -123,7 +123,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             if (abbonamento == null)
                 return StatoAbbonamento.NonDefinito;
 
-            bool attivo = abbonamento.DataInizio <= DateTime.Now && abbonamento.DataFine >= DateTime.Now;
+            bool attivo = abbonamento.DataFine >= DateTime.Now;
             return attivo ? StatoAbbonamento.Valido : StatoAbbonamento.Scaduto;
         }
         public StatoAbbonamento CalcolaStatoAbbonamento(Atleta atleta) 
