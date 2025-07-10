@@ -181,6 +181,13 @@
                         { 
                             "data": "tipo", "name": "Tipo",
                             "render": function (data, type, row){
+                                if(data == 0){
+                                    return '<span class = "status status-personal">Personal</span>';
+                                } else if(data == 1){
+                                    return '<span class = "status status-corso">Corso</span>';
+                                } else {
+                                    return '<span class = "status status-soloscheda">Solo Scheda</span>';
+                                }
                             }
                         },
                         {
