@@ -122,24 +122,23 @@
                     </div>
                     <p><i class="fas fa-file-circle-exclamation"></i> Scheda Scaduta</p>
                 </div>
-                veccia logica per mostrare gli utenti critici
-               @*  @if (Model.AlertAtleti != null)
+                 @if (Model.AlertAtleti != null)
                 {
                     @foreach (var alert in Model.AlertAtleti)
                     {
                         <a href="/Atleta/Details/@alert.IdCliente" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
-                            <div class="alert-item @alert.Tipo">
-                                <div class="athlete-info">
+                            <div class="alert-card alert-@alert.Tipo">
+                                <div class="alert-card-header">
                                     <div class="athlete-avatar">@alert.Iniziali</div>
                                     <div class="athlete-details">
-                                        <h4>@alert.Nome</h4>
+                                        <strong>@alert.Nome</strong>
                                         <span>@alert.Dettagli</span>
                                     </div>
                                 </div>
                             </div>
                         </a>
                     }
-                } *@
+                } 
             </div>
         </section>
 
