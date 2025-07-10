@@ -276,6 +276,8 @@ h2 {
 }
 
     .btn-primary:hover {
+        background-color: var(--brand-red);
+        border-color: var(--brand-red);
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(217, 35, 45, 0.4);
     }
@@ -289,6 +291,7 @@ h2 {
     .btn-secondary:hover {
         background-color: var(--brand-red-light);
         border-color: var(--brand-red);
+        color: var(--text-primary);
     }
 
 .btn-details {

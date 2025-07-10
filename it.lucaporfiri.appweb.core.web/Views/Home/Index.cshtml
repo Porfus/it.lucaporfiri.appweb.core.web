@@ -1,7 +1,9 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model DashboardViewModel
 @{
-    var subtitle = DateTime.Now.Hour < 12 ? "Buongiorno, Riccardo" : DateTime.Now.Hour < 19 ? "Buon pomeriggio, Riccardo" : "Buonasera, Riccardo";
+    var subtitle = DateTime.Now.Hour < 12 && DateTime.Now.Hour > 4 ? "Buongiorno, Riccardo" 
+    : DateTime.Now.Hour < 19 && DateTime.Now.Hour >=12  
+    ? "Buon pomeriggio, Riccardo" : "Buonasera, Riccardo";
 
     ViewData["Title"] = "Home Page";
 
@@ -35,14 +37,12 @@
         </header>
 
         <div class="stat-cards">
-            <div class="stat-card">
-                <a href="/Atleta/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
-                    <div class="stat-card-icon icon-total"><i class="fas fa-users"></i></div>
-                    <div class="stat-card-info">
-                        <div class="value">@Model.AtletiTotale</div>
-                        <div class="label">Totale Atleti</div>
-                    </div>
-                </a>
+            <div class="stat-card" onclick="jCaricaTotaleAtleti()" style="cursor:pointer;">
+                <div class="stat-card-icon icon-total"><i class="fas fa-users"></i></div>
+                <div class="stat-card-info">
+                    <div class="value">@Model.AtletiTotale</div>
+                    <div class="label">Totale Atleti</div>
+                </div>
             </div>
             <div class="stat-card" onclick="jCaricaAtletiAttivi()" style="cursor:pointer;">
                 <div class="stat-card-icon icon-active"><i class="fas fa-user-check"></i></div>
@@ -51,23 +51,19 @@
                     <div class="label">Atleti Attivi</div>
                 </div>
             </div>
-            <div class="stat-card">
-                <a href="/Abbonamento/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
-                    <div class="stat-card-icon icon-expired"><i class="fas fa-calendar-times"></i></div>
-                    <div class="stat-card-info">
-                        <div class="value">@Model.AbbonamentiScaduti</div>
-                        <div class="label">Abbonamenti Scaduti</div>
-                    </div>
-				</a>
+            <div class="stat-card" onclick="jCaricaAbbonamentiScaduti()" style="cursor:pointer;">
+                <div class="stat-card-icon icon-expired"><i class="fas fa-calendar-times"></i></div>
+                <div class="stat-card-info">
+                    <div class="value">@Model.AbbonamentiScaduti</div>
+                    <div class="label">Abbonamenti Scaduti</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <a href="/Scheda/Index" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
-                    <div class="stat-card-icon icon-expired"><i class="fas fa-file-excel"></i></div>
-                    <div class="stat-card-info">
-                        <div class="value">@Model.SchedeScadute</div>
-                        <div class="label">Schede Scadute</div>
-                    </div>
-                </a>
+            <div class="stat-card" onclick="jCaricaSchedeScadute()" style="cursor:pointer;">
+                <div class="stat-card-icon icon-expired"><i class="fas fa-file-excel"></i></div>
+                <div class="stat-card-info">
+                    <div class="value">@Model.SchedeScadute</div>
+                    <div class="label">Schede Scadute</div>
+                </div>
             </div>
         </div>
 
@@ -149,6 +145,15 @@
 		function jCaricaAtletiAttivi() {
 			window.location.href = '/Atleta/Index?soloAttivi=true';
 		}
+        function jCaricaTotaleAtleti(){
+            window.location.href = '/Atleta/Index';
+        }
+        function jCaricaAbbonamentiScaduti(){
+            window.location.href = '/Abbonamento/Index';
+        }
+        function jCaricaSchedeScadute(){
+            window.location.href = '/Scheda/Index';
+        }
 	</script>
     @section Scripts {
         <script>
