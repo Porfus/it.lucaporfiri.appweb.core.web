@@ -354,28 +354,46 @@ h2 {
         margin-right: 5px;
     }
 
-.alert-rosso {
+.priority-critical {
     border-left-color: #e74c3c;
 }
 
-    .alert-rosso p i {
-        color: #e74c3c;
-    }
-
-.alert-arancione {
+.priority-warning {
     border-left-color: #f39c12;
 }
 
-    .alert-arancione p i {
-        color: #f39c12;
-    }
-
-.alert-giallo {
+.priority-warning-giallo {
     border-left-color: #f1c40f;
 }
 
-    .alert-giallo p i {
-        color: #f1c40f;
+.priority-info {
+    border-left-color: #3498db;
+}
+
+.alert-card .status-abbonamento-scaduto i {
+    color: #f39c12;
+}
+
+.alert-card .status-scheda-scaduta i {
+    color: #f1c40f; 
+}
+
+.alert-card .status-in-scadenza i {
+    color: #3498db; 
+}
+
+.alert-card-body p {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+    .alert-card-body p i {
+        width: 20px;
+        margin-right: 8px;
     }
 
 .status {

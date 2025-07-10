@@ -100,43 +100,34 @@
         <section class="critical-section">
             <h2><i class="fas fa-triangle-exclamation"></i> Riepilogo Situazioni Critiche</h2>
             <div class="critical-alerts-list">
-                <div class="alert-card alert-rosso">
-                    <div class="alert-card-header">
-                        <strong>Mario Rossi</strong>
-                        <a href="#"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <p><i class="fas fa-fire"></i> Abbonamento Scaduto</p>
-                    <p><i class="fas fa-file-excel"></i> Scheda Scaduta</p>
-                </div>
-                <div class="alert-card alert-arancione">
-                    <div class="alert-card-header">
-                        <strong>Laura Bianchi</strong>
-                        <a href="#"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <p><i class="fas fa-hourglass-half"></i> Abbonamento Scaduto</p>
-                </div>
-                <div class="alert-card alert-giallo">
-                    <div class="alert-card-header">
-                        <strong>Giuseppe Verdi</strong>
-                        <a href="#"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <p><i class="fas fa-file-circle-exclamation"></i> Scheda Scaduta</p>
-                </div>
                  @if (Model.AlertAtleti != null)
                 {
                     @foreach (var alert in Model.AlertAtleti)
                     {
-                        <a href="/Atleta/Details/@alert.IdCliente" style="display:block; text-decoration:none; color:inherit; width:100%; height:100%;">
-                            <div class="alert-card alert-@alert.Tipo">
-                                <div class="alert-card-header">
-                                    <div class="athlete-avatar">@alert.Iniziali</div>
-                                    <div class="athlete-details">
-                                        <strong>@alert.Nome</strong>
-                                        <span>@alert.Dettagli</span>
-                                    </div>
-                                </div>
+                        <div class="alert-card priority-@alert.Tipo">
+                            <div class="alert-card-header">
+                                <strong>@alert.Nome</strong>
+                                <a href="/Atleta/Details/@alert.IdCliente"><i class="fas fa-arrow-right"></i></a>
                             </div>
-                        </a>
+                            <div class="alert-card-body">
+                                @if (alert.AbbonamentoScaduto)
+                                {
+                                    <p class="status-abbonamento-scaduto"><i class="fas fa-fire"></i> Abbonamento Scaduto</p>
+                                }
+                                @if (alert.SchedaScaduta)
+                                {
+                                    <p class="status-scheda-scaduta"><i class="fas fa-file-excel"></i> Scheda Scaduta</p>
+                                }
+                                @if (alert.AbbonamentoInScadenza)
+                                {
+                                    <p class="status-in-scadenza"><i class="fas fa-hourglass-start"></i> Abbonamento in scadenza</p>
+                                }
+                                @if (alert.SchedaInScadenza)
+                                {
+                                    <p class="status-in-scadenza"><i class="fas fa-calendar-days"></i> Scheda in scadenza</p>
+                                }
+                            </div>
+                        </div>
                     }
                 } 
             </div>

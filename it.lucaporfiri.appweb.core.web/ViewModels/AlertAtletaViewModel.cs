@@ -7,5 +7,10 @@
         public required string Iniziali { get; set; }
         public required string Dettagli { get; set; }
         public required string Tipo { get; set; } // "critical", "warning", "info"
+        public bool AbbonamentoScaduto { get; set; }
+        public bool SchedaScaduta { get; set; }
+        public bool AbbonamentoInScadenza { get; set; } 
+        public bool SchedaInScadenza { get; set; }    
+
     }
 }

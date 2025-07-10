@@ -90,19 +90,40 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             vm.AbbonamentiScaduti = serviziAtleta.DaiNumeroAtletiConAbbonamentiScaduti();
             vm.SchedeScadute = ServiziScheda.DaiNumeroSchedeScadute();
 
-            // Popolamento alert dinamici
             var atleti = serviziAtleta.DaiAtleti();
             foreach (var atleta in atleti)
             {
-                // Controllo abbonamento
-                var statoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(atleta);
-                var schedaScaduta = atleta.Schede?.Any(s => ServiziScheda.CalcolaStatoScheda(s) == StatoScheda.Scaduta) ?? false;
-
-                if (statoAbbonamento == StatoAbbonamento.Scaduto || schedaScaduta)
+                var abbonamentoScaduto = serviziAtleta.CalcolaStatoUltimoAbbonamento(atleta) == StatoAbbonamento.Scaduto ? true : false;
+                var schedaScaduta = serviziAtleta.CalcolaStatoUltimaScheda(atleta) == StatoScheda.Scaduta ? true : false;
+                bool abbonamentoInScadenza = false;
+                bool schedaInScadenza = false;
+                if (abbonamentoScaduto == false) 
                 {
-                    var tipo = statoAbbonamento == StatoAbbonamento.Scaduto && schedaScaduta ? "critical"
-                              : statoAbbonamento == StatoAbbonamento.Scaduto || schedaScaduta ? "warning"
-                              : "";
+                    var ultimoAbbonamento = serviziAtleta.DaiUltimoAbbonamento(atleta);
+                    if (ultimoAbbonamento != null && ultimoAbbonamento.DataFine >= DateTime.Now.AddDays(-4))
+                    {
+                        abbonamentoInScadenza = true;
+                    }
+                }
+                if(schedaScaduta == false)
+                {
+                    var ultimaScheda = serviziAtleta.DaiUltimaScheda(atleta);
+                    if (ultimaScheda != null && ultimaScheda.DataFine >= DateTime.Now.AddDays(-4))
+                    {
+                        schedaInScadenza = true;
+                    }
+                }
+                if (abbonamentoScaduto || schedaScaduta || schedaInScadenza || abbonamentoInScadenza)
+                {
+                    var tipoAlert = "";
+                    if (abbonamentoScaduto && schedaScaduta)
+                        tipoAlert = "critical";
+                    else if (abbonamentoScaduto)
+                        tipoAlert = "warning";
+                    else if (schedaScaduta)
+                        tipoAlert = "warning-giallo";
+                    else if (abbonamentoInScadenza || schedaInScadenza)
+                        tipoAlert = "info";
 
                     var dettagli = "";
                     if (atleta.Tipo == Atleta.TipoCliente.Personal)
@@ -112,18 +133,17 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     else if (atleta.Tipo == Atleta.TipoCliente.SolaScheda)
                         dettagli += "Solo Scheda";
 
-                    if (statoAbbonamento == StatoAbbonamento.Scaduto)
-                        dettagli += " • Abbonamento scaduto";
-                    if (schedaScaduta)
-                        dettagli += " • Scheda scaduta";
-
                     vm.AlertAtleti.Add(new AlertAtletaViewModel
                     {
                         IdCliente = atleta.Id,
                         Nome = $"{atleta.Nome} {atleta.Cognome}",
                         Iniziali = $"{atleta.Nome?[0]}{atleta.Cognome?[0]}".ToUpper(),
                         Dettagli = dettagli,
-                        Tipo = tipo
+                        Tipo = tipoAlert,
+                        AbbonamentoScaduto = abbonamentoScaduto,
+                        SchedaScaduta = schedaScaduta,
+                        AbbonamentoInScadenza = abbonamentoInScadenza,
+                        SchedaInScadenza= schedaInScadenza
                     });
                 }
             }

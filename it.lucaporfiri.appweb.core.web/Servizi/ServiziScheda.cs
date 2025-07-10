@@ -30,7 +30,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public StatoScheda CalcolaStatoScheda(Scheda scheda)
         {
             var stato = scheda.DataInizio > DateTime.Today
-            ? StatoScheda.NonAttiva
+            ? StatoScheda.NonDefinita
             : scheda.DataFine > DateTime.Today ? StatoScheda.Attiva
             : StatoScheda.Scaduta;
             return stato;

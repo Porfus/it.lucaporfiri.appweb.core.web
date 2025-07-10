@@ -12,7 +12,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
         {
             Attiva,
             Scaduta,
-            NonAttiva
+            NonDefinita
         }
     }
 }
