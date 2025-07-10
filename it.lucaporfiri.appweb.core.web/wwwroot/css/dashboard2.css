@@ -401,3 +401,15 @@ h2 {
 .status-notdefined {
     background-color: #b0b4ba;
 }
+
+.status-personal {
+    background-color: orange;
+}
+
+.status-corso {
+    background-color: cornflowerblue;
+}
+
+.status-soloscheda {
+    background-color: blueviolet;
+}
