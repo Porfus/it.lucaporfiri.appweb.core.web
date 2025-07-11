@@ -41,26 +41,61 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
             string? filtroNome = Request.Form["filtroNome"].FirstOrDefault();
 
+            string? colonnaOrdinamento = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            string? versoOrdinamento = Request.Form["order[0][dir]"].FirstOrDefault();
+
+
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
             int risultatiTotali = 0;
-            IEnumerable<Atleta> atleti = serviziAtleta.Ricerca(skip, pageSize, out risultatiTotali, filtroNome);
-            List<AtletaFiltraRicercaViewModel> listaAtleti = atleti.Select(a => new AtletaFiltraRicercaViewModel
-            {
-                Id = a.Id,
-                NomeCompleto = $"{a.Nome} {a.Cognome}",
-                Tipo = a.Tipo,
-                StatoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(a),
-                StatoScheda = serviziAtleta.CalcolaStatoUltimaScheda(a)
-            }).ToList();
+            IEnumerable<AtletaFiltraRicercaViewModel> atleti = serviziAtleta.Ricerca(skip, pageSize, out risultatiTotali, colonnaOrdinamento, versoOrdinamento, filtroNome);
+            //List<AtletaFiltraRicercaViewModel> listaAtleti = atleti.Select(a => new AtletaFiltraRicercaViewModel
+            //{
+            //    Id = a.Id,
+            //    NomeCompleto = $"{a.Nome} {a.Cognome}",
+            //    Tipo = a.Tipo,
+            //    StatoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(a),
+            //    StatoScheda = serviziAtleta.CalcolaStatoUltimaScheda(a)
+            //}).ToList();
 
+            //if (!string.IsNullOrEmpty(colonnaOrdinamento) && !string.IsNullOrEmpty(versoOrdinamento))
+            //{
+            //    // Usiamo un blocco switch sul nome della colonna per decidere come ordinare
+            //    switch (colonnaOrdinamento)
+            //    {
+            //        case "NomeCompleto":
+            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
+            //                ? listaAtleti.OrderBy(a => a.NomeCompleto).ToList()
+            //                : listaAtleti.OrderByDescending(a => a.NomeCompleto).ToList();
+            //            break;
+            //        case "Tipo":
+            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
+            //                ? listaAtleti.OrderBy(a => a.Tipo).ToList()
+            //                : listaAtleti.OrderByDescending(a => a.Tipo).ToList();
+            //            break;
+            //        case "StatoAbbonamento":
+            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
+            //                ? listaAtleti.OrderBy(a => a.StatoAbbonamento).ToList()
+            //                : listaAtleti.OrderByDescending(a => a.StatoAbbonamento).ToList();
+            //            break;
+            //        case "StatoScheda":
+            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
+            //                ? listaAtleti.OrderBy(a => a.StatoScheda).ToList()
+            //                : listaAtleti.OrderByDescending(a => a.StatoScheda).ToList();
+            //            break;
+            //        // Aggiungi un ordinamento di default se necessario
+            //        default:
+            //            listaAtleti = listaAtleti.OrderBy(a => a.NomeCompleto).ToList();
+            //            break;
+            //    }
+            //}
             return Json(new
             {
                 draw,
                 recordsFiltered = risultatiTotali,
                 recordsTotal = risultatiTotali,
-                data = listaAtleti
+                data = atleti
             });
         }
         // GET: Atleta/Details/5

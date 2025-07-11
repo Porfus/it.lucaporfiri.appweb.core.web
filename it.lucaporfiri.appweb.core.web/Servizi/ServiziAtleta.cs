@@ -1,5 +1,6 @@
 ﻿using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -30,15 +31,64 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return await _context.Atleta.Include(a => a.Abbonamenti).ToListAsync();
         }
 
-        public ICollection<Atleta> Ricerca(int skip, int pageSize, out int risultatiTotali, string? filtroNome = null)
+        public ICollection<AtletaFiltraRicercaViewModel> Ricerca(int skip, int pageSize, out int risultatiTotali, string? colonnaOrdinamento = null, string? versoOrdinamento = null, string? filtroNome = null)
         {
-            IQueryable<Atleta> query = _context.Atleta.Include(a => a.Abbonamenti).Include(a => a.Schede);
+            IQueryable<Atleta> query = _context.Atleta.AsQueryable();
             if (!string.IsNullOrEmpty(filtroNome))
             {
                 query = query.Where(a => a.Nome.Contains(filtroNome) || a.Cognome.Contains(filtroNome));
             }
-            risultatiTotali = query.Count();
-            return query.Skip(skip).Take(pageSize).ToList();
+
+            // 3. Proietta i dati in un nuovo oggetto che include i campi calcolati
+            var projectedQuery = query.Select(a => new
+            {
+                Id = a.Id,
+                NomeCompleto = a.Nome + " " + a.Cognome,
+                Tipo = a.Tipo,
+
+                StatoAbbonamento = a.Abbonamenti!.Any()
+                    ? (a.Abbonamenti!.OrderByDescending(ab => ab.DataFine).FirstOrDefault()!.DataFine < DateTime.Now ? StatoAbbonamento.Scaduto : StatoAbbonamento.Valido)
+                    : StatoAbbonamento.NonDefinito,
+
+                StatoScheda = a.Schede!.Any()
+                    ? (a.Schede!.OrderByDescending(s => s.DataFine).FirstOrDefault()!.DataFine < DateTime.Now ? StatoScheda.Scaduta : StatoScheda.Attiva)
+                    : StatoScheda.NonDefinita
+            });
+            if (!string.IsNullOrEmpty(colonnaOrdinamento) && !string.IsNullOrEmpty(versoOrdinamento))
+            {
+                bool isAsc = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase);
+
+                projectedQuery = (colonnaOrdinamento, isAsc) switch
+                {
+                    ("NomeCompleto", true) => projectedQuery.OrderBy(p => p.NomeCompleto),
+                    ("NomeCompleto", false) => projectedQuery.OrderByDescending(p => p.NomeCompleto),
+                    ("Tipo", true) => projectedQuery.OrderBy(p => p.Tipo),
+                    ("Tipo", false) => projectedQuery.OrderByDescending(p => p.Tipo),
+                    ("StatoAbbonamento", true) => projectedQuery.OrderBy(p => p.StatoAbbonamento),
+                    ("StatoAbbonamento", false) => projectedQuery.OrderByDescending(p => p.StatoAbbonamento),
+                    ("StatoScheda", true) => projectedQuery.OrderBy(p => p.StatoScheda),
+                    ("StatoScheda", false) => projectedQuery.OrderByDescending(p => p.StatoScheda),
+                    // Ordinamento di default
+                    _ => projectedQuery.OrderBy(p => p.NomeCompleto)
+                };
+            }
+
+            risultatiTotali = projectedQuery.Count();
+
+            return projectedQuery
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(p => new AtletaFiltraRicercaViewModel
+                {
+                    Id = p.Id,
+                    NomeCompleto = p.NomeCompleto,
+                    Tipo = p.Tipo,
+                    StatoAbbonamento = p.StatoAbbonamento,
+                    StatoScheda = p.StatoScheda
+                })
+                .ToList();
+            //risultatiTotali = query.Count();
+            //return query.Skip(skip).Take(pageSize).ToList();
         }
 
         public async Task CreaAtleta(Atleta atleta)
