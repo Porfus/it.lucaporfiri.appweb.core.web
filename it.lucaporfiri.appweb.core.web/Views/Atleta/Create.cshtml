@@ -1,73 +1,81 @@
-﻿@using static it.lucaporfiri.appweb.core.web.Models.Atleta
+﻿@using it.lucaporfiri.appweb.core.web.Models
 @model it.lucaporfiri.appweb.core.web.Models.Atleta
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuovo Atleta";
 }
 
-<h1>Create</h1>
+<div class="dashboard-container">
+    <section>
+        <h2><i class="fas fa-user-plus"></i> Crea Nuovo Atleta</h2>
 
-<h4>Atleta</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label">
-                    Nome <span style="color:red">*</span>
-                </label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+            <!-- Messaggio di riepilogo degli errori (visibile solo se ci sono errori non legati a un campo specifico) -->
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="Nome">Nome<span class="required-asterisk">*</span></label>
+                    <input asp-for="Nome" placeholder="es. Mario" />
+                    <span asp-validation-for="Nome" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Cognome">Cognome<span class="required-asterisk">*</span></label>
+                    <input asp-for="Cognome" placeholder="es. Rossi" />
+                    <span asp-validation-for="Cognome" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="AnnoDiNascita"></label>
+                    <input asp-for="AnnoDiNascita" type="date" placeholder="es. 1990" />
+                    <span asp-validation-for="AnnoDiNascita" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="email" placeholder="es. m.rossi@email.com" />
+                    <span asp-validation-for="Email" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Telefono"></label>
+                    <input asp-for="Telefono" type="tel" placeholder="es. 3331234567" />
+                    <span asp-validation-for="Telefono" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataInizioIscrizione"></label>
+                    <input asp-for="DataInizioIscrizione" type="date" />
+                    <span asp-validation-for="DataInizioIscrizione" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Tipo">Categoria Atleta<span class="required-asterisk">*</span></label>
+                    <select asp-for="Tipo" asp-items="Html.GetEnumSelectList<Atleta.TipoCliente>()">
+                        <option value="">Seleziona una categoria...</option>
+                    </select>
+                    <span asp-validation-for="Tipo" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Stato">Stato Atleta<span class="required-asterisk">*</span></label>
+                    <select asp-for="Stato" asp-items="Html.GetEnumSelectList<Atleta.StatoCliente>()">
+                        <option value="">Seleziona uno stato...</option>
+                    </select>
+                    <span asp-validation-for="Stato" class="validation-error"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Cognome" class="control-label">
-                    Cognome <span style="color:red">*</span>
-                </label>
-                <input asp-for="Cognome" class="form-control" />
-                <span asp-validation-for="Cognome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AnnoDiNascita" class="control-label">Anno Di Nascita</label>
-                <input asp-for="AnnoDiNascita" class="form-control" />
-                <span asp-validation-for="AnnoDiNascita" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataInizioIscrizione" class="control-label">Data Inizio Iscrizione</label>
-                <input asp-for="DataInizioIscrizione" class="form-control" />
-                <span asp-validation-for="DataInizioIscrizione" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tipo" class="control-label">Categoria Atleta</label>
-                <select asp-for="Tipo" class="form-control" asp-items="Html.GetEnumSelectList<Atleta.TipoCliente>()"></select>
-                <span asp-validation-for="Tipo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stato" class="control-label">Stato Atleta</label>
-                <select asp-for="Stato" class="form-control" asp-items="Html.GetEnumSelectList<Atleta.StatoCliente>()"></select>
-                <span asp-validation-for="Stato" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Annulla
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Crea Atleta
+                </button>
             </div>
         </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    </section>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
 }

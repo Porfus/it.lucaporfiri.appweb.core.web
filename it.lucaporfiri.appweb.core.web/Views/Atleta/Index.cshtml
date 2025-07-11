@@ -1,79 +1,88 @@
-﻿@using static it.lucaporfiri.appweb.core.web.Models.Atleta
+﻿@using it.lucaporfiri.appweb.core.web.Models
+@using static it.lucaporfiri.appweb.core.web.Models.Atleta
 @model IEnumerable<it.lucaporfiri.appweb.core.web.Models.Atleta>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Elenco Atleti";
 }
 
+<!-- La pagina usa il contenitore e lo stile del tema -->
+<div class="dashboard-container">
+    <section class="main-content">
 
-<h1>Atleti</h1>
+        <!-- Header della sezione con titolo e bottone "Crea" -->
+        <div class="dashboard-header" style="margin-bottom: 25px;">
+            <h2><i class="fas fa-users"></i> Elenco Atleti</h2>
+            <div class="main-actions">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Crea Nuovo
+                </a>
+            </div>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cognome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AnnoDiNascita)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataInizioIscrizione)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tipo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stato)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cognome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AnnoDiNascita)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataInizioIscrizione)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tipo)
-            </td>
-            <td class="@(item.Stato == StatoCliente.Attivo ? "c-success" : item.Stato == StatoCliente.NonAttivo ? "c-error" : "c-warning")">
-                @Html.DisplayFor(modelItem => item.Stato)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <!-- Contenitore della tabella per la responsività -->
+        <div class="table-container">
+            <!-- La classe 'compact-table' attiva lo stile compatto dal CSS sottostante -->
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <!-- Tutte le tue colonne originali -->
+                        <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Cognome)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().AnnoDiNascita)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Telefono)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().DataInizioIscrizione)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Tipo)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Stato)</th>
+                        <th class="text-right">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@Html.DisplayFor(modelItem => item.Nome)</strong></td>
+                            <td><strong>@Html.DisplayFor(modelItem => item.Cognome)</strong></td>
+                            <td>@Html.DisplayFor(modelItem => item.AnnoDiNascita)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                            <td>@Html.DisplayFor(modelItem => item.DataInizioIscrizione)</td>
+                            <td>
+                                @{
+                                    var tipoClass = item.Tipo.ToString().ToLower() switch
+                                    {
+                                        "personal" => "status-personal",
+                                        "corso" => "status-corso",
+                                        "solascheda" => "status-soloscheda",
+                                        _ => "status-notdefined"
+                                    };
+                                }
+                                <span class="status @tipoClass">@Html.DisplayFor(modelItem => item.Tipo)</span>
+                            </td>
+                            <td>
+                                @{
+                                    var statoClass = item.Stato switch
+                                    {
+                                        StatoCliente.Attivo => "status-ok",
+                                        StatoCliente.NonAttivo => "status-scaduto",
+                                        _ => "status-notdefined"
+                                    };
+                                }
+                                <span class="status @statoClass">@Html.DisplayFor(modelItem => item.Stato)</span>
+                            </td>
+                            <td class="table-actions text-right">
+                                <!-- Link di azione testuali, stilizzati e compatti -->
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <span class="separator">|</span>
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                <span class="separator">|</span>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
