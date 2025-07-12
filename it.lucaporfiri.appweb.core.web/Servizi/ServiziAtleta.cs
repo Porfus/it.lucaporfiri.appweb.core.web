@@ -22,6 +22,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 return null;
             return _context.Atleta.FirstOrDefault(s => s.Id == IdAtleta);
         }
+
+        public async Task<Atleta?> DaiAtletaAsync(int? IdAtleta)
+        {
+            if (IdAtleta == null)
+                return null;
+            return await _context.Atleta.Include(a => a.Abbonamenti).Include(a => a.Schede).FirstOrDefaultAsync(s => s.Id == IdAtleta);
+        }
+
         public async Task<List<Atleta>> GetAllAtletiAsync()
         {
             return await _context.Atleta.ToListAsync();

@@ -14,10 +14,10 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
         [DataType(DataType.Date)]
         public DateTime DataIscrizioneAtleta { get; set; }
         public TipoCliente Tipo { get; set; } // Tipo di atleta (Personal, Corso, Sola Scheda)
-        public StatoCliente Stato { get; set; } // Tipo di atleta (Personal, Corso, Sola Scheda)
-        public StatoAbbonamento Abbonamento { get; set; } // La nostra proprietà calcolata!
-        public ICollection<Abbonamento>? Abbonamenti { get; set; } // Lista degli abbonamenti dell'atleta
-        public ICollection<Scheda>? Schede { get; set; } // Lista delle schede dell'atleta
+        public StatoCliente Stato { get; set; } 
+        public StatoAbbonamento StatoUltimoAbbonamento { get; set; } // La nostra proprietà calcolata!
+        public ICollection<AbbonamentoDetailViewModel> CronologiaAbbonamenti { get; set; } = new List<AbbonamentoDetailViewModel>();// Lista degli abbonamenti dell'atleta
+        public ICollection<SchedaAllenamentoViewModel> CronologiaSchede { get; set; } = new List<SchedaAllenamentoViewModel>(); // Lista delle schede dell'atleta
         public enum StatoAbbonamento
         {
             Valido,

@@ -18,8 +18,8 @@ namespace it.lucaporfiri.appweb.core.web.Models
         public DateTime? DataInizioIscrizione { get; set; }
         public TipoCliente Tipo { get; set; }
         public StatoCliente Stato { get; set; }
-        public virtual ICollection<Abbonamento>? Abbonamenti { get; set; }
-        public virtual ICollection<Scheda>? Schede { get; set; }
+        public virtual ICollection<Abbonamento> Abbonamenti { get; set; } = new List<Abbonamento>();
+        public virtual ICollection<Scheda> Schede { get; set; } = new List<Scheda>();
 
         public enum TipoCliente
         {

@@ -5,6 +5,7 @@ namespace it.lucaporfiri.appweb.core.web.Models
     public class Abbonamento
     {
         public int Id { get; set; }
+        public string? Nome { get; set; } = string.Empty; 
         public DateTime DataInizio { get; set; }
         public DateTime DataFine { get; set; }
 

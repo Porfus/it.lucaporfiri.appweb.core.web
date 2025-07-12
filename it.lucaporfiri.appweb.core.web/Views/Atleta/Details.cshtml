@@ -1,69 +1,492 @@
-﻿@model it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@using static it.lucaporfiri.appweb.core.web.Models.Atleta
+@model it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel
 
-@{
-    ViewData["Title"] = "Details";
-}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettaglio Atleta - Virtus Coaching</title>
 
-<h1>Details</h1>
+    <!-- Font e Icone -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
-<div>
-    <h4>Atleta</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeCompleto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeCompleto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Eta)
-        </dt>
-        @if (Model.Eta.HasValue)
-        {
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Eta)
-            </dd>
+    <!-- INCOLLA QUI IL TUO CSS COMPLETO -->
+    <style>
+        /* Qui andrebbe il tuo CSS, ma lo incollo direttamente per fare un esempio funzionante */
+        /* ================================================ */
+        /*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
+        /* ================================================ */
+        :root {
+            --brand-red: #D9232D;
+            --brand-red-light: #fdedee;
+            --warning-color: #f39c12;
+            --background: #f4f6f9;
+            --surface: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #5a6472;
+            --border-color: #e2e8f0;
+            --shadow-color-light: rgba(45, 55, 72, 0.1);
+            --shadow-color-dark: rgba(0, 0, 0, 0.2);
+            --font-heading: 'Oswald', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataIscrizioneAtleta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataIscrizioneAtleta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tipo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tipo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stato)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stato)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Abbonamento)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Abbonamento)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+        [data-theme="dark"] {
+            --background: #171923;
+            --surface: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --brand-red-light: #422124;
+        }
+
+        /* [ ... INCOLLA TUTTO IL RESTO DEL TUO CSS QUI ... ] */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        section {
+            background-color: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        h2 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.4em;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+        }
+
+            h2 i {
+                color: var(--brand-red);
+                margin-right: 15px;
+            }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px 30px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+            .form-field label {
+                font-weight: 600;
+                font-size: 0.9em;
+                color: var(--text-secondary);
+            }
+
+            .form-field .value {
+                font-size: 1em;
+                font-weight: 500;
+                color: var(--text-primary);
+            }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: white;
+        }
+
+        .status-ok {
+            background-color: #2ecc71;
+        }
+
+        .status-scaduto {
+            background-color: var(--brand-red);
+        }
+
+        .status-attenzione {
+            background-color: var(--warning-color);
+        }
+
+        .status-notdefined {
+            background-color: #b0b4ba;
+        }
+
+        .status-personal {
+            background-color: orange;
+        }
+
+        .status-corso {
+            background-color: cornflowerblue;
+        }
+
+        .status-soloscheda {
+            background-color: blueviolet;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-red);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(217, 35, 45, 0.4);
+            }
+
+        .btn-secondary {
+            background-color: var(--surface);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+            .btn-secondary:hover {
+                background-color: var(--brand-red-light);
+                border-color: var(--brand-red);
+            }
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* NUOVI STILI SPECIFICI PER QUESTA PAGINA */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .profile-header-info h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5em;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .profile-header-info .badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .state-buttons .btn {
+            font-size: 0.9em;
+            padding: 8px 12px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .history-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+            .history-item-details strong {
+                font-size: 1.1em;
+            }
+
+            .history-item-details .meta {
+                font-size: 0.9em;
+                color: var(--text-secondary);
+            }
+
+        .history-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .history-item-actions .status {
+                margin-right: 15px;
+            }
+
+        .file-link {
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+            .file-link i {
+                color: var(--brand-red);
+                margin-right: 5px;
+            }
+
+            .file-link:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="dashboard-container">
+
+        <header class="page-header">
+            <h2><i class="fas fa-user"></i> Dettaglio Atleta</h2>
+            <a href="/Home/Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Torna alla Dashboard</a>
+        </header>
+
+        <!-- SEZIONE PRINCIPALE DATI ATLETA -->
+        <section>
+            <div class="profile-header">
+                <div class="profile-header-info">
+                    <h1 id="athlete-name">@Html.DisplayFor(model => model.NomeCompleto)</h1>
+                    <div class="badges">
+                        @{
+                            var statoClass = Model!.Stato switch
+                            {
+                                StatoCliente.Attivo => "status-ok",
+                                StatoCliente.NonAttivo => "status-scaduto",
+                                _ => "status-notdefined"
+                            };
+                        }
+                        <span id="athlete-status-badge" class="status @statoClass">@Html.DisplayFor(modelItem => Model.Stato)</span>
+                        @{
+                            var tipoClass = Model!.Tipo.ToString().ToLower() switch
+                            {
+                                "personal" => "status-personal",
+                                "corso" => "status-corso",
+                                "solascheda" => "status-soloscheda",
+                                _ => "status-notdefined"
+                            };
+                        }
+                        <span class="status @tipoClass">@Html.DisplayFor(modelItem => Model.Tipo)</span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <div class="state-buttons">
+                        <p style="text-align: right; font-size: 0.8em; color: var(--text-secondary); margin: 0 0 5px 0;">Modifica Stato:</p>
+                        <button id="btnSetAttivo" class="btn btn-secondary"><i class="fas fa-toggle-on"></i> Attivo</button>
+                        <button id="btnSetNonAttivo" class="btn btn-secondary"><i class="fas fa-toggle-off"></i> Non Attivo</button>
+                    </div>
+                    <div id="save-actions" class="form-actions hidden" style="border: none; margin-top: 0; padding-top: 0;">
+                        <!-- Questo campo nascosto conterrà il nuovo valore dello stato da inviare al server -->
+                        <input type="hidden" id="atleta-status-input" name="newState" value="">
+                        <button class="btn btn-primary"><i class="fas fa-save"></i> Salva Modifiche</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Email</label>
+                    <span class="value">@Html.DisplayFor(modelItem => Model.Email)</span>
+                </div>
+                <div class="form-field">
+                    <label>Telefono</label>
+                    <span class="value">@Html.DisplayFor(modelItem => Model.Telefono)</span>
+                </div>
+                <div class="form-field">
+                    <label>Età</label>
+                    <span class="value">@Html.DisplayFor(modelItem => Model.Eta)</span>
+                </div>
+                <div class="form-field">
+                    <label>Data Inizio Iscrizione</label>
+                    <span class="value">@Html.DisplayFor(modelItem => Model.DataIscrizioneAtleta)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE CRONOLOGIA ABBONAMENTI -->
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2><i class="fas fa-calendar-check"></i> Cronologia Abbonamenti</h2>
+                <a href="/Abbonamento/Create" class="btn btn-secondary"><i class="fas fa-plus"></i> Aggiungi Abbonamento</a>
+            </div>
+
+            <div class="history-list">
+
+                @foreach (AbbonamentoDetailViewModel item in Model.CronologiaAbbonamenti.OrderByDescending(s => s.abbonamento.DataFine))
+                {
+                    <div class="history-item">
+                        <div class="history-item-details">
+                            <strong>@item.abbonamento.Nome</strong>
+                            <span class="meta">@item.abbonamento.DataInizio.ToString("dd/MMM/yyyy") - @item.abbonamento.DataFine.ToString("dd/MMM/yyyy")</span>
+                        </div>
+                        <div class="history-item-actions">
+                            @{
+                                var statoAbbonamento = item.statoAbbonamento.ToString().ToLower() switch
+                                {
+                                    "valido" => "status-ok",
+                                    "scaduto" => "status-scaduto",
+                                    _ => "status-notdefined"
+                                }; 
+							}
+                            <span class="status @statoAbbonamento">@Html.DisplayFor(modelItem => item.statoAbbonamento)</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- SEZIONE CRONOLOGIA SCHEDE -->
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2><i class="fas fa-dumbbell"></i> Cronologia Schede</h2>
+                <a href="/Scheda/Create" class="btn btn-secondary"><i class="fas fa-upload"></i> Carica Scheda</a>
+            </div>
+
+            <div class="history-list">
+                @foreach (SchedaAllenamentoViewModel item in Model.CronologiaSchede.OrderByDescending(s => s.Scheda.DataFine))
+                {
+                    <div class="history-item">
+                        <div class="history-item-details">
+                            <strong>@item.Scheda.Nome</strong>
+                            <span class="meta">@item.Scheda.Descrizione</span>
+                        </div>
+                        <div class="history-item-actions">
+                            @{
+                                var statoScheda = item.Stato.ToString().ToLower() switch
+                                {
+                                    "attiva" => "status-ok",
+                                    "scaduta" => "status-scaduto",
+                                    _ => "status-notdefined"
+                                };
+                            }
+                            @{
+                                // Determina l'icona in base all'estensione del file
+                                string? fileName = item.Scheda.NomeFileOriginale;
+                                string? fileIcon = "fa-file";
+                                if (!string.IsNullOrEmpty(fileName))
+                                {
+                                    var ext = System.IO.Path.GetExtension(fileName).ToLower();
+                                    fileIcon = ext switch
+                                    {
+                                        ".pdf" => "fa-file-pdf",
+                                        ".doc" or ".docx" => "fa-file-word",
+                                        ".xls" or ".xlsx" => "fa-file-excel",
+                                        _ => "fa-file"
+                                    };
+                                }
+                            }
+                            @if (!string.IsNullOrEmpty(item.Scheda.NomeFileOriginale))
+                            {
+                                <a href="@Url.Action("visualizza", "Scheda", new { id = item.Scheda.Id })" class="file-link">
+                                    <i class="fas @fileIcon"></i> @item.Scheda.NomeFileOriginale
+                                </a>
+                            }
+                            <span class="status @statoScheda">@Html.DisplayFor(modelItem => item.Stato)</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnSetAttivo = document.getElementById('btnSetAttivo');
+            const btnSetNonAttivo = document.getElementById('btnSetNonAttivo');
+            const saveActions = document.getElementById('save-actions');
+            const hiddenInput = document.getElementById('atleta-status-input');
+            const statusBadge = document.getElementById('athlete-status-badge');
+
+            function changeStatus(newStatus, newStatusText, newStatusClass) {
+                // Imposta il valore nel campo nascosto per l'invio del form
+                hiddenInput.value = newStatus;
+
+                // Mostra il pulsante "Salva Modifiche"
+                saveActions.classList.remove('hidden');
+
+                // Aggiorna visivamente il badge (per un feedback immediato)
+                statusBadge.textContent = newStatusText;
+                statusBadge.className = 'status ' + newStatusClass; // Rimuove le vecchie classi di stato
+            }
+
+            btnSetAttivo.addEventListener('click', () => {
+                changeStatus('attivo', 'Attivo', 'status-ok');
+            });
+
+            btnSetNonAttivo.addEventListener('click', () => {
+                changeStatus('non-attivo', 'Non Attivo', 'status-scaduto');
+            });
+
+            // Aggiungi qui la logica per il form di salvataggio
+            // Ad esempio, al click su "Salva Modifiche", si può inviare un form
+        });
+    </script>
+
+</body>
+</html>

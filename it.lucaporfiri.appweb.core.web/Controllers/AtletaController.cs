@@ -10,18 +10,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 {
     public class AtletaController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
-        //private readonly ContestoApp _context;
         private readonly ServiziAtleta serviziAtleta;
         private readonly ServiziAbbonamento serviziAbbonamento;
-        
-        public AtletaController(/*ContestoApp _context,*/ ServiziAtleta serviziAtleta1, ServiziAbbonamento serviziAbbonamento1)
+        private readonly ServiziScheda serviziScheda;
+        public AtletaController(ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda)
         {
-            //this._context = _context;
-            //this._logger = logger;
-            serviziAtleta = serviziAtleta1; 
-            serviziAbbonamento = serviziAbbonamento1;
+            this.serviziAtleta = serviziAtleta;
+            this.serviziAbbonamento = serviziAbbonamento;
+            this.serviziScheda = serviziScheda;
         }
+
         // GET: Abbonamento
         public async Task<IActionResult> Index(bool soloAttivi=false)
         {
@@ -32,6 +30,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }
             return View(atleti);
         }
+
         [HttpPost]
         public IActionResult FiltraRicerca()
         {
@@ -50,46 +49,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
             int risultatiTotali = 0;
             IEnumerable<AtletaFiltraRicercaViewModel> atleti = serviziAtleta.Ricerca(skip, pageSize, out risultatiTotali, colonnaOrdinamento, versoOrdinamento, filtroNome);
-            //List<AtletaFiltraRicercaViewModel> listaAtleti = atleti.Select(a => new AtletaFiltraRicercaViewModel
-            //{
-            //    Id = a.Id,
-            //    NomeCompleto = $"{a.Nome} {a.Cognome}",
-            //    Tipo = a.Tipo,
-            //    StatoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(a),
-            //    StatoScheda = serviziAtleta.CalcolaStatoUltimaScheda(a)
-            //}).ToList();
-
-            //if (!string.IsNullOrEmpty(colonnaOrdinamento) && !string.IsNullOrEmpty(versoOrdinamento))
-            //{
-            //    // Usiamo un blocco switch sul nome della colonna per decidere come ordinare
-            //    switch (colonnaOrdinamento)
-            //    {
-            //        case "NomeCompleto":
-            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
-            //                ? listaAtleti.OrderBy(a => a.NomeCompleto).ToList()
-            //                : listaAtleti.OrderByDescending(a => a.NomeCompleto).ToList();
-            //            break;
-            //        case "Tipo":
-            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
-            //                ? listaAtleti.OrderBy(a => a.Tipo).ToList()
-            //                : listaAtleti.OrderByDescending(a => a.Tipo).ToList();
-            //            break;
-            //        case "StatoAbbonamento":
-            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
-            //                ? listaAtleti.OrderBy(a => a.StatoAbbonamento).ToList()
-            //                : listaAtleti.OrderByDescending(a => a.StatoAbbonamento).ToList();
-            //            break;
-            //        case "StatoScheda":
-            //            listaAtleti = versoOrdinamento.Equals("asc", StringComparison.OrdinalIgnoreCase)
-            //                ? listaAtleti.OrderBy(a => a.StatoScheda).ToList()
-            //                : listaAtleti.OrderByDescending(a => a.StatoScheda).ToList();
-            //            break;
-            //        // Aggiungi un ordinamento di default se necessario
-            //        default:
-            //            listaAtleti = listaAtleti.OrderBy(a => a.NomeCompleto).ToList();
-            //            break;
-            //    }
-            //}
             return Json(new
             {
                 draw,
@@ -98,6 +57,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 data = atleti
             });
         }
+
         // GET: Atleta/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -105,29 +65,36 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-            var atleta =await Task.Run(() =>serviziAtleta.DaiAtleta(id));
-            // _context.Atleta.Include(a => a.Abbonamenti)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
 
+            var atleta =await serviziAtleta.DaiAtletaAsync(id);
             if (atleta == null)
             {
                 return NotFound();
             }
-
-            // Create the ViewModel
+            
             var vm = new AtletaDetailViewModel
             {
                 Id = atleta.Id,
                 NomeCompleto = $"{atleta.Nome} {atleta.Cognome}",
-                Eta = serviziAtleta.CalcolaEta(atleta).Equals(0)? serviziAtleta.CalcolaEta(atleta): null,
+                Eta = serviziAtleta.CalcolaEta(atleta),
                 Email = atleta.Email,
                 Telefono = atleta.Telefono,
                 DataIscrizioneAtleta = atleta.DataInizioIscrizione.HasValue? atleta.DataInizioIscrizione.Value : DateTime.MinValue,
                 Tipo = atleta.Tipo,
                 Stato = atleta.Stato,
-                Abbonamento = serviziAtleta.CalcolaStatoAbbonamento(atleta),
-                Abbonamenti = atleta.Abbonamenti,
-                Schede = atleta.Schede
+                StatoUltimoAbbonamento = serviziAtleta.CalcolaStatoAbbonamento(atleta),
+
+                CronologiaAbbonamenti = atleta.Abbonamenti.Select(abbonamentoDb => new AbbonamentoDetailViewModel
+                {
+                    abbonamento = abbonamentoDb,
+                    statoAbbonamento = serviziAbbonamento.CalcolaStatoAbbonamento(abbonamentoDb)
+                }).ToList(),
+
+                CronologiaSchede = atleta.Schede.Select(schedaDb => new SchedaAllenamentoViewModel
+                {
+                    Scheda = schedaDb,
+                    Stato = serviziScheda.CalcolaStatoScheda(schedaDb)
+                }).ToList()
             };
 
             return View(vm);
@@ -179,7 +146,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cognome,AnnoDiNascita,Email,Telefono,DataInizioAbbonamento,DataFineAbbonamento,Tipo,Stato")] Atleta atleta)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cognome,AnnoDiNascita,Email,Telefono,DataInizioIscrizione,Tipo,Stato")] Atleta atleta)
         {
             if (id != atleta.Id)
             {
