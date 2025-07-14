@@ -9,55 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dettaglio Atleta - Virtus Coaching</title>
 
-    <!-- Font e Icone -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-
     <!-- INCOLLA QUI IL TUO CSS COMPLETO -->
     <style>
-        /* Qui andrebbe il tuo CSS, ma lo incollo direttamente per fare un esempio funzionante */
-        /* ================================================ */
-        /*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
-        /* ================================================ */
-        :root {
-            --brand-red: #D9232D;
-            --brand-red-light: #fdedee;
-            --warning-color: #f39c12;
-            --background: #f4f6f9;
-            --surface: #ffffff;
-            --text-primary: #1a202c;
-            --text-secondary: #5a6472;
-            --border-color: #e2e8f0;
-            --shadow-color-light: rgba(45, 55, 72, 0.1);
-            --shadow-color-dark: rgba(0, 0, 0, 0.2);
-            --font-heading: 'Oswald', sans-serif;
-            --font-body: 'Inter', sans-serif;
-        }
+        
 
-        [data-theme="dark"] {
-            --background: #171923;
-            --surface: #2d3748;
-            --text-primary: #f7fafc;
-            --text-secondary: #a0aec0;
-            --border-color: #4a5568;
-            --brand-red-light: #422124;
-        }
-
-        /* [ ... INCOLLA TUTTO IL RESTO DEL TUO CSS QUI ... ] */
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            margin: 0;
-            transition: background-color 0.3s, color 0.3s;
-        }
 
         .dashboard-container {
             max-width: 1200px;
@@ -68,28 +23,7 @@
             gap: 25px;
         }
 
-        section {
-            background-color: var(--surface);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
 
-        h2 {
-            font-family: var(--font-heading);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 1.4em;
-            margin: 0 0 20px 0;
-            display: flex;
-            align-items: center;
-        }
-
-            h2 i {
-                color: var(--brand-red);
-                margin-right: 15px;
-            }
 
         .form-grid {
             display: grid;
@@ -115,75 +49,7 @@
                 color: var(--text-primary);
             }
 
-        .status {
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            font-weight: 700;
-            color: white;
-        }
 
-        .status-ok {
-            background-color: #2ecc71;
-        }
-
-        .status-scaduto {
-            background-color: var(--brand-red);
-        }
-
-        .status-attenzione {
-            background-color: var(--warning-color);
-        }
-
-        .status-notdefined {
-            background-color: #b0b4ba;
-        }
-
-        .status-personal {
-            background-color: orange;
-        }
-
-        .status-corso {
-            background-color: cornflowerblue;
-        }
-
-        .status-soloscheda {
-            background-color: blueviolet;
-        }
-
-        .btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: var(--brand-red);
-            color: white;
-        }
-
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 15px rgba(217, 35, 45, 0.4);
-            }
-
-        .btn-secondary {
-            background-color: var(--surface);
-            color: var(--text-primary);
-            border-color: var(--border-color);
-        }
-
-            .btn-secondary:hover {
-                background-color: var(--brand-red-light);
-                border-color: var(--brand-red);
-            }
 
         .form-actions {
             margin-top: 30px;
@@ -199,7 +65,7 @@
             display: none !important;
         }
 
-        /* NUOVI STILI SPECIFICI PER QUESTA PAGINA */
+         /* NUOVI STILI SPECIFICI PER QUESTA PAGINA */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -295,7 +161,7 @@
 
             .file-link:hover {
                 text-decoration: underline;
-            }
+            } 
     </style>
 </head>
 <body data-theme="light">
@@ -341,10 +207,14 @@
                         <button id="btnSetAttivo" class="btn btn-secondary"><i class="fas fa-toggle-on"></i> Attivo</button>
                         <button id="btnSetNonAttivo" class="btn btn-secondary"><i class="fas fa-toggle-off"></i> Non Attivo</button>
                     </div>
+
                     <div id="save-actions" class="form-actions hidden" style="border: none; margin-top: 0; padding-top: 0;">
-                        <!-- Questo campo nascosto conterrà il nuovo valore dello stato da inviare al server -->
-                        <input type="hidden" id="atleta-status-input" name="newState" value="">
-                        <button class="btn btn-primary"><i class="fas fa-save"></i> Salva Modifiche</button>
+                        <form id="formStatoAtleta" asp-controller="Atleta" asp-action="AggiornaStato" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" id="atleta-status-input" name="newState" value="">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Salva Modifiche</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -426,7 +296,6 @@
                                 };
                             }
                             @{
-                                // Determina l'icona in base all'estensione del file
                                 string? fileName = item.Scheda.NomeFileOriginale;
                                 string? fileIcon = "fa-file";
                                 if (!string.IsNullOrEmpty(fileName))
@@ -437,6 +306,7 @@
                                         ".pdf" => "fa-file-pdf",
                                         ".doc" or ".docx" => "fa-file-word",
                                         ".xls" or ".xlsx" => "fa-file-excel",
+                                        ".jpg" or ".jpeg" or ".png" => "fa-file-image",
                                         _ => "fa-file"
                                     };
                                 }
@@ -464,27 +334,25 @@
             const statusBadge = document.getElementById('athlete-status-badge');
 
             function changeStatus(newStatus, newStatusText, newStatusClass) {
-                // Imposta il valore nel campo nascosto per l'invio del form
                 hiddenInput.value = newStatus;
 
-                // Mostra il pulsante "Salva Modifiche"
                 saveActions.classList.remove('hidden');
 
-                // Aggiorna visivamente il badge (per un feedback immediato)
                 statusBadge.textContent = newStatusText;
-                statusBadge.className = 'status ' + newStatusClass; // Rimuove le vecchie classi di stato
+                statusBadge.className = 'status ' + newStatusClass;
             }
 
             btnSetAttivo.addEventListener('click', () => {
-                changeStatus('attivo', 'Attivo', 'status-ok');
+                changeStatus('Attivo', 'Attivo', 'status-ok');
             });
 
             btnSetNonAttivo.addEventListener('click', () => {
-                changeStatus('non-attivo', 'Non Attivo', 'status-scaduto');
+                changeStatus('NonAttivo', 'Non Attivo', 'status-scaduto');
             });
 
-            // Aggiungi qui la logica per il form di salvataggio
-            // Ad esempio, al click su "Salva Modifiche", si può inviare un form
+            btnSalva.addEventListener('click',() =>{
+                html.form.submit();
+            });
         });
     </script>
 

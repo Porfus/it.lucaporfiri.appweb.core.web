@@ -176,6 +176,42 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }
             return View(atleta);
         }
+        [HttpPost]
+        public async Task<IActionResult> AggiornaStato(int id, string newState)
+        {
+            var atleta = serviziAtleta.DaiAtleta(id);
+            if (atleta == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid) 
+            {
+                if (Enum.TryParse<Atleta.StatoCliente>(newState, out var stato))
+                {
+                    atleta.Stato = stato;
+                    try
+                    {
+                        await serviziAtleta.ModificaAtleta(atleta);
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!AtletaExists(atleta.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
+            }
+
+            return RedirectToAction("Details", new { id });
+        }
 
         // GET: Atleta/Delete/5
         public async Task<IActionResult> Delete(int? id)

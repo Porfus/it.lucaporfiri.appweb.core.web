@@ -20,7 +20,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         // GET: Scheda
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool soloScadute = false)
         {
             // Utilizzo di Task.Run per eseguire l'elaborazione in un thread in background
             var schede = await Task.Run(() => serviziScheda.DaiSchede());
@@ -31,6 +31,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 Stato = serviziScheda.CalcolaStatoScheda(s)
             }).ToList();
 
+            if (soloScadute == true) {
+                vm = vm.Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Scaduta).ToList();
+            }
 
             return View(vm);
         }

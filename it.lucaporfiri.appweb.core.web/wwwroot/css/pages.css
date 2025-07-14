@@ -101,6 +101,12 @@
         color: var(--text-secondary);
     }
 
+    .form-field .value {
+        font-size: 1em;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
 /* L'asterisco rosso per i campi obbligatori */
 .required-asterisk {
     color: var(--brand-red);

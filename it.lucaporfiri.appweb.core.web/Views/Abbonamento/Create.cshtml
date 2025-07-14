@@ -1,46 +1,50 @@
 ﻿@model it.lucaporfiri.appweb.core.web.ViewModels.AbbonamentoCreateViewModel
 
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h1>Create</h1>
-
-<h4>Abbonamento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="dashboard-container">
+    <section>
+        <h2><i class="fas fa-calendar-plus"></i> Crea Nuovo Abbonamento</h2>
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DataInizio" class="control-label">
-                    Data Inizio <span style="color:red">*</span>
-                </label>
-                <input asp-for="DataInizio" class="form-control" />
-                <span asp-validation-for="DataInizio" class="text-danger"></span>
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="NomeAbbonamento">
+                        Nome Abbonamento
+                    </label>
+                    <input asp-for="NomeAbbonamento" type="text" placeholder="Abbonamento Mensile...">
+                    <span asp-validation-for="NomeAbbonamento" class="text-danger"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataInizio">
+                    Data Inizio
+                    </label>
+                    <input asp-for="DataInizio" type="date" value="@(DateTime.Now.ToString("yyyy-MM-dd"))">
+                    <span asp-validation-for="DataInizio" class="text-danger"></span>
+                </div>
+				<div class="form-field">
+					<label asp-for="DataFine">
+						Data Fine <span class="required-asterisk">*</span>
+					</label>
+					<input asp-for="DataFine" type="date" />
+					<span asp-validation-for="DataFine" class="text-danger"></span>
+				</div>
+				<div class="form-field">
+					<label asp-for="AtletaId">
+						Atleta <span class="required-asterisk">*</span>
+					</label>
+					<select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId"></select>
+				</div>
             </div>
-            <div class="form-group">
-                <label asp-for="DataFine" class="control-label">
-                    Data Fine <span style="color:red">*</span>
-                </label>
-                <input asp-for="DataFine" class="form-control" />
-                <span asp-validation-for="DataFine" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AtletaId" class="control-label">
-                    Atleta <span style="color:red">*</span>
-                </label>
-                <select asp-for="AtletaId" class ="form-control" asp-items="ViewBag.AtletaId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Annulla
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Crea Abbonamento
+                </button>
             </div>
         </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    </section>
+    
 </div>
 
 @section Scripts {

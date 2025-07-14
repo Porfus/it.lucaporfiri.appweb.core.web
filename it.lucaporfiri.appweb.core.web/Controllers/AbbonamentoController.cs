@@ -18,14 +18,18 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         // GET: Abbonamento
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool soloScaduti = false)
         {
-            var abbonamenti = await serviziAbbonamento.GetAbbonamentiAsync();/*_context.Abbonamento.Include(a => a.Atleta)*/; 
+            var abbonamenti = await serviziAbbonamento.GetAbbonamentiAsync();/*_context.Abbonamento.Include(a => a.Atleta)*/;
             var vm = abbonamenti.Select(s => new AbbonamentoDetailViewModel
             {
                 abbonamento = s,
                 statoAbbonamento = s.Atleta != null? serviziAbbonamento.CalcolaStatoAbbonamento(s) : AtletaDetailViewModel.StatoAbbonamento.NonDefinito
             }).ToList();
+            if (soloScaduti == true)
+            {
+                vm = vm.Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Scaduto).ToList();
+            }
             return View(vm);
         }
 
@@ -76,6 +80,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 var nuovoAbbonamento = new Abbonamento
                 {
+                    Nome = vm.NomeAbbonamento,
                     DataInizio = vm.DataInizio,
                     DataFine = vm.DataFine,
                     AtletaId = vm.AtletaId,
