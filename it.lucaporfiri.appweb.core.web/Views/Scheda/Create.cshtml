@@ -1,59 +1,64 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model SchedaCreateViewModel
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h1>Create</h1>
-
-<h4>Scheda</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="dashboard-container">
+    <section>
+        <h2><i class="fas fa-file-pdf"></i> Crea Nuova Scheda</h2>
         <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AtletaId" class="control-label">
-                    Atleta <span style="color:red">*</span>
-                </label>
-                <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label">Nome Scheda</label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descrizione" class="control-label">Descrizione Scheda</label>
-                <input asp-for="Descrizione" class="form-control" />
-                <span asp-validation-for="Descrizione" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataInizio" class="control-label">Data Inizio</label>
-                <input asp-for="DataInizio" class="form-control" />
-                <span asp-validation-for="DataInizio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataFine" class="control-label">
-                    Data Fine <span style="color:red">*</span>
-                </label>
-                <input asp-for="DataFine" class="form-control" />
-                <span asp-validation-for="DataFine" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="FileCaricato" class="control-label">Carica Scheda (PDF o Word)</label>
-                <input asp-for="FileCaricato" type="file" class="form-control" />
-                <span asp-validation-for="FileCaricato" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="Nome" class="control-label">Nome Scheda</label>
+                    <input asp-for="Nome" class="form-control" placeholder="Mesociclo Forza Gennaio..." />
+                    <span asp-validation-for="Nome" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Descrizione" class="control-label">Descrizione Scheda</label>
+                    <input asp-for="Descrizione" class="form-control" placeholder="3 sedute a settimana..." />
+                    <span asp-validation-for="Descrizione" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataInizio" class="control-label">Data Inizio</label>
+                    <input asp-for="DataInizio" type="date" class="form-control" />
+                    <span asp-validation-for="DataInizio" class="validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataFine" class="control-label">
+                        Data Fine <span class="required-asterisk">*</span>
+                    </label>
+                    @{
+
+                        var dataFineValue = Model.DataFine == DateTime.MinValue ? "" : Model.DataFine.ToString("yyyy-MM-dd");
+                    }
+                    <input asp-for="DataFine" type="date" class="form-control" value="@dataFineValue" />
+                    <span asp-validation-for="DataFine" class="validation-error"></span>
+                </div>
+                <div class="form-field mb-3">
+                    <label asp-for="FileCaricato" class="control-label">Carica Scheda (PDF, Word, JPEG...)</label>
+                    <input asp-for="FileCaricato" type="file" class="form-control" />
+                    <span asp-validation-for="FileCaricato" class="text-danger"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="AtletaId" class="control-label">
+                        Atleta <span class="required-asterisk">*</span>
+                    </label>
+                    <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId">
+                        <option value="">Seleziona un atleta...</option>
+                    </select>
+                    <span asp-validation-for="AtletaId" class="validation-error"></span>
+                </div>
+
+            </div>                
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Annulla
+                </a>
+                <button type="submit" value="Create" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Crea Scheda
+                </button>
             </div>
         </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    </section>
 </div>
 
 @section Scripts {

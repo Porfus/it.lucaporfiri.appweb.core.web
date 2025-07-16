@@ -62,7 +62,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         public IActionResult Create()
         {
             ViewBag.AtletaId = serviziAtleta.DaiSelectListAtleti();
-            return View();
+            SchedaCreateViewModel vm = new SchedaCreateViewModel();
+            return View(vm);
         }
 
         // POST: Scheda/Create

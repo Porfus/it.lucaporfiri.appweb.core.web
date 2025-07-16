@@ -29,10 +29,10 @@
                         <!-- Tutte le tue colonne originali -->
                         <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Cognome)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().AnnoDiNascita)</th>
+                        <th>Anno Di Nascita</th>
                         <th>@Html.DisplayNameFor(model => model.First().Email)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Telefono)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().DataInizioIscrizione)</th>
+                        <th>Data di inizio iscrizione</th>
                         <th>@Html.DisplayNameFor(model => model.First().Tipo)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Stato)</th>
                         <th class="text-right">Azioni</th>
@@ -73,11 +73,11 @@
                             </td>
                             <td class="table-actions text-right">
                                 <!-- Link di azione testuali, stilizzati e compatti -->
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Modifica</a>
                                 <span class="separator">|</span>
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                <a asp-action="Details" asp-route-id="@item.Id">Dettagli</a>
                                 <span class="separator">|</span>
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Elimina</a>
                             </td>
                         </tr>
                     }

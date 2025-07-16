@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dettaglio Atleta - Virtus Coaching</title>
 
-    <!-- INCOLLA QUI IL TUO CSS COMPLETO -->
+    <!--  CSS PERSONALIZZATO -->
     <style>
         
 
@@ -222,19 +222,46 @@
             <div class="form-grid">
                 <div class="form-field">
                     <label>Email</label>
-                    <span class="value">@Html.DisplayFor(modelItem => Model.Email)</span>
+                    @if (Model.Email != null)
+                    {
+                        <span class="value">@Html.DisplayFor(modelItem => Model.Email)</span>
+                    }else
+                    {
+                        <span>-</span>    
+                    }
                 </div>
                 <div class="form-field">
                     <label>Telefono</label>
-                    <span class="value">@Html.DisplayFor(modelItem => Model.Telefono)</span>
+                    @if (Model.Telefono != null)
+                    {
+                        <span class="value">@Html.DisplayFor(modelItem => Model.Telefono)</span>
+
+                    }
+                    else
+                    {
+                        <span>-</span>    
+                    }
                 </div>
                 <div class="form-field">
                     <label>Età</label>
-                    <span class="value">@Html.DisplayFor(modelItem => Model.Eta)</span>
+                    @if (Model.Eta != null)
+                    {
+                        <span class="value">@Html.DisplayFor(modelItem => Model.Eta)</span>
+                    }else
+                    {
+                        <span>-</span>
+                    }
                 </div>
                 <div class="form-field">
                     <label>Data Inizio Iscrizione</label>
-                    <span class="value">@Html.DisplayFor(modelItem => Model.DataIscrizioneAtleta)</span>
+                    @if (Model.DataIscrizioneAtleta != DateTime.MinValue)
+                    {
+                        <span class="value">@Html.DisplayFor(modelItem => Model.DataIscrizioneAtleta)</span>
+                    }else
+                    {
+                        <span>-</span>
+                    }
+
                 </div>
             </div>
         </section>
@@ -348,10 +375,6 @@
 
             btnSetNonAttivo.addEventListener('click', () => {
                 changeStatus('NonAttivo', 'Non Attivo', 'status-scaduto');
-            });
-
-            btnSalva.addEventListener('click',() =>{
-                html.form.submit();
             });
         });
     </script>

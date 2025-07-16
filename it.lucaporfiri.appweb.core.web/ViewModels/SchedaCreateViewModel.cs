@@ -7,8 +7,10 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
         public int Id { get; set; } // Utile per la modifica
         public string? Nome { get; set; }
         public string? Descrizione { get; set; }
-        public DateTime? DataInizio { get; set; }
-        public DateTime DataFine { get; set; } = DateTime.Today.AddMonths(1); // Valore di default
+        public DateTime DataInizio { get; set; } = DateTime.Today;
+
+        [Required(ErrorMessage = "La data di fine è obbligatoria.")]
+        public DateTime DataFine { get; set; }
 
         [Required(ErrorMessage = "Devi selezionare un atleta.")]
         public int AtletaId { get; set; }

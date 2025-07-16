@@ -1,11 +1,14 @@
-﻿namespace it.lucaporfiri.appweb.core.web.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace it.lucaporfiri.appweb.core.web.ViewModels
 {
     public class AbbonamentoCreateViewModel
     {
         public string? NomeAbbonamento { get; set; }
-        public DateTime DataInizio { get; set; }
+        public DateTime DataInizio { get; set; } = DateTime.Today;
         public DateTime DataFine { get; set; }
-        //Chiave esterna per collegarlo al Cliente
+
+        [Required(ErrorMessage = "Devi selezionare un atleta.")]
         public int AtletaId { get; set; }
     }
 }

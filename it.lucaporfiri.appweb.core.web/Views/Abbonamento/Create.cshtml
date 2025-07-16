@@ -17,22 +17,38 @@
                     <label asp-for="DataInizio">
                     Data Inizio
                     </label>
-                    <input asp-for="DataInizio" type="date" value="@(DateTime.Now.ToString("yyyy-MM-dd"))">
-                    <span asp-validation-for="DataInizio" class="text-danger"></span>
+                    <input asp-for="DataInizio" type="date" id="dataInizio">
+                    <span asp-validation-for="DataInizio" class="validation-error"></span>
                 </div>
 				<div class="form-field">
 					<label asp-for="DataFine">
 						Data Fine <span class="required-asterisk">*</span>
 					</label>
-					<input asp-for="DataFine" type="date" />
-					<span asp-validation-for="DataFine" class="text-danger"></span>
+                    @{
+
+                        var dataFineValue = Model.DataFine == DateTime.MinValue ? "" : Model.DataFine.ToString("yyyy-MM-dd");
+                    }
+                    <input asp-for="DataFine" type="date" id="dataFine" value="@dataFineValue"/>
+                    <span asp-validation-for="DataFine" class="validation-error"></span>
 				</div>
 				<div class="form-field">
 					<label asp-for="AtletaId">
 						Atleta <span class="required-asterisk">*</span>
 					</label>
-					<select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId"></select>
+                    <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId">
+                        <option value="">Seleziona un atleta...</option>
+                    </select>
+                    <span asp-validation-for="AtletaId" class="validation-error"></span>
 				</div>
+                <!-- SELETTORI RAPIDI DI DURATA -->
+                <div class="form-field">
+                    <label class="form-label d-block">Imposta scadenza rapida:</label>
+                    <div class="btn-group" role="group" aria-label="Selettori durata">
+                        <button type="button" class="btn btn-secondary" id="btn1Mese">+ 1 Mese</button>
+                        <button type="button" class="btn btn-secondary" id="btn3Mesi">+ 3 Mesi</button>
+                        <button type="button" class="btn btn-secondary" id="btn1Anno">+ 1 Anno</button>
+                    </div>
+                </div>
             </div>
             <div class="form-actions">
                 <a asp-action="Index" class="btn btn-secondary">
@@ -47,6 +63,46 @@
     
 </div>
 
+<!-- ============================================= -->
+<!--             SEZIONE JAVASCRIPT              -->
+<!-- ============================================= -->
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+
+            const dataInizioInput = $('#dataInizio');
+            const dataFineInput = $('#dataFine');
+
+            function setEndDate(monthsToAdd = 0, yearsToAdd = 0) {
+                const startDateValue = dataInizioInput.val();
+                if (!startDateValue) {
+                    alert("Per favore, imposta prima una data di inizio valida.");
+                    return;
+                }
+                const startDate = new Date(startDateValue);
+                
+                startDate.setMonth(startDate.getMonth() + monthsToAdd);
+                startDate.setFullYear(startDate.getFullYear() + yearsToAdd);
+                
+                const formattedEndDate = startDate.toISOString().split('T')[0];
+                
+                dataFineInput.val(formattedEndDate);
+            }
+
+            $('#btn1Mese').on('click', function() {
+                setEndDate(1, 0); 
+            });
+
+            $('#btn3Mesi').on('click', function() {
+                setEndDate(3, 0); 
+            });
+
+            $('#btn1Anno').on('click', function() {
+                setEndDate(0, 1);
+            });
+
+        });
+    </script>
 }

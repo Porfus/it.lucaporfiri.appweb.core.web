@@ -62,6 +62,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 return StatoAbbonamento.NonDefinito;
             }
             var statoAbbonamento = abbonamento.DataInizio <= DateTime.Now && abbonamento.DataFine >= DateTime.Now;
+            if (statoAbbonamento == false) 
+            {
+                var nonAttivo = abbonamento.DataInizio > DateTime.Now && abbonamento.DataFine >= DateTime.Now;
+                if(nonAttivo == true) 
+                {
+                    return StatoAbbonamento.NonDefinito;
+                }
+            }
             return statoAbbonamento ? StatoAbbonamento.Valido : StatoAbbonamento.Scaduto;
         }
 

@@ -62,7 +62,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DataInizio,DataFine,AtletaId")] AbbonamentoCreateViewModel vm)
+        public async Task<IActionResult> Create([Bind("NomeAbbonamento, DataInizio,DataFine,AtletaId")] AbbonamentoCreateViewModel vm)
         {
             ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "NomeCompleto", vm.AtletaId);*/
             if (ModelState.IsValid)
@@ -87,7 +87,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     Atleta = atleta
                 };
                 await serviziAbbonamento.CreaAbbonamento(nuovoAbbonamento);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Atleta", new { id = atleta.Id });
             }
             return View(vm);
         }
