@@ -1,67 +1,364 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@using static it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewModel
 @model SchedaAllenamentoViewModel
+
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Dettaglio Scheda di Allenamento";
+
+    // --- Logica di Calcolo per lo Stato e il Countdown ---
+    // Usiamo lo stato già calcolato nel ViewModel
+    bool isScaduta = Model.Stato == StatoScheda.Scaduta;
+    var giorniRimanenti = (Model.Scheda.DataFine - DateTime.Today).Days;
+
+    string statusClass = isScaduta ? "status-scaduto" : "status-ok";
+    string statusText = isScaduta ? "Scaduta" : "Attiva";
+    string countdownText;
+
+    if (isScaduta)
+    {
+        countdownText = $"Scaduta da {-giorniRimanenti} giorni";
+    }
+    else if (giorniRimanenti == 0)
+    {
+        countdownText = "Scade Oggi";
+    }
+    else
+    {
+        countdownText = $"Scade tra {giorniRimanenti + 1} giorni";
+    }
 }
+<style>
+    /* Stili generali per le pagine di dettaglio */
+    .page-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 25px;
+    }
 
-<h1>Details</h1>
+    .page-header {
+        margin-bottom: 30px;
+    }
 
-<div>
-    <h4>Scheda</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Scheda.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Scheda.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Scheda.Descrizione)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Scheda.Descrizione)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Scheda.DataInizio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Scheda.DataInizio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Scheda.DataFine)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Scheda.DataFine)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Scheda.Cliente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Scheda.Cliente?.Nome @Model.Scheda.Cliente?.Cognome
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stato)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Stato)
-        </dd>
-        <dt class="col-sm-2">File Allegato</dt>
-        <dd class="col-sm-10">
-            @if (!string.IsNullOrEmpty(Model.Scheda.NomeFileArchiviato))
-            {
-                <a asp-action="Visualizza" asp-controller="Scheda" asp-route-id="@Model.Scheda.Id" target="_blank">
-                    @Model.Scheda.NomeFileOriginale
+        .page-header .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-header .btn-back {
+            font-size: 1.5em;
+            color: var(--text-secondary);
+            text-decoration: none;
+            background-color: var(--surface);
+            border: 1px solid var(--border-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+            .page-header .btn-back:hover {
+                color: var(--brand-red);
+                border-color: var(--brand-red);
+            }
+
+        .page-header .header-title h1 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .page-header .header-title .subtitle {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+    /* Card principale */
+    .details-card {
+        background-color: var(--surface);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Griglia per le informazioni chiave */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+    }
+
+    .info-item .label {
+        display: block;
+        font-size: 0.9em;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .info-item .value {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .info-item .status {
+        display: inline-block;
+    }
+
+    /* Separatore */
+    .separator {
+        border: 0;
+        height: 1px;
+        background-color: var(--border-color);
+        margin: 30px 0;
+    }
+
+    /* Sezione link atleta */
+    .athlete-link-section .label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+
+    .athlete-link-section a {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: 600;
+        color: var(--brand-red);
+        padding: 10px 15px;
+        border-radius: 8px;
+        background-color: var(--brand-red-light);
+        transition: all 0.2s;
+    }
+
+        .athlete-link-section a:hover {
+            background-color: var(--brand-red);
+            color: white;
+        }
+
+    /* Footer della card con le azioni */
+    .card-footer {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    /* Stili per i bottoni (dovresti già avere .btn e .btn-primary) */
+    .btn-danger-outline {
+        background-color: transparent;
+        color: var(--brand-red);
+        border: 2px solid var(--brand-red);
+        padding: 8px 18px; /* Meno padding verticale per allineare con il bordo */
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+        .btn-danger-outline:hover {
+            background-color: var(--brand-red);
+            color: white;
+        }
+    /* Stili già presenti e riutilizzati:
+       .page-container, .page-header, .btn-back, .header-content, .header-title,
+       .details-card, .info-grid, .info-item, .separator, .athlete-link-section,
+       .card-footer, .btn-primary, .btn-danger-outline, .status, ecc.
+    */
+
+    /* =========== NUOVI STILI SPECIFICI PER QUESTA PAGINA =========== */
+
+    /* Sezione per l'azione principale (download file) */
+    .main-action-section {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .btn-visualizza {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 25px 40px;
+        border: 2px dashed var(--brand-red);
+        border-radius: 12px;
+        background-color: var(--brand-red-light);
+        color: var(--brand-red);
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .btn-visualizza:hover {
+            border-style: solid;
+            background-color: var(--brand-red);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(217, 35, 45, 0.2);
+        }
+
+        .btn-visualizza i {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .btn-visualizza span {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .btn-visualizza small {
+            font-size: 0.9em;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+    /* Stile per quando non c'è un file allegato */
+    .main-action-section.no-file {
+        padding: 25px;
+        border-radius: 12px;
+        background-color: var(--background);
+        color: var(--text-secondary);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .main-action-section.no-file i {
+            font-size: 2.5em;
+        }
+
+        .main-action-section.no-file span {
+            font-weight: 600;
+        }
+
+
+    /* Sezione per la descrizione */
+    .description-section {
+        margin-top: 30px;
+    }
+
+        .description-section .label {
+            display: block;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .description-section p {
+            font-size: 1em;
+            line-height: 1.6;
+            background-color: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 0;
+        }
+</style>
+<div class="page-container">
+
+    <!-- =========== HEADER DELLA PAGINA =========== -->
+    <header class="page-header">
+        <div class="header-content">
+            <a asp-action="Details" asp-controller="Atleta" asp-route-id="@Model.Scheda.AtletaId" class="btn-back" title="Torna al profilo atleta">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="header-title">
+                <h1>Dettaglio Scheda</h1>
+                <p class="subtitle">@Model.Scheda.Nome</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========== CARD PRINCIPALE =========== -->
+    <section class="details-card">
+
+        <!-- ===== SEZIONE AZIONE PRINCIPALE: SCARICA/VISUALIZZA SCHEDA ===== -->
+        @if (!string.IsNullOrEmpty(Model.Scheda.NomeFileArchiviato))
+        {
+            <div class="main-action-section">
+                <a asp-action="Visualizza" asp-controller="Scheda" asp-route-id="@Model.Scheda.Id" class="btn-visualizza" target="_blank">
+                    <i class="fas fa-file-arrow-down"></i>
+                    <span>Visualizza/Scarica Scheda</span>
+                    <small>@Model.Scheda.NomeFileOriginale</small>
                 </a>
-            }
-            else
-            {
-                <span>Nessun file allegato</span>
-            }
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Scheda.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+            </div>
+        }
+        else
+        {
+            <div class="main-action-section no-file">
+                <i class="fas fa-file-circle-xmark"></i>
+                <span>Nessun file allegato per questa scheda.</span>
+            </div>
+        }
+
+        <!-- Linea di separazione -->
+        <hr class="separator" />
+
+        <!-- Riepilogo Visivo con le info chiave -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="label">Stato</span>
+                <span class="status @statusClass">@statusText</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Countdown Scadenza</span>
+                <strong class="value">@countdownText</strong>
+            </div>
+            <div class="info-item">
+                <span class="label">Validità Dal</span>
+                <strong class="value">@Model.Scheda.DataInizio?.ToString("dd MMMM yyyy")</strong>
+            </div>
+            <div class="info-item">
+                <span class="label">Validità Fino Al</span>
+                <strong class="value">@Model.Scheda.DataFine.ToString("dd MMMM yyyy")</strong>
+            </div>
+        </div>
+
+        <!-- Descrizione (se presente) -->
+        @if (!string.IsNullOrWhiteSpace(Model.Scheda.Descrizione))
+        {
+            <div class="description-section">
+                <span class="label">Descrizione / Note</span>
+                <p>@Model.Scheda.Descrizione</p>
+            </div>
+        }
+
+        <!-- Linea di separazione -->
+        <hr class="separator" />
+
+        <!-- Link all'atleta associato -->
+        <div class="athlete-link-section">
+            <span class="label">Scheda di:</span>
+            <a asp-action="Details" asp-controller="Atleta" asp-route-id="@Model.Scheda.AtletaId">
+                <i class="fas fa-user-circle"></i>
+                <span>@Model.Scheda.Cliente?.Nome @Model.Scheda.Cliente?.Cognome</span>
+            </a>
+        </div>
+
+        <!-- Sezione Azioni Secondarie -->
+        <footer class="card-footer">
+            <a asp-action="Edit" asp-route-id="@Model.Scheda.Id" class="btn btn-primary">
+                <i class="fas fa-pencil-alt"></i> Modifica
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Scheda.Id" class="btn btn-danger-outline">
+                <i class="fas fa-trash-alt"></i> Elimina
+            </a>
+        </footer>
+    </section>
 </div>

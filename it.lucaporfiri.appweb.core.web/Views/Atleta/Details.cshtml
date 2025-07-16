@@ -8,161 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dettaglio Atleta - Virtus Coaching</title>
-
-    <!--  CSS PERSONALIZZATO -->
-    <style>
-        
-
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px 30px;
-        }
-
-        .form-field {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-            .form-field label {
-                font-weight: 600;
-                font-size: 0.9em;
-                color: var(--text-secondary);
-            }
-
-            .form-field .value {
-                font-size: 1em;
-                font-weight: 500;
-                color: var(--text-primary);
-            }
-
-
-
-        .form-actions {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-         /* NUOVI STILI SPECIFICI PER QUESTA PAGINA */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-
-        .profile-header-info h1 {
-            font-family: var(--font-heading);
-            font-size: 2.5em;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .profile-header-info .badges {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .profile-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-
-        .state-buttons .btn {
-            font-size: 0.9em;
-            padding: 8px 12px;
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .history-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--background);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .history-item-details {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-            .history-item-details strong {
-                font-size: 1.1em;
-            }
-
-            .history-item-details .meta {
-                font-size: 0.9em;
-                color: var(--text-secondary);
-            }
-
-        .history-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            .history-item-actions .status {
-                margin-right: 15px;
-            }
-
-        .file-link {
-            font-weight: 600;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-
-            .file-link i {
-                color: var(--brand-red);
-                margin-right: 5px;
-            }
-
-            .file-link:hover {
-                text-decoration: underline;
-            } 
-    </style>
 </head>
 <body data-theme="light">
 
@@ -177,7 +22,12 @@
         <section>
             <div class="profile-header">
                 <div class="profile-header-info">
-                    <h1 id="athlete-name">@Html.DisplayFor(model => model.NomeCompleto)</h1>
+                    <h1 id="athlete-name">
+                        @Html.DisplayFor(model => model.NomeCompleto)                        
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </h1>
                     <div class="badges">
                         @{
                             var statoClass = Model!.Stato switch
@@ -292,6 +142,9 @@
                                 }; 
 							}
                             <span class="status @statoAbbonamento">@Html.DisplayFor(modelItem => item.statoAbbonamento)</span>
+                            <a asp-action="Details" asp-controller="Abbonamento" asp-route-id="@item.abbonamento.Id" class="btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 }
@@ -312,6 +165,12 @@
                         <div class="history-item-details">
                             <strong>@item.Scheda.Nome</strong>
                             <span class="meta">@item.Scheda.Descrizione</span>
+                            <span class="meta">
+                                @if (item.Scheda.DataInizio.HasValue)
+                                {
+                                    @item.Scheda.DataInizio.Value.ToString("dd/MMM/yyyy")
+                                }
+                                - @item.Scheda.DataFine.ToString("dd/MMM/yyyy")</span>
                         </div>
                         <div class="history-item-actions">
                             @{
@@ -332,7 +191,7 @@
                                     {
                                         ".pdf" => "fa-file-pdf",
                                         ".doc" or ".docx" => "fa-file-word",
-                                        ".xls" or ".xlsx" => "fa-file-excel",
+                                        ".xls" or ".xlsx" or ".csv" => "fa-file-excel",
                                         ".jpg" or ".jpeg" or ".png" => "fa-file-image",
                                         _ => "fa-file"
                                     };
@@ -345,6 +204,9 @@
                                 </a>
                             }
                             <span class="status @statoScheda">@Html.DisplayFor(modelItem => item.Stato)</span>
+                            <a asp-action="Details" asp-controller="Scheda" asp-route-id="@item.Scheda.Id" class="btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 }
