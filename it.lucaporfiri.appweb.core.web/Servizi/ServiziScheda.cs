@@ -18,7 +18,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         {
             if (IdScheda == null)
                 return null;
-            return await _context.Scheda.FirstOrDefaultAsync(s => s.Id == IdScheda);
+            return await _context.Scheda.Include(s => s.Cliente).FirstOrDefaultAsync(s => s.Id == IdScheda);
         }
         public Scheda? DaiScheda(int? IdScheda)
         {

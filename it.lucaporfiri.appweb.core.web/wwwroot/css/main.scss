@@ -1,0 +1,47 @@
+﻿/* ================================================ */
+/*          PROGETTO PALESTRA - MAIN STYLESHEET       */
+/* ================================================ */
+
+/* 1. Base */
+@import 'base/base';
+
+/* 2. Layout - Struttura della pagina, header */
+@import 'layout/layout';
+
+/* 3. Components - Tutti i mattoncini della UI */
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/alerts';
+@import 'components/badges';
+@import 'components/forms';
+@import 'components/tables';
+
+/* 4. Pages - Stili specifici per singole pagine */
+@import 'pages/athlete-detail';
+
+/* 5. Utils - Classi di aiuto */
+@import 'utils/helpers';
+/*```
+
+### Come Usare Questa Struttura
+
+1. Crea la struttura di cartelle e file come descritto sopra.
+2. Copia e incolla i rispettivi blocchi di codice in ogni file.
+3. Nel tag `<head > ` del tuo HTML, dovrai includere **un solo file CSS**:
+```html
+<head >
+...
+<link rel="stylesheet" href="css/main.css" >
+...
+</head >
+```
+
+### Vantaggi di Questo Approccio
+
+* **Manutenibilità:** Se devi modificare uno stile dei bottoni, sai esattamente dove andare: `components/_buttons.css`. Non devi più cercare in un file enorme.
+* **Scalabilità:** Aggiungere un nuovo componente (es. un modal) è semplice: basta creare un nuovo file `_modal.css` nella cartella `components` e importarlo in `main.css`.
+* **Leggibilità:** Ogni file ha una responsabilità chiara e definita. È molto più facile per te (o per un altro sviluppatore) capire l'architettura del CSS.
+* **Performance:** Anche se usi `@import`, molti strumenti di sviluppo moderni (come Vite, Webpack) o pre-processori (Sass/Less) possono unire tutti questi file in un unico foglio di stile ottimizzato per la produzione, mantenendo l'organizzazione pulita durante lo sviluppo.
+
+Spero che questa riorganizzazione ti aiuti a fare ordine e a gestire il tuo progetto con più serenità
+*/

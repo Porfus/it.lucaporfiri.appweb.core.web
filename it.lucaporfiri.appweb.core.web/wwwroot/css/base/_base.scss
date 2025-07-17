@@ -1,0 +1,67 @@
+﻿/* ================================================ */
+/*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
+/* ================================================ */
+:root {
+    --brand-red: #D9232D;
+    --brand-red-light: #fdedee;
+    --warning-color: #f39c12;
+    --background: #f4f6f9;
+    --surface: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #5a6472;
+    --border-color: #e2e8f0;
+    --shadow-color-light: rgba(45, 55, 72, 0.1);
+    --shadow-color-dark: rgba(0, 0, 0, 0.2);
+    --font-heading: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] {
+    --background: #171923;
+    --surface: #2d3748;
+    --text-primary: #f7fafc;
+    --text-secondary: #a0aec0;
+    --border-color: #4a5568;
+    --brand-red-light: #422124;
+}
+
+    [data-theme="dark"] .theme-switcher .fa-sun {
+        display: block;
+    }
+
+    [data-theme="dark"] .theme-switcher .fa-moon {
+        display: none;
+    }
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+section {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+h2 {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.4em;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+}
+
+    h2 i {
+        color: var(--brand-red);
+        margin-right: 15px;
+    }

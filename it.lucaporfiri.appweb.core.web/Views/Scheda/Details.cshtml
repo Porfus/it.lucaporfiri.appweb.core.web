@@ -8,15 +8,46 @@
     // --- Logica di Calcolo per lo Stato e il Countdown ---
     // Usiamo lo stato già calcolato nel ViewModel
     bool isScaduta = Model.Stato == StatoScheda.Scaduta;
+    bool isNonDefinita = Model.Stato == StatoScheda.NonDefinita;
     var giorniRimanenti = (Model.Scheda.DataFine - DateTime.Today).Days;
-
-    string statusClass = isScaduta ? "status-scaduto" : "status-ok";
-    string statusText = isScaduta ? "Scaduta" : "Attiva";
+    int giorniRimanentiAttiva=0;
+    if(Model.Scheda.DataInizio.HasValue)
+    {
+        giorniRimanentiAttiva = (Model.Scheda.DataInizio.Value - DateTime.Today).Days;
+    }
+    string statusClass;
+    string statusText;
+    if (isNonDefinita)
+    {
+        statusClass = "status-notdefined";
+        statusText = "Non Definita";
+    }
+    else if (isScaduta)
+    {
+        statusClass = "status-scaduto";
+        statusText = "Scaduta";
+    }
+    else
+    {
+        statusClass = "status-ok";
+        statusText = "Attiva";
+    }
     string countdownText;
 
     if (isScaduta)
     {
         countdownText = $"Scaduta da {-giorniRimanenti} giorni";
+    }
+    else if (isNonDefinita)
+    {
+        if (Model.Scheda.DataInizio >= DateTime.Today)
+        {
+            countdownText = $"Attiva tra {giorniRimanentiAttiva} giorni";
+        }
+        else
+        {
+            countdownText = "-";    
+        }
     }
     else if (giorniRimanenti == 0)
     {
@@ -270,7 +301,7 @@
             margin: 0;
         }
 </style>
-<div class="page-container">
+<div class="dashboard-container">
 
     <!-- =========== HEADER DELLA PAGINA =========== -->
     <header class="page-header">

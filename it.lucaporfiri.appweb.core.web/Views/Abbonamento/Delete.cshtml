@@ -7,9 +7,18 @@
 <h1>Delete</h1>
 
 <h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Abbonamento</h4>
-    <hr />
+<div class="dashboard-container">
+    <header class="page-header">
+        <div class="header-content">
+            <a asp-action="Details" asp-controller="Abbonamento" asp-route-id="@Model.Id" class="btn-back" title="Torna all'abbonamento">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="header-title">
+                <i class="fas fa-trash"></i><h1>Elimina Abbonamento</h1>
+                <p class="subtitle">@Model.Nome</p>
+            </div>
+        </div>
+    </header>
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DataInizio)

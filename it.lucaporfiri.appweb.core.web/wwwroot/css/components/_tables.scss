@@ -1,0 +1,99 @@
+﻿/* Stili tabella generica */
+.table-controls {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+    .table-controls i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+
+    .table-controls input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background-color: var(--surface);
+        color: var(--text-primary);
+        font-size: 1em;
+    }
+
+.main-content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.main-content th, .main-content td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-content thead th {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.main-content tbody tr:hover td {
+    background-color: var(--brand-red-light);
+}
+
+/* Stili tabella compatta */
+.table-container {
+    overflow-x: auto;
+}
+
+.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .compact-table th, .compact-table td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.9em;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .compact-table thead th {
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        font-size: 0.8em;
+        letter-spacing: 0.5px;
+        background-color: var(--surface);
+    }
+
+    .compact-table tbody tr:hover td {
+        background-color: var(--brand-red-light);
+    }
+
+    .compact-table .status {
+        padding: 3px 10px;
+        font-size: 0.8em;
+    }
+
+.table-actions a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+    .table-actions a:hover {
+        color: var(--brand-red);
+    }
+
+.table-actions .separator {
+    color: var(--border-color);
+    margin: 0 4px;
+    font-weight: normal;
+}

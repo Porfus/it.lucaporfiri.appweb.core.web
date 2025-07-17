@@ -1,0 +1,59 @@
+﻿.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background-color: var(--surface);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px -1px var(--shadow-color-light);
+}
+
+[data-theme="dark"] .stat-card {
+    box-shadow: 0 4px 6px -1px var(--shadow-color-dark);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px var(--shadow-color-light);
+}
+
+[data-theme="dark"] .stat-card:hover {
+    box-shadow: 0 10px 15px -3px var(--shadow-color-dark);
+}
+
+.stat-card-icon {
+    font-size: 2.5em;
+    width: 50px;
+    text-align: center;
+}
+
+.stat-card-info .value {
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-card-info .label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.icon-total {
+    color: var(--text-secondary);
+}
+
+.icon-active {
+    color: #2ecc71;
+}
+
+.icon-expired {
+    color: var(--brand-red);
+}

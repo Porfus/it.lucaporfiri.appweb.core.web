@@ -1,0 +1,701 @@
+﻿@charset "UTF-8";
+/* ================================================ */
+/*          PROGETTO PALESTRA - MAIN STYLESHEET       */
+/* ================================================ */
+/* 1. Base */
+/* ================================================ */
+/*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
+/* ================================================ */
+:root {
+  --brand-red: #D9232D;
+  --brand-red-light: #fdedee;
+  --warning-color: #f39c12;
+  --background: #f4f6f9;
+  --surface: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #5a6472;
+  --border-color: #e2e8f0;
+  --shadow-color-light: rgba(45, 55, 72, 0.1);
+  --shadow-color-dark: rgba(0, 0, 0, 0.2);
+  --font-heading: "Oswald", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+[data-theme=dark] {
+  --background: #171923;
+  --surface: #2d3748;
+  --text-primary: #f7fafc;
+  --text-secondary: #a0aec0;
+  --border-color: #4a5568;
+  --brand-red-light: #422124;
+}
+
+[data-theme=dark] .theme-switcher .fa-sun {
+  display: block;
+}
+
+[data-theme=dark] .theme-switcher .fa-moon {
+  display: none;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+section {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 25px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+h2 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.4em;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+h2 i {
+  color: var(--brand-red);
+  margin-right: 15px;
+}
+
+/* 2. Layout - Struttura della pagina, header */
+/* ================================================ */
+/*          HEADER                                  */
+/* ================================================ */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-logo img {
+  height: 50px;
+}
+
+.header-logo h1 {
+  font-family: var(--font-heading);
+  font-size: 2em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.header-logo p {
+  font-family: var(--font-heading);
+  font-size: 2.5em;
+  margin: 0;
+  text-transform: uppercase;
+  justify-content: center;
+}
+
+.theme-switcher {
+  background: none;
+  border: none;
+  font-size: 1.4em;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  transition: color 0.3s;
+}
+
+.theme-switcher:hover {
+  color: var(--brand-red);
+}
+
+.theme-switcher .fa-sun {
+  display: none;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+/* 3. Components - Tutti i mattoncini della UI */
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--brand-red);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--brand-red);
+  border-color: var(--brand-red);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(217, 35, 45, 0.4);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--brand-red-light);
+  border-color: var(--brand-red);
+  color: var(--text-primary);
+}
+
+.btn-details {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-details:hover {
+  background-color: var(--brand-red);
+  color: white;
+  border-color: var(--brand-red);
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background-color: var(--surface);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px -1px var(--shadow-color-light);
+}
+
+[data-theme=dark] .stat-card {
+  box-shadow: 0 4px 6px -1px var(--shadow-color-dark);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px var(--shadow-color-light);
+}
+
+[data-theme=dark] .stat-card:hover {
+  box-shadow: 0 10px 15px -3px var(--shadow-color-dark);
+}
+
+.stat-card-icon {
+  font-size: 2.5em;
+  width: 50px;
+  text-align: center;
+}
+
+.stat-card-info .value {
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card-info .label {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.icon-total {
+  color: var(--text-secondary);
+}
+
+.icon-active {
+  color: #2ecc71;
+}
+
+.icon-expired {
+  color: var(--brand-red);
+}
+
+.critical-alerts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 15px;
+}
+
+.alert-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.alert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alert-card-header strong {
+  font-size: 1.1em;
+}
+
+.alert-card-header a {
+  font-size: 1.2em;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.alert-card-header a:hover {
+  color: var(--brand-red);
+}
+
+.alert-card p {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.alert-card p i {
+  margin-right: 5px;
+}
+
+.priority-critical {
+  border-left-color: #e74c3c;
+}
+
+.priority-warning {
+  border-left-color: #f39c12;
+}
+
+.priority-warning-giallo {
+  border-left-color: #f1c40f;
+}
+
+.priority-info {
+  border-left-color: #3498db;
+}
+
+.alert-card .status-abbonamento-scaduto i {
+  color: #f39c12;
+}
+
+.alert-card .status-scheda-scaduta i {
+  color: #f1c40f;
+}
+
+.alert-card .status-in-scadenza i {
+  color: #3498db;
+}
+
+.alert-card-body p {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.alert-card-body p i {
+  width: 20px;
+  margin-right: 8px;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: white;
+}
+
+.status-ok {
+  background-color: #2ecc71;
+}
+
+.status-scaduto {
+  background-color: var(--brand-red);
+}
+
+.status-attenzione {
+  background-color: var(--warning-color);
+}
+
+.status-notdefined {
+  background-color: #b0b4ba;
+}
+
+.status-personal {
+  background-color: orange;
+}
+
+.status-corso {
+  background-color: cornflowerblue;
+}
+
+.status-soloscheda {
+  background-color: blueviolet;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px 30px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.form-field .value {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.required-asterisk {
+  color: var(--brand-red);
+  margin-left: 4px;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: var(--font-body);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(217, 35, 45, 0.2);
+}
+
+.validation-error {
+  color: var(--brand-red);
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.validation-summary-errors ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  background-color: var(--brand-red-light);
+  border: 1px solid var(--brand-red);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.validation-summary-errors li {
+  color: var(--brand-red);
+  font-weight: 600;
+}
+
+.form-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Stili tabella generica */
+.table-controls {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.table-controls i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.table-controls input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  font-size: 1em;
+}
+
+.main-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main-content th, .main-content td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.main-content thead th {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+.main-content tbody tr:hover td {
+  background-color: var(--brand-red-light);
+}
+
+/* Stili tabella compatta */
+.table-container {
+  overflow-x: auto;
+}
+
+.compact-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compact-table th, .compact-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.compact-table thead th {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  letter-spacing: 0.5px;
+  background-color: var(--surface);
+}
+
+.compact-table tbody tr:hover td {
+  background-color: var(--brand-red-light);
+}
+
+.compact-table .status {
+  padding: 3px 10px;
+  font-size: 0.8em;
+}
+
+.table-actions a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.table-actions a:hover {
+  color: var(--brand-red);
+}
+
+.table-actions .separator {
+  color: var(--border-color);
+  margin: 0 4px;
+  font-weight: normal;
+}
+
+/* 4. Pages - Stili specifici per singole pagine */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.profile-header-info h1 {
+  font-family: var(--font-heading);
+  font-size: 2.5em;
+  margin: 0;
+  line-height: 1;
+}
+
+.profile-header-info .badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.state-buttons .btn {
+  font-size: 0.9em;
+  padding: 8px 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--background);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.history-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-item-details strong {
+  font-size: 1.1em;
+}
+
+.history-item-details .meta {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.history-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-link {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.file-link i {
+  color: var(--brand-red);
+  margin-right: 5px;
+}
+
+.file-link:hover {
+  text-decoration: underline;
+}
+
+/* 5. Utils - Classi di aiuto */
+.hidden {
+  display: none !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/*```
+
+### Come Usare Questa Struttura
+
+1. Crea la struttura di cartelle e file come descritto sopra.
+2. Copia e incolla i rispettivi blocchi di codice in ogni file.
+3. Nel tag `<head > ` del tuo HTML, dovrai includere **un solo file CSS**:
+```html
+<head >
+...
+<link rel="stylesheet" href="css/main.css" >
+...
+</head >
+```
+
+### Vantaggi di Questo Approccio
+
+* **Manutenibilità:** Se devi modificare uno stile dei bottoni, sai esattamente dove andare: `components/_buttons.css`. Non devi più cercare in un file enorme.
+* **Scalabilità:** Aggiungere un nuovo componente (es. un modal) è semplice: basta creare un nuovo file `_modal.css` nella cartella `components` e importarlo in `main.css`.
+* **Leggibilità:** Ogni file ha una responsabilità chiara e definita. È molto più facile per te (o per un altro sviluppatore) capire l'architettura del CSS.
+* **Performance:** Anche se usi `@import`, molti strumenti di sviluppo moderni (come Vite, Webpack) o pre-processori (Sass/Less) possono unire tutti questi file in un unico foglio di stile ottimizzato per la produzione, mantenendo l'organizzazione pulita durante lo sviluppo.
+
+Spero che questa riorganizzazione ti aiuti a fare ordine e a gestire il tuo progetto con più serenità
+*/
