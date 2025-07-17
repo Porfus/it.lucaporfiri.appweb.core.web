@@ -22,12 +22,6 @@
             <div class="header-logo">
                 <p> @subtitle</p>
             </div>
-            <div class="header-logo">
-                <h1><i class="fas fa-dumbbell"></i>Gestione Atleti - Panoramica Generale</h1>
-            </div>
-            <button class="theme-switcher" id="theme-switcher" title="Cambia tema">
-                <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
-            </button>
         </header>
 
         <div class="stat-cards">
@@ -49,14 +43,14 @@
                 <div class="stat-card-icon icon-expired"><i class="fas fa-calendar-times"></i></div>
                 <div class="stat-card-info">
                     <div class="value">@Model.AbbonamentiScaduti</div>
-                    <div class="label">Abbonamenti Scaduti</div>
+                    <div class="label">Atleti con Abb. Scaduto</div>
                 </div>
             </div>
             <div class="stat-card" onclick="jCaricaSchedeScadute()" style="cursor:pointer;">
                 <div class="stat-card-icon icon-expired"><i class="fas fa-file-excel"></i></div>
                 <div class="stat-card-info">
                     <div class="value">@Model.SchedeScadute</div>
-                    <div class="label">Schede Scadute</div>
+                    <div class="label">Atleti con Scheda Scaduta</div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,87 @@
+﻿/* ================================================ */
+/*          STILI PER HEADER E NAVIGAZIONE          */
+/* ================================================ */
+
+/* Modifica al logo per gestire meglio il testo */
+.header-logo-text a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-logo-text h1 {
+    font-size: 1.8em; /* Leggermente più piccolo per non essere troppo invadente */
+}
+
+/* Navigazione principale nell'header */
+.main-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+}
+
+.main-nav a {
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 0.95em;
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.main-nav a:hover {
+    color: var(--text-primary);
+    background-color: var(--brand-red-light);
+}
+
+/* Stile per il link della pagina attiva (da gestire con JS o Tag Helper) */
+.main-nav a.active {
+    color: var(--brand-red);
+    background-color: var(--brand-red-light);
+}
+
+/* Azioni a destra nell'header */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-user-profile {
+    font-size: 1.4em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.btn-user-profile:hover {
+    color: var(--brand-red);
+}
+
+/* ================================================ */
+/*          STILI PER IL FOOTER                     */
+/* ================================================ */
+.dashboard-footer {
+    max-width: 1400px;
+    margin: 0px auto 0 auto;
+    padding: 25px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.dashboard-footer a {
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dashboard-footer a:hover {
+    color: var(--brand-red);
+    text-decoration: underline;
+}

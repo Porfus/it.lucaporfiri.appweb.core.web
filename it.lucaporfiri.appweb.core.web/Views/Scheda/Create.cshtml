@@ -1,77 +1,12 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model SchedaCreateViewModel
 
-<style>
-    /* Definisce il contenitore del form come una griglia a due colonne */
-    .form-grid {
-        display: grid;
-        /* Crea due colonne di larghezza uguale */
-        grid-template-columns: repeat(2, 1fr);
-        /* Spazio tra le righe e le colonne */
-        gap: 15px 25px;
-    }
-
-    /*
-      Questa è la regola chiave per la descrizione.
-      Dice all'elemento con questa classe di iniziare dalla prima linea della griglia (1)
-      e di estendersi fino all'ultima linea della griglia (-1),
-      occupando di fatto tutta la larghezza disponibile.
-    */
-    .form-field.full-width {
-        grid-column: 1 / -1;
-    }
-
-    /* Classe per dare un'altezza maggiore alla nostra textarea */
-    .form-control-large {
-        height: 120px; /* Puoi regolare questo valore a tuo piacimento */
-        resize: vertical; /* Permette all'utente di ridimensionare il box solo in altezza */
-    }
-
-    /* Stili generali per la coerenza del form (probabilmente li hai già simili) */
-    .form-field {
-        display: flex;
-        flex-direction: column; /* Etichetta sopra, input sotto */
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-size: 1rem;
-        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    }
-
-        .form-control:focus {
-            border-color: #86b7fe;
-            outline: 0;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
-        }
-
-    .control-label {
-        margin-bottom: 5px;
-        font-weight: 600;
-    }
-
-    .validation-error {
-        color: #dc3545; /* Colore rosso per gli errori */
-        font-size: 0.875em;
-        margin-top: 4px;
-    }
-
-    .required-asterisk {
-        color: #dc3545;
-    }
-
-
-
-</style>
 <div class="dashboard-container">
     <section>
         <h2><i class="fas fa-file-pdf"></i> Crea Nuova Scheda</h2>
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-            <div class="form-grid">
+            <div class="form-grid-two-column">
                 <div class="form-field">
                     <label asp-for="Nome" class="control-label">Nome Scheda</label>
                     <input asp-for="Nome" class="form-control" placeholder="Mesociclo Forza Gennaio..." />

@@ -55,11 +55,11 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 Tipo = a.Tipo,
 
                 StatoAbbonamento = a.Abbonamenti!.Any()
-                    ? (a.Abbonamenti!.OrderByDescending(ab => ab.DataFine).FirstOrDefault()!.DataFine < DateTime.Now ? StatoAbbonamento.Scaduto : StatoAbbonamento.Valido)
+                    ? (a.Abbonamenti!.Where(s=> s.DataInizio<= DateTime.Now && s.DataFine>= DateTime.Now).OrderByDescending(ab => ab.DataFine).Any() ? StatoAbbonamento.Valido : StatoAbbonamento.Scaduto)
                     : StatoAbbonamento.NonDefinito,
 
                 StatoScheda = a.Schede!.Any()
-                    ? (a.Schede!.OrderByDescending(s => s.DataFine).FirstOrDefault()!.DataFine < DateTime.Now ? StatoScheda.Scaduta : StatoScheda.Attiva)
+                    ? (a.Schede!.Where(s => s.DataInizio <= DateTime.Now && s.DataFine >= DateTime.Now).OrderByDescending(s => s.DataFine).Any() ? StatoScheda.Attiva : StatoScheda.Scaduta)
                     : StatoScheda.NonDefinita
             });
             if (!string.IsNullOrEmpty(colonnaOrdinamento) && !string.IsNullOrEmpty(versoOrdinamento))
@@ -178,6 +178,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 return StatoAbbonamento.NonDefinito;
             }
             var abbonamento = atleta.Abbonamenti
+
                 .OrderByDescending(a => a.DataFine)
                 .FirstOrDefault();
 
@@ -198,13 +199,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return statoAbbonamento ? StatoAbbonamento.Valido : StatoAbbonamento.Scaduto;
         }
 
-        public Abbonamento? DaiUltimoAbbonamento(Atleta atleta)
+        public Abbonamento? DaiUltimoAbbonamentoAttivo(Atleta atleta)
         {
             if (atleta.Abbonamenti == null || !atleta.Abbonamenti.Any())
             {
                 return null;
             }
             return atleta.Abbonamenti
+                .Where(a => a.DataInizio <= DateTime.Now && a.DataFine >= DateTime.Now)
                 .OrderByDescending(a => a.DataFine)
                 .FirstOrDefault();
         }
@@ -232,6 +234,13 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             );
         }
 
+        public int DaiNumeroAtletiConSchedeScadute()
+        {
+            return _context.Atleta.Count(a =>
+                a.Schede != null && a.Schede.Any() && !a.Schede.Any(s => s.DataInizio <= DateTime.Now && s.DataFine >= DateTime.Now)
+            );
+        }
+
         public StatoScheda CalcolaStatoUltimaScheda(Atleta atleta)
         {
             if (atleta.Schede == null || !atleta.Schede.Any())
@@ -256,13 +265,23 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 return StatoScheda.Scaduta;
             }
         }
-        public Scheda? DaiUltimaScheda(Atleta atleta)
+        public StatoScheda CalcolaStatoScheda(Atleta atleta) 
+        {
+            if (atleta.Schede == null || !atleta.Schede.Any())
+            {
+                return StatoScheda.NonDefinita;
+            }
+            var statoScheda = atleta.Schede.Any(s => s.DataInizio <= DateTime.Now && s.DataFine >= DateTime.Now);
+            return statoScheda ? StatoScheda.Attiva : StatoScheda.Scaduta;
+        }
+        public Scheda? DaiUltimaSchedaAttiva(Atleta atleta)
         {
             if (atleta.Schede == null || !atleta.Schede.Any())
             {
                 return null;
             }
             return atleta.Schede
+                .Where(s => s.DataInizio <= DateTime.Now && s.DataFine >= DateTime.Now)
                 .OrderByDescending(s => s.DataFine)
                 .FirstOrDefault();
         }

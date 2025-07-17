@@ -104,7 +104,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 // --- Fine logica file ---
 
                 await serviziScheda.AggiungiSchedaAsync(scheda);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { scheda.Id });
             }
             return View(viewModel);
         }
@@ -123,9 +123,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 return NotFound();
             }
             ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
-            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
+            SchedaAllenamentoEditViewModel vm = new SchedaAllenamentoEditViewModel();
             vm.Scheda = scheda;
-            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
             return View(vm);
         }
 
@@ -134,22 +133,61 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descrizione,DataInizio,DataFine,AtletaId")] Scheda scheda)
+        public async Task<IActionResult> Edit(int id, [Bind("Scheda, NuovoFileScheda")] SchedaAllenamentoEditViewModel viewModel)
         {
-            if (id != scheda.Id)
+            if (id != viewModel.Scheda.Id)
             {
                 return NotFound();
             }
+            var schedaVecchia = serviziScheda.DaiScheda(id);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                  await serviziScheda.AggiornaSchedaAsync(scheda);
+                    var schedaDaAggiornare = await serviziScheda.DaiSchedaAsync(id);
+                    if (schedaDaAggiornare == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (viewModel.NuovoFileScheda != null && viewModel.NuovoFileScheda.Length > 0)
+                    {
+                        if (!string.IsNullOrEmpty(schedaDaAggiornare.NomeFileArchiviato))
+                        {
+                            string percorsoVecchioFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede", schedaDaAggiornare.NomeFileArchiviato);
+                            if (System.IO.File.Exists(percorsoVecchioFile))
+                            {
+                                System.IO.File.Delete(percorsoVecchioFile);
+                            }
+                        }
+
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede");
+                        Directory.CreateDirectory(uploadsFolder);
+                        string nomeFileUnico = Guid.NewGuid().ToString() + Path.GetExtension(viewModel.NuovoFileScheda.FileName);
+                        string percorsoCompletoFile = Path.Combine(uploadsFolder, nomeFileUnico);
+
+                        using (var fileStream = new FileStream(percorsoCompletoFile, FileMode.Create))
+                        {
+                            await viewModel.NuovoFileScheda.CopyToAsync(fileStream);
+                        }
+
+                        schedaDaAggiornare.NomeFileOriginale = Path.GetFileName(viewModel.NuovoFileScheda.FileName);
+                        schedaDaAggiornare.NomeFileArchiviato = nomeFileUnico;
+                        schedaDaAggiornare.ContentType = viewModel.NuovoFileScheda.ContentType;
+                    }
+
+                    schedaDaAggiornare.Nome = viewModel.Scheda.Nome;
+                    schedaDaAggiornare.Descrizione = viewModel.Scheda.Descrizione;
+                    schedaDaAggiornare.DataInizio = viewModel.Scheda.DataInizio;
+                    schedaDaAggiornare.DataFine = viewModel.Scheda.DataFine;
+                    schedaDaAggiornare.AtletaId = viewModel.Scheda.AtletaId;
+
+                    await serviziScheda.AggiornaSchedaAsync(schedaDaAggiornare);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SchedaExists(scheda.Id))
+                    if (!SchedaExists(viewModel.Scheda.Id))
                     {
                         return NotFound();
                     }
@@ -158,13 +196,11 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = viewModel.Scheda.Id });
             }
+
             ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
-            SchedaAllenamentoViewModel vm = new SchedaAllenamentoViewModel();
-            vm.Scheda = scheda;
-            vm.Stato = serviziScheda.CalcolaStatoScheda(scheda);
-            return View(vm);
+            return View(viewModel);
         }
 
         // GET: Scheda/Delete/5

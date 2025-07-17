@@ -1,15 +1,22 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model SchedaAllenamentoViewModel
-@{
-    ViewData["Title"] = "Delete";
-}
 
-<h1>Delete</h1>
+<div class="dashboard-container">
+    <header class="page-header-details">
+        <div class="header-content">
+            <a asp-action="Details" asp-controller="Scheda" asp-route-id="@Model.Scheda.Id" class="btn-back" title="Torna alla scheda">
+                <i class="fas fa-arrow-left"></i>
+            </a>        
+            <div class="header-title">
+                <h1>
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    Elimina Scheda
+                </h1>
+                <p class="subtitle">@Model.Scheda.Nome</p>
+            </div>
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Scheda</h4>
-    <hr />
+    </header>
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Scheda.Nome)
@@ -52,6 +59,5 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Scheda.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
     </form>
 </div>

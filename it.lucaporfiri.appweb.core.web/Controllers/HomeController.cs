@@ -16,14 +16,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ServiziAtleta serviziAtleta;
         private readonly ServiziAbbonamento serviziAbbonamento;
-        private  readonly ServiziScheda ServiziScheda;
+        private  readonly ServiziScheda serviziScheda;
 
         public HomeController(ILogger<HomeController> logger, ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda)
         {
             _logger = logger;
             this.serviziAtleta = serviziAtleta;
             this.serviziAbbonamento = serviziAbbonamento;
-            this.ServiziScheda = serviziScheda;
+            this.serviziScheda = serviziScheda;
         }
 
         //DEPRECATO
@@ -37,7 +37,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             vm.AtletiTotale = serviziAtleta.DaiAtleti().Count();
             vm.AtletiAttivi = serviziAtleta.DaiAtleti().Count(s => s.Stato == Atleta.StatoCliente.Attivo);
             vm.AbbonamentiScaduti = serviziAtleta.DaiNumeroAtletiConAbbonamentiScaduti();
-            vm.SchedeScadute = ServiziScheda.DaiNumeroSchedeScadute();
+            vm.SchedeScadute = serviziScheda.DaiNumeroSchedeScadute();
 
             // Popolamento alert dinamici
             var atleti = serviziAtleta.DaiAtleti();
@@ -45,7 +45,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 // Controllo abbonamento
                 var statoAbbonamento = serviziAtleta.CalcolaStatoUltimoAbbonamento(atleta);
-                var schedaScaduta = atleta.Schede?.Any(s => ServiziScheda.CalcolaStatoScheda(s) == StatoScheda.Scaduta) ?? false;
+                var schedaScaduta = atleta.Schede?.Any(s => serviziScheda.CalcolaStatoScheda(s) == StatoScheda.Scaduta) ?? false;
 
                 if (statoAbbonamento == StatoAbbonamento.Scaduto || schedaScaduta)
                 {
@@ -88,27 +88,27 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             vm.AtletiTotale = serviziAtleta.DaiAtleti().Count();
             vm.AtletiAttivi = serviziAtleta.DaiAtleti().Count(s => s.Stato == Atleta.StatoCliente.Attivo);
             vm.AbbonamentiScaduti = serviziAtleta.DaiNumeroAtletiConAbbonamentiScaduti();
-            vm.SchedeScadute = ServiziScheda.DaiNumeroSchedeScadute();
+            vm.SchedeScadute = serviziAtleta.DaiNumeroAtletiConSchedeScadute();
 
             var atleti = serviziAtleta.DaiAtleti();
             foreach (var atleta in atleti)
             {
-                var abbonamentoScaduto = serviziAtleta.CalcolaStatoUltimoAbbonamento(atleta) == StatoAbbonamento.Scaduto ? true : false;
-                var schedaScaduta = serviziAtleta.CalcolaStatoUltimaScheda(atleta) == StatoScheda.Scaduta ? true : false;
+                var abbonamentoScaduto = serviziAtleta.CalcolaStatoAbbonamento(atleta) == StatoAbbonamento.Scaduto ? true : false;
+                var schedaScaduta = serviziAtleta.CalcolaStatoScheda(atleta) == StatoScheda.Scaduta ? true : false;
                 bool abbonamentoInScadenza = false;
                 bool schedaInScadenza = false;
                 if (abbonamentoScaduto == false) 
                 {
-                    var ultimoAbbonamento = serviziAtleta.DaiUltimoAbbonamento(atleta);
-                    if (ultimoAbbonamento != null && ultimoAbbonamento.DataFine >= DateTime.Now.AddDays(-4))
+                    var ultimoAbbonamento = serviziAtleta.DaiUltimoAbbonamentoAttivo(atleta);
+                    if (ultimoAbbonamento != null && ultimoAbbonamento.DataFine < DateTime.Now.AddDays(6))
                     {
                         abbonamentoInScadenza = true;
                     }
                 }
                 if(schedaScaduta == false)
                 {
-                    var ultimaScheda = serviziAtleta.DaiUltimaScheda(atleta);
-                    if (ultimaScheda != null && ultimaScheda.DataFine >= DateTime.Now.AddDays(-4))
+                    var ultimaScheda = serviziAtleta.DaiUltimaSchedaAttiva(atleta);
+                    if (ultimaScheda != null && ultimaScheda.DataFine < DateTime.Now.AddDays(6))
                     {
                         schedaInScadenza = true;
                     }
@@ -150,6 +150,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             return View(vm);
         }
 
+        public IActionResult Login()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

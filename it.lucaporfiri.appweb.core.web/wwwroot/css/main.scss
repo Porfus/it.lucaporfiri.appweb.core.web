@@ -7,6 +7,7 @@
 
 /* 2. Layout - Struttura della pagina, header */
 @import 'layout/layout';
+@import 'layout/navigation';
 
 /* 3. Components - Tutti i mattoncini della UI */
 @import 'components/buttons';
@@ -18,7 +19,7 @@
 
 /* 4. Pages - Stili specifici per singole pagine */
 @import 'pages/athlete-detail';
-
+@import 'pages/_abbonamento-detail.scss';
 /* 5. Utils - Classi di aiuto */
 @import 'utils/helpers';
 /*```

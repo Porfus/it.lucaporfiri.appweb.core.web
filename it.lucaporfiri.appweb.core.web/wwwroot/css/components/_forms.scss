@@ -9,6 +9,14 @@
         grid-template-columns: 1fr;
     }
 }
+/* Definisce il contenitore del form come una griglia a due colonne */
+.form-grid-two-column {
+    display: grid;
+    /* Crea due colonne di larghezza uguale */
+    grid-template-columns: repeat(2, 1fr);
+    /* Spazio tra le righe e le colonne */
+    gap: 15px 25px;
+}
 
 .form-field {
     display: flex;
@@ -26,6 +34,29 @@
         font-size: 1em;
         font-weight: 500;
         color: var(--text-primary);
+    }
+
+    .form-field.full-width {
+        grid-column: 1 / -1;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
+    }
+    .form-control-large {
+        height: 120px; /* Puoi regolare questo valore a tuo piacimento */
+        resize: vertical; /* Permette all'utente di ridimensionare il box solo in altezza */
     }
 
 .required-asterisk {
@@ -53,6 +84,10 @@
         box-shadow: 0 0 0 3px rgba(217, 35, 45, 0.2);
     }
 
+.control-label {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
 .validation-error {
     color: var(--brand-red);
     font-size: 0.85em;
