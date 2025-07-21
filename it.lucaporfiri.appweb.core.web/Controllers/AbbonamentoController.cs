@@ -28,7 +28,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }).ToList();
             if (soloScaduti == true)
             {
-                vm = vm.Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Scaduto).ToList();
+                vm = vm.Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Scaduto).GroupBy(s=> s.abbonamento.AtletaId).Select(s => s.OrderByDescending(s => s.abbonamento.DataFine).First()).ToList();
             }
             return View(vm);
         }

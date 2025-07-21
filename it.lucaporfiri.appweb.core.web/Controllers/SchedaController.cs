@@ -28,11 +28,11 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             var vm = schede.Select(s => new SchedaAllenamentoViewModel
             {
                 Scheda = s,
-                Stato = serviziScheda.CalcolaStatoScheda(s)
+                Stato = serviziScheda.CalcolaStatoScheda(s),
             }).ToList();
 
             if (soloScadute == true) {
-                vm = vm.Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Scaduta).ToList();
+                vm = vm.Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Scaduta).GroupBy(s => s.Scheda.AtletaId).Select(g => g.OrderByDescending(s => s.Scheda.DataFine).First()).ToList();                
             }
 
             return View(vm);

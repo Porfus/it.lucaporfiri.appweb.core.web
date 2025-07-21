@@ -1,16 +1,18 @@
 ﻿@using static it.lucaporfiri.appweb.core.web.ViewModels.AtletaDetailViewModel
 @model IEnumerable<it.lucaporfiri.appweb.core.web.ViewModels.AbbonamentoDetailViewModel>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Abbonamenti</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div class="dashboard-container">
+    <section class="main-content">
+        <div class="dashboard-header" style="margin-bottom: 25px;">
+            <h2><i class="fas fa-calendar-times"></i> Elenco Abbonamenti</h2>
+            <div class="main-actions">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Crea Nuovo
+                </a>
+            </div>
+        </div>
+        <div class="table-content">
+            <table class="compact-table">
     <thead>
         <tr>
             <th>
@@ -55,12 +57,17 @@
                 }
 
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.abbonamento.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.abbonamento.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.abbonamento.Id">Delete</a>
+            <td class="table-actions text-right">
+                <a asp-action="Edit" asp-route-id="@item.abbonamento.Id">Modifica</a> |
+                <a asp-action="Details" asp-route-id="@item.abbonamento.Id">Dettagli</a> |
+                <a asp-action="Delete" asp-route-id="@item.abbonamento.Id">Elimina</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+        </div>
+    </section>
+</div>
+
+
