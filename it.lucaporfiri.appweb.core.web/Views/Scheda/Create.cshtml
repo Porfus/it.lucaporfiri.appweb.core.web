@@ -18,7 +18,7 @@
                     <span asp-validation-for="Descrizione" class="validation-error"></span>
                 </div>
                 <div class="form-field">
-                    <label asp-for="DataInizio" class="control-label">Data Inizio</label>
+                    <label asp-for="DataInizio" class="control-label">Data Inizio <span class="required-asterisk">*</span></label>
                     <input asp-for="DataInizio" type="date" class="form-control" id="dataInizio" />
                     <span asp-validation-for="DataInizio" class="validation-error"></span>
                 </div>
@@ -59,7 +59,7 @@
             </div>                
             <div class="form-actions">
                 <a asp-action="Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Annulla
+                    <i class="fas fa-arrow-left"></i> Torna all'Elenco Schede
                 </a>
                 <button type="submit" value="Create" class="btn btn-primary">
                     <i class="fas fa-check"></i> Crea Scheda

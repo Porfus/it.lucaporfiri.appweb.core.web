@@ -5,7 +5,7 @@
         <h2><i class="fas fa-calendar-plus"></i> Crea Nuovo Abbonamento</h2>
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-            <div class="form-grid">
+            <div class="form-grid-two-column">
                 <div class="form-field">
                     <label asp-for="NomeAbbonamento">
                         Nome Abbonamento
@@ -13,6 +13,7 @@
                     <input asp-for="NomeAbbonamento" type="text" placeholder="Abbonamento Mensile...">
                     <span asp-validation-for="NomeAbbonamento" class="text-danger"></span>
                 </div>
+                <div></div>
                 <div class="form-field">
                     <label asp-for="DataInizio">
                     Data Inizio
@@ -31,15 +32,6 @@
                     <input asp-for="DataFine" type="date" id="dataFine" value="@dataFineValue"/>
                     <span asp-validation-for="DataFine" class="validation-error"></span>
 				</div>
-				<div class="form-field">
-					<label asp-for="AtletaId">
-						Atleta <span class="required-asterisk">*</span>
-					</label>
-                    <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId">
-                        <option value="">Seleziona un atleta...</option>
-                    </select>
-                    <span asp-validation-for="AtletaId" class="validation-error"></span>
-				</div>
                 <!-- SELETTORI RAPIDI DI DURATA -->
                 <div class="form-field">
                     <label class="form-label d-block">Imposta scadenza rapida:</label>
@@ -49,10 +41,19 @@
                         <button type="button" class="btn btn-secondary" id="btn1Anno">+ 1 Anno</button>
                     </div>
                 </div>
+                <div class="form-field full-width">
+					<label asp-for="AtletaId">
+						Atleta <span class="required-asterisk">*</span>
+					</label>
+                    <select asp-for="AtletaId" class="form-control" asp-items="ViewBag.AtletaId">
+                        <option value="">Seleziona un atleta...</option>
+                    </select>
+                    <span asp-validation-for="AtletaId" class="validation-error"></span>
+				</div>
             </div>
             <div class="form-actions">
                 <a asp-action="Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Annulla
+                    <i class="fas fa-arrow-left"></i> Torna all'Elenco Abbonamenti
                 </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-check"></i> Crea Abbonamento
