@@ -28,7 +28,24 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }).ToList();
             if (soloScaduti == true)
             {
-                vm = vm.Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Scaduto).GroupBy(s=> s.abbonamento.AtletaId).Select(s => s.OrderByDescending(s => s.abbonamento.DataFine).First()).ToList();
+                var soloScadutiVm = vm
+                    .Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Scaduto)
+                    .GroupBy(s => s.abbonamento.AtletaId)
+                    .Select(g => g.OrderByDescending(s => s.abbonamento.DataFine).First())
+                    .ToList();
+
+                // Escludi gli atleti che hanno almeno un abbonamento attivo
+                var atletiConAbbonamentoAttivo = vm
+                    .Where(s => s.statoAbbonamento == AtletaDetailViewModel.StatoAbbonamento.Valido)
+                    .Select(s => s.abbonamento.AtletaId)
+                    .Distinct()
+                    .ToHashSet();
+
+                soloScadutiVm = soloScadutiVm
+                    .Where(s => !atletiConAbbonamentoAttivo.Contains(s.abbonamento.AtletaId))
+                    .ToList();
+
+                vm = soloScadutiVm;
             }
             return View(vm);
         }
@@ -50,10 +67,24 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         // GET: Abbonamento/Create
-        public IActionResult Create()
-        {
-            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "Id")*/;
+        public async Task<IActionResult> Create(int? atletaId = null)
+        {            
             AbbonamentoCreateViewModel vm = new AbbonamentoCreateViewModel();
+
+            if (atletaId.HasValue)
+            {            
+                var atleta = await serviziAtleta.DaiAtletaAsync(atletaId);
+
+                if (atleta != null)
+                {
+                    vm.AtletaId = atleta.Id;
+                    vm.NomeAtleta = $"{atleta.Nome} {atleta.Cognome}";
+                }
+            }
+            if (vm.AtletaId == 0)
+            {
+                ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+            }
             return View(vm);
         }
 
@@ -62,9 +93,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NomeAbbonamento, DataInizio,DataFine,AtletaId")] AbbonamentoCreateViewModel vm)
+        public async Task<IActionResult> Create(AbbonamentoCreateViewModel vm)
         {
-            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();/*new SelectList(_context.Atleta, "Id", "NomeCompleto", vm.AtletaId);*/
             if (ModelState.IsValid)
             {
                 if (vm.DataFine < vm.DataInizio)
@@ -72,10 +102,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     ModelState.AddModelError("DataFine", "La data di fine deve essere successiva alla data di inizio.");
                     return View(vm);
                 }
-                var atleta = await Task.Run(() =>serviziAtleta.DaiAtleta(vm.AtletaId));/*_context.Atleta.FindAsync(vm.AtletaId)*/
+                var atleta = await serviziAtleta.DaiAtletaAsync(vm.AtletaId);
                 if (atleta == null)
                 {
                     ModelState.AddModelError("AtletaId", "Atleta non trovato.");
+                }
+                if (!ModelState.IsValid)
+                {
+                    ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
                     return View(vm);
                 }
                 var nuovoAbbonamento = new Abbonamento
@@ -87,8 +121,9 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     Atleta = atleta
                 };
                 await serviziAbbonamento.CreaAbbonamento(nuovoAbbonamento);
-                return RedirectToAction("Details", "Atleta", new { id = atleta.Id });
+                return RedirectToAction("Details", "Atleta", new { id = vm.AtletaId });
             }
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
             return View(vm);
         }
 
@@ -168,8 +203,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var abbonamento = await serviziAbbonamento.DaiAbbonamentoAsync(id);
             await serviziAbbonamento.EliminaAbbonamento(id);
-            return RedirectToAction(nameof(Index));
+            if (abbonamento != null) 
+            {
+                return RedirectToAction("Details", "Atleta", new { id = abbonamento.AtletaId });
+            }
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         private bool AbbonamentoExists(int id)

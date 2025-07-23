@@ -97,3 +97,14 @@
     margin: 0 4px;
     font-weight: normal;
 }
+/*
+   ================================================
+   UTILITY PER TRONCARE TESTO LUNGO NELLE CELLE
+   ================================================
+*/
+.truncate-text {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -40,7 +40,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             var schede = _context.Scheda.Include(s => s.Cliente).ToList(); 
             return schede;
         }
-        public async Task AggiungiSchedaAsync(Scheda scheda)
+        public async Task CreaSchedaAsync(Scheda scheda)
         {
             _context.Scheda.Add(scheda);
             await _context.SaveChangesAsync();

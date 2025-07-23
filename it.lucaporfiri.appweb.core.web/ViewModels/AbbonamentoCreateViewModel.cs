@@ -5,6 +5,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
     public class AbbonamentoCreateViewModel
     {
         public string? NomeAbbonamento { get; set; }
+        public string? NomeAtleta { get; set; }
         public DateTime DataInizio { get; set; } = DateTime.Today;
         public DateTime DataFine { get; set; }
 

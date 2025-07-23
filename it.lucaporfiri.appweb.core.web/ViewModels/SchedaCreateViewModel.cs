@@ -6,6 +6,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels
     {
         public int Id { get; set; } // Utile per la modifica
         public string? Nome { get; set; }
+        public string? NomeAtleta { get; set; }
         public string? Descrizione { get; set; }
         public DateTime DataInizio { get; set; } = DateTime.Today;
 

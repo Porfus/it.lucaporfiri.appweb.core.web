@@ -32,7 +32,21 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }).ToList();
 
             if (soloScadute == true) {
-                vm = vm.Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Scaduta).GroupBy(s => s.Scheda.AtletaId).Select(g => g.OrderByDescending(s => s.Scheda.DataFine).First()).ToList();                
+                var soloSchedeScadute = vm
+                    .Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Scaduta)
+                    .GroupBy(s => s.Scheda.AtletaId)
+                    .Select(g => g.OrderByDescending(s => s.Scheda.DataFine).First())
+                    .ToList();
+                var atletiConSchedeAttive = vm
+                    .Where(s => s.Stato == SchedaAllenamentoViewModel.StatoScheda.Attiva)
+                    .Select(s => s.Scheda.AtletaId)
+                    .Distinct()
+                    .ToHashSet();
+                soloSchedeScadute = soloSchedeScadute
+                    .Where(s => !atletiConSchedeAttive.Contains(s.Scheda.AtletaId))
+                    .ToList();
+
+                vm = soloSchedeScadute;
             }
 
             return View(vm);
@@ -59,10 +73,22 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         // GET: Scheda/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? atletaId = null)
         {
-            ViewBag.AtletaId = serviziAtleta.DaiSelectListAtleti();
             SchedaCreateViewModel vm = new SchedaCreateViewModel();
+            if (atletaId.HasValue) 
+            {
+                var atleta = await serviziAtleta.DaiAtletaAsync(atletaId);
+                if (atleta != null)
+                {
+                    vm.AtletaId = atleta.Id;
+                    vm.NomeAtleta = $"{atleta.Nome} {atleta.Cognome}";
+                }
+            }
+            if(vm.AtletaId == 0)
+            {
+                ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+            }
             return View(vm);
         }
 
@@ -75,13 +101,29 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (viewModel.DataFine < viewModel.DataInizio)
+                {
+                    ModelState.AddModelError("DataFine", "La data di fine deve essere successiva alla data di inizio.");
+                    return View(viewModel);
+                }
+                var atleta = await serviziAtleta.DaiAtletaAsync(viewModel.AtletaId);
+                if (atleta == null)
+                {
+                    ModelState.AddModelError("AtletaId", "Atleta non trovato.");
+                }
+                if (!ModelState.IsValid)
+                {
+                    ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+                    return View(viewModel);
+                }
                 var scheda = new Scheda
                 {
                     Nome = viewModel.Nome,
                     Descrizione = viewModel.Descrizione,
                     DataInizio = viewModel.DataInizio,
                     DataFine = viewModel.DataFine,
-                    AtletaId = viewModel.AtletaId
+                    AtletaId = viewModel.AtletaId,
+                    Cliente = atleta
                 };
                 // --- Logica di gestione del file ---
                 if (viewModel.FileCaricato != null && viewModel.FileCaricato.Length > 0)
@@ -103,9 +145,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 // --- Fine logica file ---
 
-                await serviziScheda.AggiungiSchedaAsync(scheda);
-                return RedirectToAction("Details", new { scheda.Id });
+                await serviziScheda.CreaSchedaAsync(scheda);
+                return RedirectToAction("Details", "Atleta", new { id = viewModel.AtletaId });
             }
+            ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
             return View(viewModel);
         }
             
@@ -231,23 +274,23 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 return NotFound();
             }
-
             var scheda = await serviziScheda.DaiSchedaAsync(id);
-            if (scheda == null)
+            if (scheda != null)
             {
-                return NotFound();
-            }
-            // --- Logica di cancellazione file ---
-            if (!string.IsNullOrEmpty(scheda.NomeFileArchiviato))
-            {
-                string percorsoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede", scheda.NomeFileArchiviato);
-                if (System.IO.File.Exists(percorsoFile))
+                // --- Logica di cancellazione file ---
+                if (!string.IsNullOrEmpty(scheda.NomeFileArchiviato))
                 {
-                    System.IO.File.Delete(percorsoFile);
+                    string percorsoFile = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "schede", scheda.NomeFileArchiviato);
+                    if (System.IO.File.Exists(percorsoFile))
+                    {
+                        System.IO.File.Delete(percorsoFile);
+                    }
                 }
+                await serviziScheda.EliminaSchedaAsync(id.Value);
+                return RedirectToAction("Details", "Atleta", new { id = scheda.AtletaId });
             }
+            
             // --- Fine logica cancellazione file ---
-            await serviziScheda.EliminaSchedaAsync(id.Value);
 
             return RedirectToAction(nameof(Index));
         }

@@ -723,6 +723,18 @@ h2 i {
   font-weight: normal;
 }
 
+/*
+   ================================================
+   UTILITY PER TRONCARE TESTO LUNGO NELLE CELLE
+   ================================================
+*/
+.truncate-text {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* 4. Pages - Stili specifici per singole pagine */
 .profile-header {
   display: flex;

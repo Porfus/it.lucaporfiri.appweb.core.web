@@ -122,7 +122,7 @@
         <section>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2><i class="fas fa-calendar-check"></i> Cronologia Abbonamenti</h2>
-                <a href="/Abbonamento/Create" class="btn btn-secondary"><i class="fas fa-plus"></i> Aggiungi Abbonamento</a>
+                <a href="/Abbonamento/Create?atletaId=@Model.Id" class="btn btn-secondary"><i class="fas fa-plus"></i> Aggiungi Abbonamento</a>
             </div>
 
             <div class="history-list">
@@ -157,7 +157,7 @@
         <section>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2><i class="fas fa-dumbbell"></i> Cronologia Schede</h2>
-                <a href="/Scheda/Create" class="btn btn-secondary"><i class="fas fa-upload"></i> Carica Scheda</a>
+                <a href="/Scheda/Create?atletaId=@Model.Id" class="btn btn-secondary"><i class="fas fa-upload"></i> Carica Scheda</a>
             </div>
 
             <div class="history-list">
