@@ -173,7 +173,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
         public StatoAbbonamento CalcolaStatoUltimoAbbonamento(Atleta atleta)
         {
-            if (atleta.Abbonamenti == null || !atleta.Abbonamenti.Any())
+            if (!atleta.Abbonamenti.Any())
             {
                 return StatoAbbonamento.NonDefinito;
             }
@@ -191,7 +191,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
         public StatoAbbonamento CalcolaStatoAbbonamento(Atleta atleta)
         {
-            if (atleta.Abbonamenti == null || !atleta.Abbonamenti.Any())
+            if (!atleta.Abbonamenti.Any())
             {
                 return StatoAbbonamento.NonDefinito;
             }
@@ -201,7 +201,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
         public Abbonamento? DaiUltimoAbbonamentoAttivo(Atleta atleta)
         {
-            if (atleta.Abbonamenti == null || !atleta.Abbonamenti.Any())
+            if (!atleta.Abbonamenti.Any())
             {
                 return null;
             }
@@ -243,7 +243,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
         public StatoScheda CalcolaStatoUltimaScheda(Atleta atleta)
         {
-            if (atleta.Schede == null || !atleta.Schede.Any())
+            if (!atleta.Schede.Any())
             {
                 return StatoScheda.NonDefinita;
             }
@@ -267,7 +267,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         }
         public StatoScheda CalcolaStatoScheda(Atleta atleta) 
         {
-            if (atleta.Schede == null || !atleta.Schede.Any())
+            if (!atleta.Schede.Any())
             {
                 return StatoScheda.NonDefinita;
             }
@@ -276,7 +276,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         }
         public Scheda? DaiUltimaSchedaAttiva(Atleta atleta)
         {
-            if (atleta.Schede == null || !atleta.Schede.Any())
+            if (!atleta.Schede.Any())
             {
                 return null;
             }

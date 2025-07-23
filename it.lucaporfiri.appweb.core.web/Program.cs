@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 });
 
 builder.Services.AddDbContext<ContestoApp>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ContestoApp") ?? throw new InvalidOperationException("Connection string 'ContestoApp' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ContestoApp") ?? throw new InvalidOperationException("Connection string 'ContestoApp' not found.")
+        , o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 // Aggiungi i tuoi service come "scoped" o "transient"
 builder.Services.AddScoped<ServiziAtleta>();
@@ -30,7 +31,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
