@@ -2,7 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Servizi;
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    ContentRootPath = AppContext.BaseDirectory,
+    WebRootPath = Path.Combine(AppContext.BaseDirectory, "wwwroot")
+});
 
 builder.Services.AddDbContext<ContestoApp>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ContestoApp") ?? throw new InvalidOperationException("Connection string 'ContestoApp' not found.")));
@@ -36,5 +40,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ContestoApp>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
