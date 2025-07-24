@@ -55,6 +55,7 @@
                             <i class="fas fa-user-check"></i> @Model.NomeAtleta
                         </div>
                         <input type="hidden" asp-for="AtletaId" />
+                        <input type="hidden" name="NomeAtleta" value="@Model.NomeAtleta" />
                     </div>
                 }else
                 {
@@ -81,7 +82,7 @@
                     else
                     {
                         <a asp-action="Index" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Torna all'Elenco Abbonamenti
+                            <i class="fas fa-arrow-left"></i> Torna all'Elenco Schede
                         </a>
                     }
                 </div>

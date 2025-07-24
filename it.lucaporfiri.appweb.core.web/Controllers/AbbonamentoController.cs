@@ -100,6 +100,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 if (vm.DataFine < vm.DataInizio)
                 {
                     ModelState.AddModelError("DataFine", "La data di fine deve essere successiva alla data di inizio.");
+                    if (String.IsNullOrEmpty(vm.NomeAtleta)) 
+                    {                    
+                        ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
+                    }
                     return View(vm);
                 }
                 var atleta = await serviziAtleta.DaiAtletaAsync(vm.AtletaId);
@@ -109,6 +113,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
                 if (!ModelState.IsValid)
                 {
+                    ModelState.AddModelError("AtletaId", "Atleta non valido, riprova o controlla se l'atleta esiste.");
                     ViewData["AtletaId"] = serviziAtleta.DaiSelectListAtleti();
                     return View(vm);
                 }
