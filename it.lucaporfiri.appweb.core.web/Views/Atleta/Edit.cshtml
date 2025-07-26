@@ -8,7 +8,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-grid">
+            <div class="form-grid-two-column">
 
                 <div class="form-field">
                     <label asp-for="Nome">Nome<span class="required-asterisk">*</span></label>
@@ -25,6 +25,7 @@
                     <input asp-for="AnnoDiNascita" type="date" placeholder="es. 1990" />
                     <span asp-validation-for="AnnoDiNascita" class="validation-error"></span>
                 </div>
+                <div></div>
                 <div class="form-field">
                     <label asp-for="Email"></label>
                     <input asp-for="Email" type="email" placeholder="es. m.rossi@email.com" />
@@ -40,14 +41,14 @@
                     <input asp-for="DataInizioIscrizione" type="date" />
                     <span asp-validation-for="DataInizioIscrizione" class="validation-error"></span>
                 </div>
-                <div class="form-field">
+                <div class="form-field full-width">
                     <label asp-for="Tipo">Categoria Atleta<span class="required-asterisk">*</span></label>
                     <select asp-for="Tipo" asp-items="Html.GetEnumSelectList<Atleta.TipoCliente>()">
                         <option value="">Seleziona una categoria...</option>
                     </select>
                     <span asp-validation-for="Tipo" class="validation-error"></span>
                 </div>
-                <div class="form-field">
+                <div class="form-field full-width">
                     <label asp-for="Stato">Stato Atleta<span class="required-asterisk">*</span></label>
                     <select asp-for="Stato" asp-items="Html.GetEnumSelectList<Atleta.StatoCliente>()">
                         <option value="">Seleziona uno stato...</option>
@@ -57,9 +58,14 @@
 
 			</div>
             <div class="form-actions">
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Annulla
-                </a>
+				<div>
+					<a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+						<i class="fas fa-arrow-left"></i> Torna a @Model.Nome @Model.Cognome
+					</a>
+					<a asp-action="Index" class="btn btn-secondary">
+						<i class="fas fa-list"></i> Torna all'Elenco Atleti'
+					</a>
+				</div>
 				<input type="submit" value="Salva Atleta" class="btn btn-primary" />
             </div>
         </form>

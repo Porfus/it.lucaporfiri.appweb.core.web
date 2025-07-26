@@ -118,7 +118,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 //_context.Add(atleta);
                 //await _context.SaveChangesAsync();
                 await serviziAtleta.CreaAtleta(atleta);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = atleta.Id});
             }
             return View(atleta);
         }
@@ -172,7 +172,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new {id = atleta.Id});
             }
             return View(atleta);
         }
