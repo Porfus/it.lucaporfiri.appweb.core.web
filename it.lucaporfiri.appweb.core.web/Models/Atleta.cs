@@ -20,6 +20,7 @@ namespace it.lucaporfiri.appweb.core.web.Models
         public StatoCliente Stato { get; set; }
         public virtual ICollection<Abbonamento> Abbonamenti { get; set; } = new List<Abbonamento>();
         public virtual ICollection<Scheda> Schede { get; set; } = new List<Scheda>();
+        public virtual ICollection<Eventi> Eventi { get; set; } = new List<Eventi>();
 
         public enum TipoCliente
         {
