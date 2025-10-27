@@ -11,8 +11,14 @@
 
         public int AtletaId { get; set; }
         public virtual Atleta? Atleta { get; set; }
-
         public StatoWorkflow Stato { get; set; }
+        public TipoEvento Tipo { get; set; }
+
+        public enum TipoEvento
+        {
+            ScadenzaScheda,
+            Altro
+        }
         public enum StatoWorkflow
         {
             Inbox,

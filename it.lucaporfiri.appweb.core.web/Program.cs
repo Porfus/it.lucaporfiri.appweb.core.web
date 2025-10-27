@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ContestoApp>(options =>
 builder.Services.AddScoped<ServiziAtleta>();
 builder.Services.AddScoped<ServiziAbbonamento>();
 builder.Services.AddScoped<ServiziScheda>();
+builder.Services.AddScoped<ServiziEvento>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

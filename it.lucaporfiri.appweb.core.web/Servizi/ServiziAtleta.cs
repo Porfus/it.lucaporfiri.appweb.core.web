@@ -11,7 +11,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 {
     public class ServiziAtleta
     {
-        private ContestoApp _context;
+        private readonly ContestoApp _context;
         public ServiziAtleta(ContestoApp context)
         {
             _context = context;

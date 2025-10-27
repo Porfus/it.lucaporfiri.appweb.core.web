@@ -9,7 +9,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 {
     public class ServiziScheda
     {
-        private ContestoApp _context;
+        private readonly ContestoApp _context;
         public ServiziScheda(ContestoApp context)
         {
             _context = context;

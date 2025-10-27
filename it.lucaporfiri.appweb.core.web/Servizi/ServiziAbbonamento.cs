@@ -8,7 +8,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 {
     public class ServiziAbbonamento
     {
-        private ContestoApp _context;
+        private readonly ContestoApp _context;
         public ServiziAbbonamento(ContestoApp context)
         {
             _context = context;
