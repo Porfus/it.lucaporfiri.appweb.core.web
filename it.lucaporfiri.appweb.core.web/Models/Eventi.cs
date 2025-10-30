@@ -17,6 +17,9 @@
         public enum TipoEvento
         {
             ScadenzaScheda,
+            GaraDaPreparare,
+            AtletaDaContattare,
+            AllenamentoPersonal,
             Altro
         }
         public enum StatoWorkflow

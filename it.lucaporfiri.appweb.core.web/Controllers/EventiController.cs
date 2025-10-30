@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
+using it.lucaporfiri.appweb.core.web.ViewModels;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
@@ -22,10 +23,24 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             _serviziEvento = serviziEvento;
         }
 
-        public ActionResult TaskBoard() 
+        public ActionResult BachecaEventi() 
         {
+            //aggiorno gli eventi automatici
             _serviziEvento.SincronizzaEventiAutomatici();
-            return View();
+
+
+            //estrae tutti gli eventi non completati
+            List <Eventi> eventiAttivi = _serviziEvento.GetEventiAttivi();
+
+            //prioritizza gli eventi
+            _serviziEvento.PrioritizzaEventi(eventiAttivi);
+
+            BachecaEventiViewModel vm = new BachecaEventiViewModel
+            {
+                EventiPrioritizzati = eventiAttivi
+            };
+
+            return View(vm);
         }
 
         // GET: Eventi
