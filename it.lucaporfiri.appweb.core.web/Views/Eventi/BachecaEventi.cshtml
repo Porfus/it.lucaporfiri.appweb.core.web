@@ -1,7 +1,13 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model BachecaEventiViewModel
-
-
+@{
+    string priorita = "";
+    string tipoevento = "";
+    string titoloEvento = "";
+    string dueDate = "";
+}
+<!DOCTYPE html>
+<html lang="it">
 <body data-theme="light">
 
 	<div class="dashboard-container">
@@ -13,8 +19,208 @@
 		</header>
 
 		<section>
+            <div class="kanban-board">
+                <!-- Colonna 1: INBOX / DA VALUTARE -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <h2>Inbox / Da Valutare</h2>
+                        <span class="task-count">2</span>
+                    </div>
+                    <div class="column-tasks">
+                        @if(Model.EventiPrioritizzati!=null)
+                        {
+                            @foreach (var evento in Model.EventiPrioritizzati.Where(e => e.Stato == Eventi.StatoWorkflow.DaValutare))
+                            {
+                                if (evento.Priorita < 20)
+                                {
+                                    priorita = "priority-low";
+                                }
+                                else if (evento.Priorita >= 20 && evento.Priorita < 70)
+                                {
+                                    priorita = "priority-medium";
+                                }
+                                else if (evento.Priorita >= 70)
+                                {
+									priorita = "priority-high is-urgent";
+                                }
 
+                                switch (evento.Tipo)
+                                {
+                                    case Eventi.TipoEvento.ScadenzaScheda:
+                                        tipoevento = "descriprion";
+										titoloEvento = "Scadenza Scheda";
+										break;
+                                    case Eventi.TipoEvento.GaraDaPreparare:
+										tipoevento = "sports_gymnastics";
+                                        titoloEvento = "Gara da Preparare";
+                                        break;
+                                    case Eventi.TipoEvento.AtletaDaContattare:
+                                        tipoevento = "event_avaible";
+                                        titoloEvento = "Atleta da Contattare";
+                                        break;
+									case Eventi.TipoEvento.AllenamentoPersonal:
+                                        tipoevento = "event_busy";
+                                        titoloEvento = "Allenamento Personal";
+                                        break;
+									default: tipoevento = "altro";
+                                        tipoevento = "altro";
+                                        titoloEvento = "Altro";
+                                        break;
+
+                                }
+								var giorniRimanenti = (evento.DataScadenza - DateTime.UtcNow).Days;
+                                if (giorniRimanenti > 7)
+                                {
+                                    dueDate = "event";
+                                }
+                                else if (giorniRimanenti <= 7 && giorniRimanenti > 1)
+                                {
+									dueDate = "hourglass_bottom";
+                                }
+                                else if (giorniRimanenti == 1)
+                                {
+									dueDate = "hourglass_bottom";
+                                }
+                                else if (giorniRimanenti == 0)
+                                {
+									dueDate = "today";
+                                }
+                                else
+                                {
+									dueDate = "warning";
+                                }
+                                <div class="task-card @priorita ">
+                                    <div class="task-header">
+                                        <span class="icon material-symbols-outlined">@tipoevento</span>
+										@titoloEvento
+                                    </div>
+                                    @if(evento.Atleta !=null){
+                                        <div class="task-body">Atleta: @evento.Atleta.Nome @evento.Atleta.Cognome </div>
+                                    }
+                                    <div class="task-footer">
+                                        <span class="due-date">
+                                            <span class="icon material-symbols-outlined">@dueDate</span>
+											Scade: @giorniRimanenti.ToString("DD") @*Da rivedere*@
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                        
+
+                        <!-- Task a Bassa Priorità -->
+                        <div class="task-card priority-low">
+                            <div class="task-header">
+                                <span class="icon material-symbols-outlined">sports_gymnastics</span>
+                                Gara Atleta
+                            </div>
+                            <div class="task-body">Atleta: Giulia Verdi</div>
+                            <div class="task-footer">
+                                <span class="due-date">
+                                    <span class="icon material-symbols-outlined">event</span>
+                                    Data: 25/11/2023
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna 2: DA FARE (QUESTA SETTIMANA) -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <h2>Da Fare (Questa Settimana)</h2>
+                        <span class="task-count">1</span>
+                    </div>
+                    <div class="column-tasks">
+                        <div class="task-card priority-medium">
+                            <div class="task-header">
+                                <span class="icon material-symbols-outlined">description</span>
+                                Preparazione Nuova Scheda
+                            </div>
+                            <div class="task-body">Atleta: Luca Bianchi</div>
+                            <div class="task-footer">
+                                <span class="due-date">
+                                    <span class="icon material-symbols-outlined">event</span>
+                                    Entro: 28/10/2023
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna 3: IN CORSO (OGGI) -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <h2>In Corso (Oggi)</h2>
+                        <span class="task-count">1</span>
+                    </div>
+                    <div class="column-tasks">
+                        <div class="task-card priority-high">
+                            <div class="task-header">
+                                <span class="icon material-symbols-outlined">videocam</span>
+                                Controllo Video Tecnica
+                            </div>
+                            <div class="task-body">Atleta: Sara Neri</div>
+                            <div class="task-footer">
+                                <span class="due-date">
+                                    <span class="icon material-symbols-outlined">today</span>
+                                    Oggi
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna 4: IN ATTESA DI FEEDBACK -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <h2>In Attesa di Feedback</h2>
+                        <span class="task-count">1</span>
+                    </div>
+                    <div class="column-tasks">
+                        <div class="task-card priority-medium">
+                            <div class="task-header">
+                                <span class="icon material-symbols-outlined">description</span>
+                                Revisione Scheda Inviata
+                            </div>
+                            <div class="task-body">Atleta: Marco Gialli</div>
+                            <div class="task-footer">
+                                <span class="due-date">
+                                    <span class="icon material-symbols-outlined">send</span>
+                                    Inviata: Ieri
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna 5: COMPLETATO -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <h2>Completato</h2>
+                        <span class="task-count">1</span>
+                    </div>
+                    <div class="column-tasks">
+                        <div class="task-card priority-low is-completed">
+                            <div class="task-header">
+                                <span class="icon material-symbols-outlined">event_available</span>
+                                Rinnovo Abbonamento
+                            </div>
+                            <div class="task-body">Atleta: Anna Neri</div>
+                            <div class="task-footer">
+                                <span class="due-date">
+                                    <span class="icon material-symbols-outlined">done_all</span>
+                                    Fatto
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 		</section>
 	</div>
 
 </body>
+</html>
