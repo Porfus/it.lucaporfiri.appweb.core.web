@@ -106,5 +106,63 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 evento.Priorita = prioritaCalcolata;
             }
         }
+
+        public string GetCssClassPerPriorita(int pesoPriorita)
+        {
+            var prioritacss = "";
+            if (pesoPriorita < 20)
+            {
+                prioritacss = "priority-low";
+            }
+            else if (pesoPriorita >= 20 && pesoPriorita < 70)
+            {
+                prioritacss = "priority-medium";
+            }
+            else if (pesoPriorita >= 70)
+            {
+                prioritacss = "priority-high";
+            }
+            return prioritacss;
+        }
+
+        public string FormattaDataScadenza(DateTime dataScadenza)
+        {
+            var giorniRimanenti = (dataScadenza - DateTime.Now).TotalDays;
+            if (giorniRimanenti > 7) 
+            {
+                return dataScadenza.ToString("dd MMM yyyy");
+            }
+            else if (giorniRimanenti >= 1 && giorniRimanenti <= 7) 
+            {
+                return $"Tra {Math.Ceiling(giorniRimanenti)} giorni";
+            }
+            else if (giorniRimanenti >= 0 && giorniRimanenti < 1) 
+            {
+                return "Oggi";
+            }
+            else 
+            {
+                return $"Scaduto {Math.Abs(Math.Ceiling(giorniRimanenti))} giorni fa";
+            }
+        }
+
+        public string GetIconaPerTipoEvento(TipoEvento tipo)
+        {
+            var icona = "";
+            switch (tipo) 
+            {
+                case TipoEvento.ScadenzaScheda:
+                    icona = "description"; break;
+                case TipoEvento.GaraDaPreparare:
+                    icona = "sports_motorsports"; break;
+                case TipoEvento.AtletaDaContattare:
+                    icona = "contact_phone"; break;
+                case TipoEvento.AllenamentoPersonal:
+                    icona = "fitness_center"; break;
+                default:
+                    icona = "event_note"; break;
+            } 
+            return icona;
+        }
     }
 }

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using it.lucaporfiri.appweb.core.web.Data;
+﻿using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static it.lucaporfiri.appweb.core.web.Models.Eventi;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
@@ -23,23 +24,60 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             _serviziEvento = serviziEvento;
         }
 
-        public ActionResult BachecaEventi() 
+        public ActionResult BachecaEventi()
         {
+            // definisce le colonne in modo programmatico 
+            var statiWorkflow = (StatoWorkflow[])Enum.GetValues(typeof(StatoWorkflow));
+
+            //trasforma gli stati in una lista di stringhe
+            var nomiStatiWorkflow = statiWorkflow.Select(stato => stato.ToString()).ToList();
+
             //aggiorno gli eventi automatici
             _serviziEvento.SincronizzaEventiAutomatici();
 
 
             //estrae tutti gli eventi non completati
-            List <Eventi> eventiAttivi = _serviziEvento.GetEventiAttivi();
+            List<Eventi> eventiAttivi = _serviziEvento.GetEventiAttivi();
 
             //prioritizza gli eventi
             _serviziEvento.PrioritizzaEventi(eventiAttivi);
 
-            BachecaEventiViewModel vm = new BachecaEventiViewModel
+            // raggruppa i task per il loro stato attuale 
+            var taskRaggruppatiPerStato = eventiAttivi.GroupBy(task => task.Stato).ToDictionary(g => g.Key, g => g.ToList());
+
+            // costruisco il ViewModel
+            BachecaEventiViewModel vm = new BachecaEventiViewModel()
             {
-                EventiPrioritizzati = eventiAttivi
+                Colonne = new List<BachecaEventiColonnaViewModel>()
             };
 
+            foreach (var stato in statiWorkflow)
+            {
+                var colonna = new BachecaEventiColonnaViewModel
+                {
+                    Titolo = stato.ToString(),
+                    IdColonna = $"colonna-{stato.ToString().ToLower().Replace(" ", "-")}"
+                };
+
+                if (taskRaggruppatiPerStato.ContainsKey(stato))
+                {
+                    foreach (var evento in taskRaggruppatiPerStato[stato])
+                    {
+                        var eventoVm = new BachecaEventiEventoViewModel
+                        {
+                            Id = evento.Id,
+                            Titolo = evento.Titolo,
+                            Descrizione = evento.Descrizione,
+                            PrioritaCssClass = _serviziEvento.GetCssClassPerPriorita(evento.Priorita ?? 0),
+                            IsUrgente = (evento.DataScadenza - DateTime.Now).TotalDays < 2,
+                            DataScadenzaLabel = _serviziEvento.FormattaDataScadenza(evento.DataScadenza),
+                            IconaTipoTask = _serviziEvento.GetIconaPerTipoEvento(evento.Tipo),
+                            IsCompletato = evento.Stato == StatoWorkflow.Completato
+                        };
+                    }
+
+                }                
+            }
             return View(vm);
         }
 
