@@ -12,7 +12,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             _context = context;
         }
 
-        public void SincronizzaEventiAutomatici()
+        public async Task SincronizzaEventiAutomatici()
         {
             //Gestione della sincronizzazione automatica delle scadenze delle Schede di allenamento
 
@@ -53,10 +53,12 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                             Priorita = CalcolaPrioritaIniziale(ultimaScheda.DataFine, TipoEvento.ScadenzaScheda) // Funzione da creare
                         };
                         _context.Eventi.Add(nuovoEvento);
+                        await _context.SaveChangesAsync();
                     }
                 }
 
             }
+            return;
         }
         //Calcolo della priorità iniziale in base alla data di scadenza e al tipo di evento
         private int CalcolaPrioritaIniziale(DateTime dataScadenzaScheda, TipoEvento tipoEvento)

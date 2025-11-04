@@ -8,7 +8,7 @@
         public int ConteggioTask => Eventi.Count;
         public BachecaEventiColonnaViewModel()
         {
-            Eventi = new List<BachecaEventiEventoViewModel>(); // Inizializza sempre le liste!
+            Eventi = new List<BachecaEventiEventoViewModel>(); 
         }
     }
 }

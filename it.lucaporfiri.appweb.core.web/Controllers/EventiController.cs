@@ -24,7 +24,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             _serviziEvento = serviziEvento;
         }
 
-        public ActionResult BachecaEventi()
+        public async Task<ActionResult> BachecaEventiAsync()
         {
             // definisce le colonne in modo programmatico 
             var statiWorkflow = (StatoWorkflow[])Enum.GetValues(typeof(StatoWorkflow));
@@ -33,7 +33,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             var nomiStatiWorkflow = statiWorkflow.Select(stato => stato.ToString()).ToList();
 
             //aggiorno gli eventi automatici
-            _serviziEvento.SincronizzaEventiAutomatici();
+            await _serviziEvento.SincronizzaEventiAutomatici();
 
 
             //estrae tutti gli eventi non completati
@@ -74,9 +74,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                             IconaTipoTask = _serviziEvento.GetIconaPerTipoEvento(evento.Tipo),
                             IsCompletato = evento.Stato == StatoWorkflow.Completato
                         };
+                        colonna.Eventi.Add(eventoVm);
                     }
-
-                }                
+                }                    
+                vm.Colonne.Add(colonna);
             }
             return View(vm);
         }
