@@ -29,7 +29,7 @@
                             <!-- Eventi -->
                             @foreach (var evento in colonnaBoard.Eventi)
                             {
-                                @Html.PartialAsync("_Partial/_TemplateEventoCard", evento)
+                                @await Html.PartialAsync("_Partial/_TemplateEventoCard", evento)
                             }
                         </div>
                     </div>
