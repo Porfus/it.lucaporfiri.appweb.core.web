@@ -47,10 +47,10 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                             AtletaId = atletaId,
                             Tipo = Models.Eventi.TipoEvento.ScadenzaScheda,
                             DataScadenza = ultimaScheda.DataFine,
-                            Titolo = $"Scadenza Scheda di Allenamento di {atleta.Nome + atleta.Cognome}",
-                            Descrizione = $"La scheda di allenamento n. {ultimaScheda.Id} è scaduta / è in scadenza il {ultimaScheda.DataFine.ToShortDateString()}.",
+                            Titolo = $"Preparazione Nuova Scheda",
+                            Descrizione = $"Atleta: {atleta.Nome} {atleta.Cognome}",
                             Stato = Eventi.StatoWorkflow.Inbox,
-                            Priorita = CalcolaPrioritaIniziale(ultimaScheda.DataFine, TipoEvento.ScadenzaScheda) // Funzione da creare
+                            Priorita = CalcolaPrioritaIniziale(ultimaScheda.DataFine, TipoEvento.ScadenzaScheda) 
                         };
                         _context.Eventi.Add(nuovoEvento);
                         await _context.SaveChangesAsync();
@@ -132,15 +132,15 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             var giorniRimanenti = (dataScadenza - DateTime.Now).TotalDays;
             if (giorniRimanenti > 7) 
             {
-                return dataScadenza.ToString("dd MMM yyyy");
+                return $"Entro: {dataScadenza.ToString("dd MMM yyyy")}";
             }
             else if (giorniRimanenti >= 1 && giorniRimanenti <= 7) 
             {
-                return $"Tra {Math.Ceiling(giorniRimanenti)} giorni";
+                return $"Scade tra {Math.Ceiling(giorniRimanenti)} giorni";
             }
             else if (giorniRimanenti >= 0 && giorniRimanenti < 1) 
             {
-                return "Oggi";
+                return "Scade Oggi";
             }
             else 
             {
@@ -154,15 +154,15 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             switch (tipo) 
             {
                 case TipoEvento.ScadenzaScheda:
-                    icona = "description"; break;
+                    icona = "file_lines"; break;
                 case TipoEvento.GaraDaPreparare:
-                    icona = "sports_motorsports"; break;
+                    icona = "dumbbell"; break;
                 case TipoEvento.AtletaDaContattare:
-                    icona = "contact_phone"; break;
+                    icona = "phone"; break;
                 case TipoEvento.AllenamentoPersonal:
-                    icona = "fitness_center"; break;
+                    icona = "calendar_xmark"; break;
                 default:
-                    icona = "event_note"; break;
+                    icona = "note"; break;
             } 
             return icona;
         }

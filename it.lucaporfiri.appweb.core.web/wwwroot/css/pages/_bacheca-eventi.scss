@@ -25,8 +25,8 @@
 
 /* Singola colonna del workflow */
 .kanban-column {
-    flex: 0 0 320px; /* Le colonne non si stringono e hanno una larghezza fissa */
-    min-width: 320px;
+    flex: 1; /* Le colonne non si stringono e hanno una larghezza fissa */
+    min-width: 200px;
     background-color: var(--colore-sfondo-colonna);
     border-radius: 8px;
     display: flex;
@@ -63,6 +63,7 @@
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
+    min-height: 500px; // Scegli un valore che ti piace, es. 500px o 60vh
 }
 
 /* --- STILE DEI "CARTELLINI" (TASK CARD) --- */

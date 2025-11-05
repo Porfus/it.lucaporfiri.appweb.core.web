@@ -3,14 +3,14 @@
 
 <div class="task-card @Model.PrioritaCssClass @(Model.IsUrgente ? "is-urgent" : "") @(Model.IsCompletato ? "is-completed" : "")">
     <div class="task-header">
-        <span class="icon material-symbols-outlined">@Model.IconaTipoTask</span>
+        <span class="icon material-symbols-outlined"><i class="fas fa-@Model.IconaTipoTask" aria-hidden="true"></i></span>
         @Model.Titolo
     </div>
     <div class="task-body">@Model.Descrizione</div>
     <div class="task-footer">
         <span class="due-date">
-            <span class="icon material-symbols-outlined">hourglass_top</span>
-            Data: @Model.DataScadenzaLabel
+            <span class="fas-fa-hourglass"></span>
+            @Model.DataScadenzaLabel
         </span>
     </div>
 </div>

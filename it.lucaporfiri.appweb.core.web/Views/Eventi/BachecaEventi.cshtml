@@ -3,6 +3,9 @@
 @{
 	var titolo = "Bacheca Eventi del " + DateTime.UtcNow.ToString("dd/MM/yyyy");
 }
+@section Styles {
+    <link rel="stylesheet" href="~/lib/dragula/dragula.min.css" />
+}
 <!DOCTYPE html>
 <html lang="it">
 <body data-theme="light">
@@ -20,7 +23,7 @@
                 <!-- Colonne -->
                 @foreach (var colonnaBoard in Model.Colonne)
                 {
-                    <div class="kamban-column">
+                    <div class="kanban-column">
                         <div class="column-header">
                             <h2>@colonnaBoard.Titolo</h2>
                             <span class="task-count">@colonnaBoard.ConteggioTask</span>
@@ -40,3 +43,14 @@
 
 </body>
 </html>
+
+@section Scripts {
+    <script src="~/lib/dragula/dragula.min.js"></script>
+
+    <script type="text/javascript">
+        // inizializzazione Dragula 
+            document.addEventListener("DOMContentLoaded", function(){
+				var colonne = Array.from(document.querySelectorAll('.kanban-column .column-tasks'));
+            })
+    </script>
+}
