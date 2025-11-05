@@ -2,8 +2,9 @@
 @model BachecaEventiEventoViewModel
 
 <div class="task-card @Model.PrioritaCssClass @(Model.IsUrgente ? "is-urgent" : "") @(Model.IsCompletato ? "is-completed" : "")" id="evento_@Model.Id" data-evento-id="@Model.Id">
-    <div class="task-header">
-        <span class="icon material-symbols-outlined"><i class="fas fa-@Model.IconaTipoTask" aria-hidden="true"></i></span>
+	<div class="task-header">
+		<i class="fas fa-@Model.IconaTipoTask" aria-hidden="true"></i>
+        <span class="icon material-symbols-outlined"></span>
         @Model.Titolo
     </div>
     <div class="task-body">@Model.Descrizione</div>

@@ -973,6 +973,15 @@ h2 i {
   padding-bottom: 20px; /* Spazio per la barra di scorrimento */
 }
 
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
 /* Singola colonna del workflow */
 .kanban-column {
   flex: 1; /* Le colonne non si stringono e hanno una larghezza fissa */
@@ -1108,6 +1117,42 @@ h2 i {
 
 .is-completed .task-header {
   text-decoration: line-through;
+}
+
+/* --- COLORAZIONI SPECIFICHE DELLE COLONNE --- */
+#colonna-inbox.kanban-column {
+  background-color: #e3f2fd;
+}
+#colonna-inbox.kanban-column .column-header {
+  border-bottom-color: #90caf9;
+}
+
+#colonna-dafare.kanban-column {
+  background-color: #fff3e0;
+}
+#colonna-dafare.kanban-column .column-header {
+  border-bottom-color: #ffcc80;
+}
+
+#colonna-incorso.kanban-column {
+  background-color: #ede7f6;
+}
+#colonna-incorso.kanban-column .column-header {
+  border-bottom-color: #b39ddb;
+}
+
+#colonna-davalutare.kanban-column {
+  background-color: #e0f2f1;
+}
+#colonna-davalutare.kanban-column .column-header {
+  border-bottom-color: #80cbc4;
+}
+
+#colonna-completato.kanban-column {
+  background-color: #e8f5e9;
+}
+#colonna-completato.kanban-column .column-header {
+  border-bottom-color: #a5d6a7;
 }
 
 /* 5. Utils - Classi di aiuto */

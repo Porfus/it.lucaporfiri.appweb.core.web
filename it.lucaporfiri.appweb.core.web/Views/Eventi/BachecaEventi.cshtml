@@ -1,7 +1,7 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model BachecaEventiViewModel
 @{
-	var titolo = "Bacheca Eventi del " + DateTime.UtcNow.ToString("dd/MM/yyyy");
+    var titolo = "Bacheca Eventi del " + DateTime.UtcNow.ToString("dd/MM/yyyy");
 }
 @section Styles {
     <link rel="stylesheet" href="~/lib/dragula/dragula.min.css" />
@@ -19,6 +19,24 @@
 		</header>
 
 		<section>
+            <div class="kanban-header">
+                <div>
+                <a href="" class="btn btn-secondary">
+                    <i class="fas fa-calendar"></i>  @* Icona *@
+                    <span>Ordina Eventi per scadenza</span> @* Testo separato *@
+                </a>
+
+                <a class="btn btn-secondary">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Ordina Eventi per priorità</span>
+                </a>
+                </div>
+                <a class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    <span>Crea Evento</span>
+                </a>
+
+            </div>
             <div class="kanban-board">
                 <!-- Colonne -->
                 @foreach (var colonnaBoard in Model.Colonne)
@@ -147,7 +165,8 @@
                 'inbox': 0,
                 'dafare': 1,
                 'incorso': 2,
-                'completato': 3
+                'davalutare': 3,
+                'completato': 4
                 // Aggiungi gli altri tuoi stati qui... assicurati che i numeri
                 // corrispondano ai valori del tuo enum StatoWorkflow in C#
             };
@@ -171,10 +190,10 @@
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(dataToSend),
                 success: function(data, status, response){
-                    if(data.Successo == true){
+                    if(data.successo == true){
                         console.log("Stato aggiornato con successo");
                     }else{
-                        alert('ERRORE: '+ data.Messaggio);
+                        alert('ERRORE successo non true: '+ data.messaggio);
                     }
                 },
                 error: function(xhr, status, error){

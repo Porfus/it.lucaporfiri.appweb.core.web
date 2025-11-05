@@ -54,9 +54,10 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
             foreach (var stato in statiWorkflow)
             {
+
                 var colonna = new BachecaEventiColonnaViewModel
                 {
-                    Titolo = stato.ToString(),
+                    Titolo = _serviziEvento.GetTitoloPerColonna(stato),
                     IdColonna = $"colonna-{stato.ToString().ToLower().Replace(" ", "-")}"
                 };
 
@@ -88,16 +89,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             if (!ModelState.IsValid) 
             {
-                return Json(new { Successo = false, Messaggio = "Dati non validi." });
+                return Json(new { successo = false, messaggio = "Dati non validi." });
             }
             try
             {
                 _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato);
-                return Json(new { Successo = true });
+                return Json(new { successo = true });
             }
             catch (Exception ex)
             {
-                return Json(new { Successo = false, Messaggio = ex.Message });
+                return Json(new { successo = false, messaggio = ex.Message });
             }
         }
 

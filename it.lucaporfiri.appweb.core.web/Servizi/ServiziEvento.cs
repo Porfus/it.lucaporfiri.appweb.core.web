@@ -176,5 +176,27 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 _context.SaveChanges();
             }
         }
+
+        public string GetTitoloPerColonna(StatoWorkflow stato)
+        {
+            String titoloStato;
+            if (stato.Equals(StatoWorkflow.DaFare))
+            {
+                titoloStato = "Da Fare (questa settimana)";
+            }
+            else if (stato.Equals(StatoWorkflow.InCorso))
+            {
+                titoloStato = "In Corso (oggi)";
+            }
+            else if (stato.Equals(StatoWorkflow.DaValutare))
+            {
+                titoloStato = "Da Valutare";
+            }
+            else 
+            {
+                titoloStato = stato.ToString();
+            }
+            return titoloStato;
+        }
     }
 }
