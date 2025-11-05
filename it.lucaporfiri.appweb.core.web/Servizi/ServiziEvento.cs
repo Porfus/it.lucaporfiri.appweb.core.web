@@ -166,5 +166,15 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             } 
             return icona;
         }
+
+        public void AggiornaStatoEvento(int eventoId, int nuovoStato)
+        {
+            var evento = _context.Eventi.Where(e => e.Id == eventoId).FirstOrDefault();
+            if (evento != null) 
+            {
+                evento.Stato = (StatoWorkflow)nuovoStato;
+                _context.SaveChanges();
+            }
+        }
     }
 }

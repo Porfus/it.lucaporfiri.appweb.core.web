@@ -23,12 +23,12 @@
                 <!-- Colonne -->
                 @foreach (var colonnaBoard in Model.Colonne)
                 {
-                    <div class="kanban-column">
+                    <div class="kanban-column" id="@colonnaBoard.IdColonna">
                         <div class="column-header">
                             <h2>@colonnaBoard.Titolo</h2>
                             <span class="task-count">@colonnaBoard.ConteggioTask</span>
                         </div>
-                        <div class="column-tasks">
+                        <div class="column-tasks" id="task_container_@colonnaBoard.IdColonna">
                             <!-- Eventi -->
                             @foreach (var evento in colonnaBoard.Eventi)
                             {
@@ -49,8 +49,140 @@
 
     <script type="text/javascript">
         // inizializzazione Dragula 
-            document.addEventListener("DOMContentLoaded", function(){
-				var colonne = Array.from(document.querySelectorAll('.kanban-column .column-tasks'));
-            })
+
+        let dragginTime = false;
+        let droppingDivId = "";
+        let droppingDivScrollingTop = 0;
+
+        $(document).ready(function(){
+            $(window).bind('mousewheel', function(event){
+                if(!dragginTime)
+                    return;
+                let target = $('#' + droppingDivId);
+                if(event.originalEvent.wheelDelta >= 0){
+                    droppingDivScrollingTop -= 100; 
+                }else{
+					droppingDivScrollingTop += 100;
+                }
+				target.scrollTop(droppingDivScrollingTop);
+            });
+			jInizializzaDragAndDrop();
+        });
+
+        function jInizializzaDragAndDrop(){
+			const containers = Array.from(document.querySelectorAll('.column-tasks'));
+
+            const drake = dragula(containers, {
+                revertOnSpill: true,
+
+                moves: function (el, source, handle, sibling) {
+                    return true;
+				},
+
+                accepts: function (el, target, source, sibling) {
+                    // droppingDivId = $(target).attr('id');
+                    // droppingDivScrollingTop = $(target).scrollTop();
+                    // draggingTime = true;
+                    if($(el).hasClass('is-completed')){
+                        return false;
+					}
+                    //jAggiornaKanbanBoard();
+				    return true;
+                },
+
+                invalid: function (el, handle) {
+                        return false;
+                },
+
+                direction: 'vertical',             // Y axis is considered when determining where an element would be dropped
+                copy: false,                       // elements are moved by default, not copied
+                copySortSource: false,             // elements in copy-source containers can be reordered
+                revertOnSpill: false,              // spilling will put the element back where it was dragged from, if this is true
+                removeOnSpill: false,              // spilling will `.remove` the element, if this is true
+                mirrorContainer: document.body,    // set the element that gets mirror elements appended
+                ignoreInputTextSelection: true,     // allows users to select input text, see details below
+                slideFactorX: 0,               // allows users to select the amount of movement on the X axis before it is considered a drag instead of a click
+                slideFactorY: 0,               // allows users to select the amount of movement on the Y axis before it is considered a drag instead of a click
+            });
+
+            // Scatenato quando inizi a trascinare un elemento
+            drake.on('drag', function(el, source){
+				dragginTime = true;
+                droppingDivId = $(source).attr('id');// Imposta il container iniziale
+            });
+
+            // Scatenato quando il trascinamento finisce (in qualsiasi modo)
+			drake.on('dragend', function(el){
+				dragginTime = false;
+            });
+
+            // Scatenato quando un elemento "passa sopra" un nuovo container
+			drake.on('over', function(el, container, source){
+				droppingDivId = $(container).attr('id');
+				droppingDivScrollingTop = $(container).scrollTop();
+            });
+
+            // Scatenato quando un elemento viene rilasciato con successo
+			drake.on('drop', function(el, target, source, sibling){
+                console.log('Elemento rilasciato!');
+				const eventoId = $(el).data('evento-id');
+                const nuovaColonnaId = $(target).parent().attr('id');
+                const vecchiaColonnaId = $(source).parent().attr('id');
+                console.log(`Evento ${eventoId} spostato da ${vecchiaColonnaId} a ${nuovaColonnaId}`);
+
+                // Qui chiami la tua funzione per salvare lo stato
+                jAggiornaKanbanBoard(eventoId, nuovaColonnaId);
+            });
+
+
+        } //End jCreaDragEDropSuColonne
+
+        function jAggiornaKanbanBoard(eventoId, nuovaColonnaId)
+        {
+            let nomeStato = nuovaColonnaId.replace('colonna-', '');
+
+            // --- MAPPING DA STRINGA A INTERO ---
+            // Crea un oggetto per mappare i nomi degli stati ai loro valori enum in C#
+            const statoMap = {
+                'inbox': 0,
+                'dafare': 1,
+                'incorso': 2,
+                'completato': 3
+                // Aggiungi gli altri tuoi stati qui... assicurati che i numeri
+                // corrispondano ai valori del tuo enum StatoWorkflow in C#
+            };
+
+            let nuovoStatoInt = statoMap[nomeStato.toLowerCase()];
+
+            // Controllo di sicurezza
+            if (nuovoStatoInt === undefined) {
+                alert('Stato non valido: ' + nomeStato);
+                return;
+            }
+
+            const dataToSend = {
+                EventoId: parseInt(eventoId),
+                NuovoStato: nuovoStatoInt
+            };
+
+            $.ajax({
+                url: '/Eventi/AggiornaStatoEvento',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(dataToSend),
+                success: function(data, status, response){
+                    if(data.Successo == true){
+                        console.log("Stato aggiornato con successo");
+                    }else{
+                        alert('ERRORE: '+ data.Messaggio);
+                    }
+                },
+                error: function(xhr, status, error){
+                                console.error("Errore AJAX:", status, error);
+            console.error("Risposta del server:", xhr.responseText);
+            alert('Si è verificato un errore durante la comunicazione con il server.');
+                }
+            });
+        }
     </script>
 }

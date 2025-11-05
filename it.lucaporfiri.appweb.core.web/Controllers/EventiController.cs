@@ -2,6 +2,7 @@
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using it.lucaporfiri.appweb.core.web.ViewModels.dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +81,24 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 vm.Colonne.Add(colonna);
             }
             return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult AggiornaStatoEvento([FromBody] AggiornaStatoEvento model) 
+        {
+            if (!ModelState.IsValid) 
+            {
+                return Json(new { Successo = false, Messaggio = "Dati non validi." });
+            }
+            try
+            {
+                _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato);
+                return Json(new { Successo = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Successo = false, Messaggio = ex.Message });
+            }
         }
 
         // GET: Eventi
