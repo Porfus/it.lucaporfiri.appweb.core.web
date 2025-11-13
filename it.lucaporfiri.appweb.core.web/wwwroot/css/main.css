@@ -73,6 +73,25 @@ h2 i {
   margin-right: 15px;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 15px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.main-actions {
+  display: flex;
+  gap: 10px;
+}
+
 /* 2. Layout - Struttura della pagina, header */
 /* ================================================ */
 /*          HEADER                                  */
@@ -625,15 +644,22 @@ h2 i {
 
 /* Stili tabella generica */
 .table-controls {
-  position: relative;
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
-.table-controls i {
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.search-box i {
   position: absolute;
   left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
   color: var(--text-secondary);
 }
 

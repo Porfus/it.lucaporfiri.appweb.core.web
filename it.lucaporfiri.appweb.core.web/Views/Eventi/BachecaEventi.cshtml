@@ -31,7 +31,7 @@
                     <span>Ordina Eventi per priorità</span>
                 </a>
                 </div>
-                <a class="btn btn-primary">
+                <a id="btn-apri-modale-crea" class="btn btn-primary">
                     <i class="fas fa-plus"></i>
                     <span>Crea Evento</span>
                 </a>
@@ -56,6 +56,25 @@
                     </div>
                 }
             </div>
+            @* --- STRUTTURA DELLA MODALE BOOTSTRAP (vuota per ora) --- *@
+            <div class="modal fade" id="modal-crea-evento" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Crea Nuovo Evento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body-content">
+                            @* Il contenuto del form verrà caricato qui dal JavaScript *@
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                            @* Questo pulsante invierà il form via AJAX *@
+                            <button type="button" class="btn btn-primary" id="btn-salva-evento">Salva</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</section>
 	</div>
 
@@ -64,6 +83,8 @@
 
 @section Scripts {
     <script src="~/lib/dragula/dragula.min.js"></script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script type="text/javascript">
         // inizializzazione Dragula 
@@ -203,5 +224,69 @@
                 }
             });
         }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const modalElement = document.getElementById('modal-crea-evento');
+            const modal = new bootstrap.Modal(modalElement);
+            const modalBody = $('#modal-body-content');
+
+			// --- 1. GESTIONE APERTURA MODALE ---
+            $('#btn-apri-modale-crea').on('click', function() {
+                console.log('ok button id');
+                modalBody.html('<p>Caricamento... </p>');
+                modal.show();
+
+                modalBody.load('/Eventi/CreaEventoManuale');
+            });
+
+            // --- 2. GESTIONE SALVATAGGIO VIA AJAX ---
+            $('#btn-salva-evento').on('click', function () {
+
+                const form = $('#form-crea-evento');
+
+                // Verifica la validazione lato client (se l'hai abilitata)
+                if (form.valid()) {
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: form.attr('method'),
+                        data: form.serialize(), // Prende tutti i dati del form
+                        success: function (response) {
+                            if (response.successo === true) {
+                                modal.hide();
+
+                                // --- LOGICA DI AGGIORNAMENTO DINAMICO ---
+
+                                // 1. Trova la colonna 'Inbox'. L'ID deve essere prevedibile.
+                                // Assumiamo che la colonna Inbox abbia id="colonna-inbox"
+                                const inboxColumn = $('#colonna-inbox .column-tasks');
+
+                                // 2. Aggiungi il nuovo HTML del cartellino in cima alla colonna
+                                if (inboxColumn.length) {
+                                    inboxColumn.prepend(response.nuovoCardHtml);
+
+                                    // 3. (Opzionale ma bello) Aggiorna il contatore dei task
+                                    const countSpan = $('#colonna-inbox .task-count');
+                                    const currentCount = parseInt(countSpan.text());
+                                    countSpan.text(currentCount + 1);
+                                } else {
+                                    // Se non troviamo la colonna, facciamo un fallback al reload
+                                    location.reload();
+                                }
+
+                            } else {
+                                // Se la validazione server-side è fallita,
+                                // il controller ha restituito l'HTML del form con gli errori.
+                                // Rimpiazziamo il corpo della modale con questo nuovo HTML.
+                                modalBody.html(response);
+                            }
+                        },
+                        error: function () {
+                            alert("Si è verificato un errore durante il salvataggio.");
+                        }
+                    });
+                }
+            });
+        });
     </script>
 }

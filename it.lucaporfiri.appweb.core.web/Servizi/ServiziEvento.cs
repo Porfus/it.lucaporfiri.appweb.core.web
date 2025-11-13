@@ -1,6 +1,6 @@
 ﻿using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
-using static it.lucaporfiri.appweb.core.web.Models.Eventi;
+using static it.lucaporfiri.appweb.core.web.Models.Evento;
 
 namespace it.lucaporfiri.appweb.core.web.Servizi
 {
@@ -22,38 +22,37 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 .Select(a => a.Id)
                 .ToList();
 
-            foreach (var atletaId in atletiAttiviId) 
+            foreach (var atletaId in atletiAttiviId)
             {
                 var ultimaScheda = _context.Scheda
                     .Where(e => e.AtletaId == atletaId)
                     .OrderByDescending(e => e.DataFine)
                     .FirstOrDefault();
 
-                if (ultimaScheda != null  && ultimaScheda.DataFine <= DateTime.UtcNow.AddDays(7)) 
+                if (ultimaScheda != null && ultimaScheda.DataFine <= DateTime.UtcNow.AddDays(7))
                 {
                     // Controlla se un task di questo tipo esiste già per questo atleta
                     var eventoEsistente = _context.Eventi.FirstOrDefault(e =>
                         e.AtletaId == atletaId &&
-                        e.Tipo == Models.Eventi.TipoEvento.ScadenzaScheda &&
+                        e.Tipo == Evento.TipoEvento.ScadenzaScheda &&
                         e.DataScadenza == ultimaScheda.DataFine &&
-                        e.Stato != Eventi.StatoWorkflow.Completato);
+                        e.Stato != Evento.StatoWorkflow.Completato);
 
                     var atleta = _context.Atleta.FirstOrDefault(a => a.Id == atletaId);
 
                     if (eventoEsistente == null && atleta != null)
                     {
-                        var nuovoEvento = new Eventi
+                        var nuovoEvento = new Evento
                         {
                             AtletaId = atletaId,
-                            Tipo = Models.Eventi.TipoEvento.ScadenzaScheda,
+                            Tipo = Evento.TipoEvento.ScadenzaScheda,
                             DataScadenza = ultimaScheda.DataFine,
                             Titolo = $"Preparazione Nuova Scheda",
                             Descrizione = $"Atleta: {atleta.Nome} {atleta.Cognome}",
-                            Stato = Eventi.StatoWorkflow.Inbox,
-                            Priorita = CalcolaPrioritaIniziale(ultimaScheda.DataFine, TipoEvento.ScadenzaScheda) 
+                            Stato = Evento.StatoWorkflow.Inbox,
+                            Priorita = CalcolaPrioritaIniziale(ultimaScheda.DataFine, TipoEvento.ScadenzaScheda)
                         };
-                        _context.Eventi.Add(nuovoEvento);
-                        await _context.SaveChangesAsync();
+                        await CreaEventoAsync(nuovoEvento);
                     }
                 }
 
@@ -93,14 +92,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return PriorityScore;
         }
 
-        public List<Eventi> GetEventiAttivi() 
+        public List<Evento> GetEventiAttivi()
         {
             return _context.Eventi
-                .Where(e => e.Stato != Eventi.StatoWorkflow.Completato)
+                .Where(e => e.Stato != Evento.StatoWorkflow.Completato)
                 .ToList();
         }
 
-        public void PrioritizzaEventi(List<Eventi> eventiAttivi)
+        public void PrioritizzaEventi(List<Evento> eventiAttivi)
         {
             foreach (var evento in eventiAttivi)
             {
@@ -130,19 +129,19 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public string FormattaDataScadenza(DateTime dataScadenza)
         {
             var giorniRimanenti = (dataScadenza - DateTime.Now).TotalDays;
-            if (giorniRimanenti > 7) 
+            if (giorniRimanenti > 7)
             {
                 return $"Entro: {dataScadenza.ToString("dd MMM yyyy")}";
             }
-            else if (giorniRimanenti >= 1 && giorniRimanenti <= 7) 
+            else if (giorniRimanenti >= 1 && giorniRimanenti <= 7)
             {
                 return $"Scade tra {Math.Ceiling(giorniRimanenti)} giorni";
             }
-            else if (giorniRimanenti >= 0 && giorniRimanenti < 1) 
+            else if (giorniRimanenti >= 0 && giorniRimanenti < 1)
             {
                 return "Scade Oggi";
             }
-            else 
+            else
             {
                 return $"Scaduto {Math.Abs(Math.Ceiling(giorniRimanenti))} giorni fa";
             }
@@ -151,10 +150,10 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         public string GetIconaPerTipoEvento(TipoEvento tipo)
         {
             var icona = "";
-            switch (tipo) 
+            switch (tipo)
             {
                 case TipoEvento.ScadenzaScheda:
-                    icona = "file_lines"; break;
+                    icona = "file-text"; break;
                 case TipoEvento.GaraDaPreparare:
                     icona = "dumbbell"; break;
                 case TipoEvento.AtletaDaContattare:
@@ -163,14 +162,14 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                     icona = "calendar_xmark"; break;
                 default:
                     icona = "note"; break;
-            } 
+            }
             return icona;
         }
 
         public void AggiornaStatoEvento(int eventoId, int nuovoStato)
         {
             var evento = _context.Eventi.Where(e => e.Id == eventoId).FirstOrDefault();
-            if (evento != null) 
+            if (evento != null)
             {
                 evento.Stato = (StatoWorkflow)nuovoStato;
                 _context.SaveChanges();
@@ -182,21 +181,34 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             String titoloStato;
             if (stato.Equals(StatoWorkflow.DaFare))
             {
-                titoloStato = "Da Fare (questa settimana)";
+                titoloStato = "Da Fare In Settimana";
             }
             else if (stato.Equals(StatoWorkflow.InCorso))
             {
-                titoloStato = "In Corso (oggi)";
+                titoloStato = "In Corso / Oggi";
             }
             else if (stato.Equals(StatoWorkflow.DaValutare))
             {
                 titoloStato = "Da Valutare";
             }
-            else 
+            else
             {
                 titoloStato = stato.ToString();
             }
             return titoloStato;
+        }
+
+        public async Task CreaEventoAsync(Evento nuovoEvento)
+        {
+            try
+            {
+                _context.Eventi.Add(nuovoEvento);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Errore durante la creazione dell'evento: " + ex.Message);
+            }
         }
     }
 }

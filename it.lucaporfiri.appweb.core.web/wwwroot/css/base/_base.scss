@@ -65,3 +65,22 @@ h2 {
         color: var(--brand-red);
         margin-right: 15px;
     }
+
+.section-header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem; 
+}
+
+.main-actions {
+    display: flex;
+    gap: 10px; 
+}

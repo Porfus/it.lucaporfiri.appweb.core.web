@@ -1,4 +1,5 @@
 ﻿using it.lucaporfiri.appweb.core.web.Data;
+using it.lucaporfiri.appweb.core.web.Helpers;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
@@ -10,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static it.lucaporfiri.appweb.core.web.Models.Eventi;
+using static it.lucaporfiri.appweb.core.web.Models.Evento;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
@@ -18,13 +19,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
     {
         private readonly ContestoApp _context;
         private readonly ServiziEvento _serviziEvento;
+        private readonly ServiziAtleta _serviziAtleta;
 
-        public EventiController(ContestoApp context, ServiziEvento serviziEvento)
+        public EventiController(ContestoApp context, ServiziEvento serviziEvento, ServiziAtleta serviziAtleta)
         {
             _context = context;
             _serviziEvento = serviziEvento;
+            _serviziAtleta = serviziAtleta;
         }
 
+        // GET: BachecaEventi
         public async Task<ActionResult> BachecaEventiAsync()
         {
             // definisce le colonne in modo programmatico 
@@ -38,7 +42,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
 
             //estrae tutti gli eventi non completati
-            List<Eventi> eventiAttivi = _serviziEvento.GetEventiAttivi();
+            List<Evento> eventiAttivi = _serviziEvento.GetEventiAttivi();
 
             //prioritizza gli eventi
             _serviziEvento.PrioritizzaEventi(eventiAttivi);
@@ -102,6 +106,84 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }
         }
 
+        //GET: Eventi/CreaEventoManuale
+        public IActionResult CreaEventoManuale() 
+        {
+            CreaEventoManualeViewModel vm = new CreaEventoManualeViewModel();
+            List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
+            vm.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
+            {
+                // Testo visualizzato: es. "Mario Rossi"
+                Text = $"{atleta.Nome} {atleta.Cognome}",
+
+                // Valore dell'opzione: l'ID dell'atleta
+                Value = atleta.Id.ToString()
+
+            }).ToList();
+            return PartialView("_Partial/_CreaEventoManuale", vm);
+
+        }
+
+        // POST: Eventi/CreaEventoManuale
+        [HttpPost]
+        public async Task<IActionResult> CreaEventoManualeAsync(CreaEventoManualeViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var nuovoEvento = new Evento
+                {
+                    Titolo = viewModel.Titolo,
+                    DataScadenza = viewModel.DataScadenza,
+                    Tipo = viewModel.TipoEventoSelezionato,
+                    Stato = StatoWorkflow.Inbox,
+                    AtletaId = viewModel.AtletaSelezionatoId,
+                    Descrizione = viewModel.Descrizione
+                };
+
+                await _serviziEvento.CreaEventoAsync(nuovoEvento);
+                var eventoCardViewModel = new BachecaEventiEventoViewModel 
+                {
+                    Id = nuovoEvento.Id,
+                    Titolo = nuovoEvento.Titolo,
+                    Descrizione = $"Atleta: {nuovoEvento.Atleta?.Nome}",
+                    PrioritaCssClass = _serviziEvento.GetCssClassPerPriorita(nuovoEvento.Priorita ?? 0),
+                    IsUrgente = (nuovoEvento.DataScadenza - DateTime.Now).TotalDays < 2,
+                    DataScadenzaLabel = _serviziEvento.FormattaDataScadenza(nuovoEvento.DataScadenza),
+                    IconaTipoTask = _serviziEvento.GetIconaPerTipoEvento(nuovoEvento.Tipo),
+                    IsCompletato = nuovoEvento.Stato == StatoWorkflow.Completato
+                };
+
+                string nuovoCardHtml = await this.RenderViewToStringAsync("_Partial/_TemplateEventoCard", eventoCardViewModel);
+                // Restituisce un JSON di successo con l'HTML del nuovo cartellino evento
+                return Json(new
+                {
+                    successo = true,
+                    nuovoCardHtml = nuovoCardHtml
+                });
+            }
+
+            // Se il modello non è valido, restituisce la Partial View di nuovo
+            // con i messaggi di errore. L'AJAX la userà per rimpiazzare il form.
+            // Dobbiamo ripopolare la dropdown!
+            viewModel.OpzioniTipoEvento = Enum.GetValues(typeof(TipoEvento))
+                                        .Cast<TipoEvento>()
+                                        .Where(tipo => tipo != TipoEvento.ScadenzaScheda)
+                                        .Select(tipo => new SelectListItem
+                                        {
+                                            Text = tipo.ToString(),
+                                            Value = ((int)tipo).ToString()
+                                        }).ToList();
+
+            List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
+            viewModel.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
+            {
+                Text = $"{atleta.Nome} {atleta.Cognome}",
+                Value = atleta.Id.ToString()
+            }).ToList();
+
+            return PartialView("_CreaEventoManuale", viewModel);
+        }
+
         // GET: Eventi
         public async Task<IActionResult> Index()
         {
@@ -140,7 +222,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titolo,Descrizione,DataScadenza,Priorita,AtletaId,Stato")] Eventi eventi)
+        public async Task<IActionResult> Create([Bind("Id,Titolo,Descrizione,DataScadenza,Priorita,AtletaId,Stato")] Evento eventi)
         {
             if (ModelState.IsValid)
             {
@@ -174,7 +256,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titolo,Descrizione,DataScadenza,Priorita,AtletaId,Stato")] Eventi eventi)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Titolo,Descrizione,DataScadenza,Priorita,AtletaId,Stato")] Evento eventi)
         {
             if (id != eventi.Id)
             {

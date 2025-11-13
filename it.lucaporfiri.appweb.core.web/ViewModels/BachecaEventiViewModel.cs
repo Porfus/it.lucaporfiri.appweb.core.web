@@ -1,5 +1,5 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
-using static it.lucaporfiri.appweb.core.web.Models.Eventi;
+using static it.lucaporfiri.appweb.core.web.Models.Evento;
 
 namespace it.lucaporfiri.appweb.core.web.ViewModels
 {

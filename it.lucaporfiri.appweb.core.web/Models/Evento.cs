@@ -1,6 +1,6 @@
 ﻿namespace it.lucaporfiri.appweb.core.web.Models
 {
-    public class Eventi
+    public class Evento
     {
         public int Id { get; set; }
         public string? Titolo { get; set; }
@@ -8,6 +8,8 @@
         public DateTime DataScadenza { get; set; }
         
         public int? Priorita { get; set; }
+
+        public int? OrdineInTipoEvento { get; set; }
 
         public int AtletaId { get; set; }
         public virtual Atleta? Atleta { get; set; }

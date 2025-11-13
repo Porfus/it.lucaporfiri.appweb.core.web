@@ -17,6 +17,6 @@ namespace it.lucaporfiri.appweb.core.web.Data
         public DbSet<Abbonamento> Abbonamento { get; set; } = default!;
         public DbSet<Scheda> Scheda { get; set; } = default!;
         public DbSet<Atleta> Atleta { get; set; } = default!;
-        public DbSet<Eventi> Eventi { get; set; } = default!;
+        public DbSet<Evento> Eventi { get; set; } = default!;
     }
 }

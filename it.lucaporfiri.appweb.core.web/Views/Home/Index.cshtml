@@ -56,10 +56,19 @@
         </div>
 
         <section class="main-content">
-            <h2><i class="fas fa-list-ul"></i> Lista di Lavoro</h2>
+            <div class="section-header">
+				<h2><i class="fas fa-list-ul"></i> Lista di Lavoro</h2>
+			</div>
             <div class="table-controls">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Cerca atleta per nome...">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cerca atleta per nome...">
+                </div>
+                <div class="main-actions">
+                    <a href="/Scheda/Create" class="btn btn-secondary"><i class="fa-solid fa-file-lines"></i> Crea Scheda</a>
+                    <a href="/Abbonamento/Create" class="btn btn-secondary"><i class="fas fa-calendar-plus"></i> Nuovo Abbonamento</a>
+                    <a href="/Atleta/Create" class="btn btn-primary"><i class="fas fa-user-plus"></i> Nuovo Atleta</a>
+                </div>
             </div>
             <table id="atleti-dashboard-table" class="display" style="width:100%">
                 <thead>
@@ -74,15 +83,10 @@
                 <tbody id="atleti-table-body">
                 </tbody>
             </table>
-            <div class="main-actions">
-                <a href="/Atleta/Index" class="btn btn-secondary"><i class="fas fa-list"></i> Lista Atleti</a>
-                <a href="/Abbonamento/Create" class="btn btn-secondary"><i class="fas fa-calendar-plus"></i> Nuovo Abbonamento</a>
-                <a href="/Atleta/Create" class="btn btn-primary"><i class="fas fa-user-plus"></i> Nuovo Atleta</a>
-            </div>
         </section>
 
         <section class="critical-section">
-            <h2><i class="fas fa-triangle-exclamation"></i> Riepilogo Situazioni Critiche</h2>
+            <h2><i class="fas fa-triangle-exclamation"></i> Riepilogo Eventi</h2>
             <div class="critical-alerts-list">
                  @if (Model.AlertAtleti != null)
                 {
