@@ -110,16 +110,16 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         public IActionResult CreaEventoManuale() 
         {
             CreaEventoManualeViewModel vm = new CreaEventoManualeViewModel();
-            List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
-            vm.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
-            {
-                // Testo visualizzato: es. "Mario Rossi"
-                Text = $"{atleta.Nome} {atleta.Cognome}",
+            //List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
+            //vm.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
+            //{
+            //    // Testo visualizzato: es. "Mario Rossi"
+            //    Text = $"{atleta.Nome} {atleta.Cognome}",
 
-                // Valore dell'opzione: l'ID dell'atleta
-                Value = atleta.Id.ToString()
+            //    // Valore dell'opzione: l'ID dell'atleta
+            //    Value = atleta.Id.ToString()
 
-            }).ToList();
+            //}).ToList();
             return PartialView("_Partial/_CreaEventoManuale", vm);
 
         }
@@ -136,7 +136,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                     DataScadenza = viewModel.DataScadenza,
                     Tipo = viewModel.TipoEventoSelezionato,
                     Stato = StatoWorkflow.Inbox,
-                    AtletaId = viewModel.AtletaSelezionatoId,
+                    //AtletaId = viewModel.AtletaSelezionatoId,
                     Descrizione = viewModel.Descrizione
                 };
 
@@ -174,12 +174,12 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                                             Value = ((int)tipo).ToString()
                                         }).ToList();
 
-            List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
-            viewModel.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
-            {
-                Text = $"{atleta.Nome} {atleta.Cognome}",
-                Value = atleta.Id.ToString()
-            }).ToList();
+            //List<Atleta> atletiAttivi = _serviziAtleta.GetAtletiAttivi();
+            //viewModel.OpzioniAtleti = atletiAttivi.Select(atleta => new SelectListItem
+            //{
+            //    Text = $"{atleta.Nome} {atleta.Cognome}",
+            //    Value = atleta.Id.ToString()
+            //}).ToList();
 
             return PartialView("_CreaEventoManuale", viewModel);
         }
