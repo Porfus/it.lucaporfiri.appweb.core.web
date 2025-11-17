@@ -8,5 +8,7 @@ namespace it.lucaporfiri.appweb.core.web.ViewModels.dtos
         public int EventoId { get; set; }
        
         public int NuovoStato { get; set; }
+
+        public double NuovaPosizione { get; set; }
     }
 }

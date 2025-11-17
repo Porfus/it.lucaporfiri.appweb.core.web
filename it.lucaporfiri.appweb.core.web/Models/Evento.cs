@@ -9,9 +9,9 @@
         
         public int? Priorita { get; set; }
 
-        public int? OrdineInTipoEvento { get; set; }
+        public double? Posizione { get; set; }
 
-        public int AtletaId { get; set; }
+        public int? AtletaId { get; set; }
         public virtual Atleta? Atleta { get; set; }
         public StatoWorkflow Stato { get; set; }
         public TipoEvento Tipo { get; set; }

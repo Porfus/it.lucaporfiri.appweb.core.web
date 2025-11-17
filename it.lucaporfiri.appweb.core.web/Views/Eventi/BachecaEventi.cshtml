@@ -21,12 +21,12 @@
 		<section>
             <div class="kanban-header">
                 <div>
-                <a href="" class="btn btn-secondary">
+                <a href="/Eventi/OrdinaEventi?dataScadenza=true" class="btn btn-secondary">
                     <i class="fas fa-calendar"></i>  @* Icona *@
                     <span>Ordina Eventi per scadenza</span> @* Testo separato *@
                 </a>
 
-                <a class="btn btn-secondary">
+                    <a href="/Eventi/OrdinaEventi" class="btn btn-secondary">
                     <i class="fas fa-list-ol"></i>
                     <span>Ordina Eventi per priorità</span>
                 </a>
@@ -169,14 +169,48 @@
                 const vecchiaColonnaId = $(source).parent().attr('id');
                 console.log(`Evento ${eventoId} spostato da ${vecchiaColonnaId} a ${nuovaColonnaId}`);
 
-                // Qui chiami la tua funzione per salvare lo stato
-                jAggiornaKanbanBoard(eventoId, nuovaColonnaId);
+                //calcolo nuova posizione
+                let nuovaPosizione;
+
+                const prevElem = $(el).prev();
+                const nextElem = $(el).next(); 
+
+                if (prevElem.length > 0 && nextElem.length > 0) {
+                    // Caso 1: Rilasciato in mezzo a due elementi
+                    const posPrecedente = parseFloat(prevElem.data('posizione'));
+                    const posSuccessiva = parseFloat(nextElem.data('posizione'));
+                    nuovaPosizione = (posPrecedente + posSuccessiva) / 2.0;
+                    console.log('Rilasciato in mezzo. Nuova posizione: ' + nuovaPosizione);
+
+                } else if (prevElem.length === 0 && nextElem.length > 0) {
+                    // Caso 2: Rilasciato all'inizio della lista
+                    const posSuccessiva = parseFloat(nextElem.data('posizione'));
+                    nuovaPosizione = posSuccessiva / 2.0;
+                    console.log('Rilasciato all\'inizio. Nuova posizione: ' + nuovaPosizione);
+
+                } else if (prevElem.length > 0 && nextElem.length === 0) {
+                    // Caso 3: Rilasciato alla fine della lista
+                    const posPrecedente = parseFloat(prevElem.data('posizione'));
+                    nuovaPosizione = posPrecedente + 1.0;
+                    console.log('Rilasciato alla fine. Nuova posizione: ' + nuovaPosizione);
+
+                } else {
+                    // Caso 4: Unico elemento nella colonna
+                    nuovaPosizione = 1.0;
+                    console.log('Unico elemento. Nuova posizione: ' + nuovaPosizione);
+                }
+
+                // Aggiorna il data-attribute e preparati a inviare al server
+                $(el).data('posizione', nuovaPosizione);
+
+                // Chiama la funzione di aggiornamento
+                jAggiornaKanbanBoard(eventoId, nuovaColonnaId, nuovaPosizione);
             });
 
 
         } //End jCreaDragEDropSuColonne
 
-        function jAggiornaKanbanBoard(eventoId, nuovaColonnaId)
+        function jAggiornaKanbanBoard(eventoId, nuovaColonnaId, nuovaPosizione)
         {
             let nomeStato = nuovaColonnaId.replace('colonna-', '');
 
@@ -202,7 +236,8 @@
 
             const dataToSend = {
                 EventoId: parseInt(eventoId),
-                NuovoStato: nuovoStatoInt
+                NuovoStato: nuovoStatoInt,
+				NuovaPosizione: parseFloat(nuovaPosizione)
             };
 
             $.ajax({

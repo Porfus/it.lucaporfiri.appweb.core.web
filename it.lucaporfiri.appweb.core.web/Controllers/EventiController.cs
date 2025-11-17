@@ -29,6 +29,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         // GET: BachecaEventi
+        [ActionName("BachecaEventi")]
         public async Task<ActionResult> BachecaEventiAsync()
         {
             // definisce le colonne in modo programmatico 
@@ -40,6 +41,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             //aggiorno gli eventi automatici
             await _serviziEvento.SincronizzaEventiAutomatici();
 
+            //inizializza le posizioni mancanti degli eventi (default di priorità)
+            _serviziEvento.InizializzaPosizioniMancanti();
 
             //estrae tutti gli eventi non completati
             List<Evento> eventiAttivi = _serviziEvento.GetEventiAttivi();
@@ -67,7 +70,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
                 if (taskRaggruppatiPerStato.ContainsKey(stato))
                 {
-                    foreach (var evento in taskRaggruppatiPerStato[stato])
+                    //ordina i task all'interno della colonna in base all'ordine definito
+                    foreach (var evento in taskRaggruppatiPerStato[stato].OrderBy(e => e.Posizione))
                     {
                         var eventoVm = new BachecaEventiEventoViewModel
                         {
@@ -78,7 +82,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                             IsUrgente = (evento.DataScadenza - DateTime.Now).TotalDays < 2,
                             DataScadenzaLabel = _serviziEvento.FormattaDataScadenza(evento.DataScadenza),
                             IconaTipoTask = _serviziEvento.GetIconaPerTipoEvento(evento.Tipo),
-                            IsCompletato = evento.Stato == StatoWorkflow.Completato
+                            IsCompletato = evento.Stato == StatoWorkflow.Completato,
+                            Posizione = evento.Posizione ?? 0
                         };
                         colonna.Eventi.Add(eventoVm);
                     }
@@ -97,7 +102,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }
             try
             {
-                _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato);
+                _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato, model.NuovaPosizione);
                 return Json(new { successo = true });
             }
             catch (Exception ex)
@@ -145,7 +150,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 {
                     Id = nuovoEvento.Id,
                     Titolo = nuovoEvento.Titolo,
-                    Descrizione = $"Atleta: {nuovoEvento.Atleta?.Nome}",
+                    Descrizione = nuovoEvento.Descrizione,
                     PrioritaCssClass = _serviziEvento.GetCssClassPerPriorita(nuovoEvento.Priorita ?? 0),
                     IsUrgente = (nuovoEvento.DataScadenza - DateTime.Now).TotalDays < 2,
                     DataScadenzaLabel = _serviziEvento.FormattaDataScadenza(nuovoEvento.DataScadenza),
@@ -183,6 +188,15 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
             return PartialView("_CreaEventoManuale", viewModel);
         }
+
+        //GET: Eventi/OrdinaEventi
+        public async Task<IActionResult> OrdinaEventi(bool dataScadenza = false)
+        {
+            await _serviziEvento.OrdinaEventiAsync(dataScadenza);
+
+            return RedirectToAction("BachecaEventi");
+        }
+
 
         // GET: Eventi
         public async Task<IActionResult> Index()
