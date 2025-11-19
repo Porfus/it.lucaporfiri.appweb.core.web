@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using it.lucaporfiri.appweb.core.web.Data;
 
@@ -11,9 +12,11 @@ using it.lucaporfiri.appweb.core.web.Data;
 namespace it.lucaporfiri.appweb.core.web.Migrations
 {
     [DbContext(typeof(ContestoApp))]
-    partial class ContestoAppModelSnapshot : ModelSnapshot
+    [Migration("20251104150930_Eventi")]
+    partial class Eventi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,7 +91,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                     b.ToTable("Atleta");
                 });
 
-            modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Evento", b =>
+            modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Eventi", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,7 +99,7 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AtletaId")
+                    b.Property<int>("AtletaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataScadenza")
@@ -104,9 +107,6 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
 
                     b.Property<string>("Descrizione")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("Posizione")
-                        .HasColumnType("float");
 
                     b.Property<int?>("Priorita")
                         .HasColumnType("int");
@@ -177,11 +177,13 @@ namespace it.lucaporfiri.appweb.core.web.Migrations
                     b.Navigation("Atleta");
                 });
 
-            modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Evento", b =>
+            modelBuilder.Entity("it.lucaporfiri.appweb.core.web.Models.Eventi", b =>
                 {
                     b.HasOne("it.lucaporfiri.appweb.core.web.Models.Atleta", "Atleta")
                         .WithMany("Eventi")
-                        .HasForeignKey("AtletaId");
+                        .HasForeignKey("AtletaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Atleta");
                 });

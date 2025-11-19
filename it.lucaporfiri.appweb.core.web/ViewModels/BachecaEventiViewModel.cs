@@ -1,9 +1,17 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
+using static it.lucaporfiri.appweb.core.web.Models.Evento;
 
 namespace it.lucaporfiri.appweb.core.web.ViewModels
 {
     public class BachecaEventiViewModel
     {
-        public List<Eventi> EventiPrioritizzati = new List<Eventi>();
+        public List<BachecaEventiColonnaViewModel> Colonne { get; set; }
+        public BachecaEventiViewModel()
+        {
+            Colonne = new List<BachecaEventiColonnaViewModel>();
+        }
     }
+
+
+    
 }

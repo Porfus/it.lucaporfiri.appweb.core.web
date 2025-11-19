@@ -13,8 +13,8 @@
   --background: #f4f6f9;
   --surface: #ffffff;
   --text-primary: #1a202c;
-  --text-secondary: #5a6472;
-  --border-color: #e2e8f0;
+  --text-secondary: #4a5568;
+  --border-color: #cbd5e0;
   --shadow-color-light: rgba(45, 55, 72, 0.1);
   --shadow-color-dark: rgba(0, 0, 0, 0.2);
   --font-heading: "Oswald", sans-serif;
@@ -71,6 +71,25 @@ h2 {
 h2 i {
   color: var(--brand-red);
   margin-right: 15px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 15px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.main-actions {
+  display: flex;
+  gap: 10px;
 }
 
 /* 2. Layout - Struttura della pagina, header */
@@ -625,15 +644,22 @@ h2 i {
 
 /* Stili tabella generica */
 .table-controls {
-  position: relative;
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
-.table-controls i {
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.search-box i {
   position: absolute;
   left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
   color: var(--text-secondary);
 }
 
@@ -947,6 +973,212 @@ h2 i {
   margin-top: 30px;
   display: flex;
   gap: 15px;
+}
+
+/* --- IMPOSTAZIONI GLOBALI --- */
+:root {
+  --colore-priorita-alta: #e53935; /* Rosso */
+  --colore-priorita-media: #fb8c00; /* Arancione */
+  --colore-priorita-bassa: #43a047; /* Verde */
+  --colore-sfondo-board: #f0f2f5;
+  --colore-sfondo-colonna: #e9ecef;
+  --colore-testo-principale: #212529;
+  --colore-testo-secondario: #6c757d;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* --- STRUTTURA DELLA KANBAN BOARD --- */
+/* Contenitore principale che permette lo scroll orizzontale */
+.kanban-board {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto; /* Abilita lo scroll orizzontale se le colonne non ci stanno */
+  padding-bottom: 20px; /* Spazio per la barra di scorrimento */
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+/* Singola colonna del workflow */
+.kanban-column {
+  flex: 1; /* Le colonne non si stringono e hanno una larghezza fissa */
+  min-width: 200px;
+  background-color: var(--colore-sfondo-colonna);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh; /* Altezza massima per evitare che la pagina diventi troppo lunga */
+}
+
+/* Intestazione della colonna (titolo e contatore) */
+.column-header {
+  padding: 15px;
+  border-bottom: 2px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.column-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.task-count {
+  background-color: #ced4da;
+  color: #495057;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* Contenitore dei task, permette lo scroll verticale interno alla colonna */
+.column-tasks {
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+  min-height: 500px;
+}
+
+/* --- STILE DEI "CARTELLINI" (TASK CARD) --- */
+.task-card {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: grab; /* Indica che l'elemento è trascinabile */
+  border-left: 5px solid transparent; /* Spazio per l'indicatore di priorità */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Indicatore visivo per la PRIORITA' (bordo sinistro) */
+.priority-high {
+  border-left-color: var(--colore-priorita-alta);
+}
+
+.priority-medium {
+  border-left-color: var(--colore-priorita-media);
+}
+
+.priority-low {
+  border-left-color: var(--colore-priorita-bassa);
+}
+
+/* Indicatore visivo per l'URGENZA (bordo e ombra sull'intero cartellino) */
+.is-urgent {
+  border: 2px solid var(--colore-priorita-alta);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(229, 57, 53, 0.4);
+  }
+  70% {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 10px rgba(229, 57, 53, 0);
+  }
+  100% {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(229, 57, 53, 0);
+  }
+}
+.task-header {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.task-header .icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+  color: var(--colore-testo-secondario);
+}
+
+.task-body {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 15px;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--colore-testo-secondario);
+}
+
+.due-date {
+  display: flex;
+  align-items: center;
+}
+
+.due-date .icon {
+  font-size: 1rem;
+  margin-right: 4px;
+}
+
+/* Stile per task completati */
+.is-completed {
+  opacity: 0.6;
+  background-color: #f8f9fa;
+}
+
+.is-completed .task-header {
+  text-decoration: line-through;
+}
+
+/* --- COLORAZIONI SPECIFICHE DELLE COLONNE --- */
+#colonna-inbox.kanban-column {
+  background-color: #e3f2fd;
+}
+#colonna-inbox.kanban-column .column-header {
+  border-bottom-color: #90caf9;
+}
+
+#colonna-dafare.kanban-column {
+  background-color: #fff3e0;
+}
+#colonna-dafare.kanban-column .column-header {
+  border-bottom-color: #ffcc80;
+}
+
+#colonna-incorso.kanban-column {
+  background-color: #ede7f6;
+}
+#colonna-incorso.kanban-column .column-header {
+  border-bottom-color: #b39ddb;
+}
+
+#colonna-davalutare.kanban-column {
+  background-color: #e0f2f1;
+}
+#colonna-davalutare.kanban-column .column-header {
+  border-bottom-color: #80cbc4;
+}
+
+#colonna-completato.kanban-column {
+  background-color: #e8f5e9;
+}
+#colonna-completato.kanban-column .column-header {
+  border-bottom-color: #a5d6a7;
 }
 
 /* 5. Utils - Classi di aiuto */

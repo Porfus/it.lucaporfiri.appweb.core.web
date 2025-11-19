@@ -8,8 +8,8 @@
     --background: #f4f6f9;
     --surface: #ffffff;
     --text-primary: #1a202c;
-    --text-secondary: #5a6472;
-    --border-color: #e2e8f0;
+    --text-secondary: #4a5568;
+    --border-color: #cbd5e0;
     --shadow-color-light: rgba(45, 55, 72, 0.1);
     --shadow-color-dark: rgba(0, 0, 0, 0.2);
     --font-heading: 'Oswald', sans-serif;
@@ -65,3 +65,22 @@ h2 {
         color: var(--brand-red);
         margin-right: 15px;
     }
+
+.section-header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem; 
+}
+
+.main-actions {
+    display: flex;
+    gap: 10px; 
+}

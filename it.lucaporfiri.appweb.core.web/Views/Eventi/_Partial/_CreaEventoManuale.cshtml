@@ -1,0 +1,57 @@
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@model CreaEventoManualeViewModel
+<div class="dashboard-container">
+    <section>
+        @* L'id del form è fondamentale per il JavaScript *@
+        <form id="form-crea-evento" asp-action="CreaEventoManuale" method="post">
+            <div class="form-grid-two-column">
+
+            @* Aggiungi un div per mostrare eventuali errori di validazione generali *@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+				<div class="form-field full-width">
+					<label asp-for="Titolo" class="form-label">Titolo</label>
+					<input asp-for="Titolo" class="form-control" />
+					<span asp-validation-for="Titolo" class="text-danger"></span>
+				</div>
+
+                <div class="form-field">
+                @* Aggiunto margin-bottom *@
+                <label asp-for="TipoEventoSelezionato" class="form-label">Tipo di Evento</label>
+                @Html.DropDownListFor(
+                m => m.TipoEventoSelezionato,
+                        Model.OpzioniTipoEvento,
+                        "Seleziona un tipo...",
+                        new { @class = "form-control" }
+                        )
+                <span asp-validation-for="TipoEventoSelezionato" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-field full-width">
+                <label asp-for="Descrizione" class="form-label">Descrizione</label>
+                <input asp-for="Descrizione" type="text" class="form-control" />
+                <span asp-validation-for="Descrizione" class="text-danger"></span>
+            </div>
+
+@*                 <div class="form-field">
+                <label asp-for="AtletaSelezionatoId" class="form-label">Atleta</label>
+                @Html.DropDownListFor(
+                        m => m.AtletaSelezionatoId,
+                        Model.OpzioniAtleti,
+                        "Seleziona un Atleta...",
+                        new { @class = "form-control" }
+                        )
+                <span asp-validation-for="AtletaSelezionatoId" class="text-danger"></span>
+            </div> *@
+
+                <div class="form-field">
+                <label asp-for="DataScadenza" class="form-label">Data Scadenza</label>
+                <input asp-for="DataScadenza" type="date" class="form-control" />
+                <span asp-validation-for="DataScadenza" class="text-danger"></span>
+            </div>
+
+            </div>
+        </form>
+    </section>
+</div>

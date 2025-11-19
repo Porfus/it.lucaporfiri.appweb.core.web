@@ -23,10 +23,19 @@
     padding-bottom: 20px; /* Spazio per la barra di scorrimento */
 }
 
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
 /* Singola colonna del workflow */
 .kanban-column {
-    flex: 0 0 320px; /* Le colonne non si stringono e hanno una larghezza fissa */
-    min-width: 320px;
+    flex: 1; /* Le colonne non si stringono e hanno una larghezza fissa */
+    min-width: 200px;
     background-color: var(--colore-sfondo-colonna);
     border-radius: 8px;
     display: flex;
@@ -63,6 +72,7 @@
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
+    min-height: 500px; // Scegli un valore che ti piace, es. 500px o 60vh
 }
 
 /* --- STILE DEI "CARTELLINI" (TASK CARD) --- */
@@ -161,4 +171,50 @@
 
 .is-completed .task-header {
     text-decoration: line-through;
+}
+
+/* --- COLORAZIONI SPECIFICHE DELLE COLONNE --- */
+#colonna-inbox {
+    &.kanban-column {
+        background-color: #e3f2fd; // Azzurro molto chiaro
+        .column-header {
+            border-bottom-color: #90caf9;
+        }
+    }
+}
+
+#colonna-dafare {
+    &.kanban-column {
+        background-color: #fff3e0; // Arancione molto chiaro
+        .column-header {
+            border-bottom-color: #ffcc80;
+        }
+    }
+}
+
+#colonna-incorso {
+    &.kanban-column {
+        background-color: #ede7f6; // Viola molto chiaro
+        .column-header {
+            border-bottom-color: #b39ddb;
+        }
+    }
+}
+
+#colonna-davalutare { // Nota: nomi lunghi senza trattini
+    &.kanban-column {
+        background-color: #e0f2f1; // Verde acqua molto chiaro
+        .column-header {
+            border-bottom-color: #80cbc4;
+        }
+    }
+}
+
+#colonna-completato {
+    &.kanban-column {
+        background-color: #e8f5e9; // Verde molto chiaro
+        .column-header {
+            border-bottom-color: #a5d6a7;
+        }
+    }
 }

@@ -30,6 +30,11 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return await _context.Atleta.Include(a => a.Abbonamenti).Include(a => a.Schede).FirstOrDefaultAsync(s => s.Id == IdAtleta);
         }
 
+        public List<Atleta> GetAtletiAttivi() 
+        {
+            return _context.Atleta.Where(a => a.Stato == Atleta.StatoCliente.Attivo).ToList();
+        }
+
         public async Task<List<Atleta>> GetAllAtletiAsync()
         {
             return await _context.Atleta.ToListAsync();

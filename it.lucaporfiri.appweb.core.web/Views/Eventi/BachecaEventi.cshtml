@@ -1,20 +1,327 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model BachecaEventiViewModel
-
-
+@{
+    var titolo = "Bacheca Eventi del " + DateTime.UtcNow.ToString("dd/MM/yyyy");
+}
+@section Styles {
+    <link rel="stylesheet" href="~/lib/dragula/dragula.min.css" />
+}
+<!DOCTYPE html>
+<html lang="it">
 <body data-theme="light">
 
 	<div class="dashboard-container">
 		<header class="page-header">
-			<h2><i class="fas fa-bullhorn"></i> Bacheca Eventi</h2>
+			<h2><i class="fas fa-bullhorn"></i> @titolo </h2>
 			<div>
 				<a href="/Home/Index" class="btn btn-secondary"><i class="fas fa-home"></i> Torna alla Dashboard</a>
 			</div>
 		</header>
 
 		<section>
+            <div class="kanban-header">
+                <div>
+                <a href="/Eventi/OrdinaEventi?dataScadenza=true" class="btn btn-secondary">
+                    <i class="fas fa-calendar"></i>  @* Icona *@
+                    <span>Ordina Eventi per scadenza</span> @* Testo separato *@
+                </a>
 
+                    <a href="/Eventi/OrdinaEventi" class="btn btn-secondary">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Ordina Eventi per priorità</span>
+                </a>
+                </div>
+                <a id="btn-apri-modale-crea" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    <span>Crea Evento</span>
+                </a>
+
+            </div>
+            <div class="kanban-board">
+                <!-- Colonne -->
+                @foreach (var colonnaBoard in Model.Colonne)
+                {
+                    <div class="kanban-column" id="@colonnaBoard.IdColonna">
+                        <div class="column-header">
+                            <h2>@colonnaBoard.Titolo</h2>
+                            <span class="task-count">@colonnaBoard.ConteggioTask</span>
+                        </div>
+                        <div class="column-tasks" id="task_container_@colonnaBoard.IdColonna">
+                            <!-- Eventi -->
+                            @foreach (var evento in colonnaBoard.Eventi)
+                            {
+                                @await Html.PartialAsync("_Partial/_TemplateEventoCard", evento)
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            @* --- STRUTTURA DELLA MODALE BOOTSTRAP (vuota per ora) --- *@
+            <div class="modal fade" id="modal-crea-evento" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Crea Nuovo Evento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body-content">
+                            @* Il contenuto del form verrà caricato qui dal JavaScript *@
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                            @* Questo pulsante invierà il form via AJAX *@
+                            <button type="button" class="btn btn-primary" id="btn-salva-evento">Salva</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</section>
 	</div>
 
 </body>
+</html>
+
+@section Scripts {
+    <script src="~/lib/dragula/dragula.min.js"></script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script type="text/javascript">
+        // inizializzazione Dragula 
+
+        let dragginTime = false;
+        let droppingDivId = "";
+        let droppingDivScrollingTop = 0;
+
+        $(document).ready(function(){
+            $(window).bind('mousewheel', function(event){
+                if(!dragginTime)
+                    return;
+                let target = $('#' + droppingDivId);
+                if(event.originalEvent.wheelDelta >= 0){
+                    droppingDivScrollingTop -= 100; 
+                }else{
+					droppingDivScrollingTop += 100;
+                }
+				target.scrollTop(droppingDivScrollingTop);
+            });
+			jInizializzaDragAndDrop();
+        });
+
+        function jInizializzaDragAndDrop(){
+			const containers = Array.from(document.querySelectorAll('.column-tasks'));
+
+            const drake = dragula(containers, {
+                revertOnSpill: true,
+
+                moves: function (el, source, handle, sibling) {
+                    return true;
+				},
+
+                accepts: function (el, target, source, sibling) {
+                    // droppingDivId = $(target).attr('id');
+                    // droppingDivScrollingTop = $(target).scrollTop();
+                    // draggingTime = true;
+                    if($(el).hasClass('is-completed')){
+                        return false;
+					}
+                    //jAggiornaKanbanBoard();
+				    return true;
+                },
+
+                invalid: function (el, handle) {
+                        return false;
+                },
+
+                direction: 'vertical',             // Y axis is considered when determining where an element would be dropped
+                copy: false,                       // elements are moved by default, not copied
+                copySortSource: false,             // elements in copy-source containers can be reordered
+                revertOnSpill: false,              // spilling will put the element back where it was dragged from, if this is true
+                removeOnSpill: false,              // spilling will `.remove` the element, if this is true
+                mirrorContainer: document.body,    // set the element that gets mirror elements appended
+                ignoreInputTextSelection: true,     // allows users to select input text, see details below
+                slideFactorX: 0,               // allows users to select the amount of movement on the X axis before it is considered a drag instead of a click
+                slideFactorY: 0,               // allows users to select the amount of movement on the Y axis before it is considered a drag instead of a click
+            });
+
+            // Scatenato quando inizi a trascinare un elemento
+            drake.on('drag', function(el, source){
+				dragginTime = true;
+                droppingDivId = $(source).attr('id');// Imposta il container iniziale
+            });
+
+            // Scatenato quando il trascinamento finisce (in qualsiasi modo)
+			drake.on('dragend', function(el){
+				dragginTime = false;
+            });
+
+            // Scatenato quando un elemento "passa sopra" un nuovo container
+			drake.on('over', function(el, container, source){
+				droppingDivId = $(container).attr('id');
+				droppingDivScrollingTop = $(container).scrollTop();
+            });
+
+            // Scatenato quando un elemento viene rilasciato con successo
+			drake.on('drop', function(el, target, source, sibling){
+                console.log('Elemento rilasciato!');
+				const eventoId = $(el).data('evento-id');
+                const nuovaColonnaId = $(target).parent().attr('id');
+                const vecchiaColonnaId = $(source).parent().attr('id');
+                console.log(`Evento ${eventoId} spostato da ${vecchiaColonnaId} a ${nuovaColonnaId}`);
+
+                //calcolo nuova posizione
+                let nuovaPosizione;
+
+                const prevElem = $(el).prev();
+                const nextElem = $(el).next(); 
+
+                if (prevElem.length > 0 && nextElem.length > 0) {
+                    // Caso 1: Rilasciato in mezzo a due elementi
+                    const posPrecedente = parseFloat(prevElem.data('posizione'));
+                    const posSuccessiva = parseFloat(nextElem.data('posizione'));
+                    nuovaPosizione = (posPrecedente + posSuccessiva) / 2.0;
+                    console.log('Rilasciato in mezzo. Nuova posizione: ' + nuovaPosizione);
+
+                } else if (prevElem.length === 0 && nextElem.length > 0) {
+                    // Caso 2: Rilasciato all'inizio della lista
+                    const posSuccessiva = parseFloat(nextElem.data('posizione'));
+                    nuovaPosizione = posSuccessiva / 2.0;
+                    console.log('Rilasciato all\'inizio. Nuova posizione: ' + nuovaPosizione);
+
+                } else if (prevElem.length > 0 && nextElem.length === 0) {
+                    // Caso 3: Rilasciato alla fine della lista
+                    const posPrecedente = parseFloat(prevElem.data('posizione'));
+                    nuovaPosizione = posPrecedente + 1.0;
+                    console.log('Rilasciato alla fine. Nuova posizione: ' + nuovaPosizione);
+
+                } else {
+                    // Caso 4: Unico elemento nella colonna
+                    nuovaPosizione = 1.0;
+                    console.log('Unico elemento. Nuova posizione: ' + nuovaPosizione);
+                }
+
+                // Aggiorna il data-attribute e preparati a inviare al server
+                $(el).data('posizione', nuovaPosizione);
+
+                // Chiama la funzione di aggiornamento
+                jAggiornaKanbanBoard(eventoId, nuovaColonnaId, nuovaPosizione);
+            });
+
+
+        } //End jCreaDragEDropSuColonne
+
+        function jAggiornaKanbanBoard(eventoId, nuovaColonnaId, nuovaPosizione)
+        {
+            let nomeStato = nuovaColonnaId.replace('colonna-', '');
+
+            // --- MAPPING DA STRINGA A INTERO ---
+            // Crea un oggetto per mappare i nomi degli stati ai loro valori enum in C#
+            const statoMap = {
+                'inbox': 0,
+                'dafare': 1,
+                'incorso': 2,
+                'davalutare': 3,
+                'completato': 4
+                // Aggiungi gli altri tuoi stati qui... assicurati che i numeri
+                // corrispondano ai valori del tuo enum StatoWorkflow in C#
+            };
+
+            let nuovoStatoInt = statoMap[nomeStato.toLowerCase()];
+
+            // Controllo di sicurezza
+            if (nuovoStatoInt === undefined) {
+                alert('Stato non valido: ' + nomeStato);
+                return;
+            }
+
+            const dataToSend = {
+                EventoId: parseInt(eventoId),
+                NuovoStato: nuovoStatoInt,
+				NuovaPosizione: parseFloat(nuovaPosizione)
+            };
+
+            $.ajax({
+                url: '/Eventi/AggiornaStatoEvento',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(dataToSend),
+                success: function(data, status, response){
+                    if(data.successo == true){
+                        console.log("Stato aggiornato con successo");
+                    }else{
+                        alert('ERRORE successo non true: '+ data.messaggio);
+                    }
+                },
+                error: function(xhr, status, error){
+                                console.error("Errore AJAX:", status, error);
+            console.error("Risposta del server:", xhr.responseText);
+            alert('Si è verificato un errore durante la comunicazione con il server.');
+                }
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const modalElement = document.getElementById('modal-crea-evento');
+            const modal = new bootstrap.Modal(modalElement);
+            const modalBody = $('#modal-body-content');
+
+			// --- 1. GESTIONE APERTURA MODALE ---
+            $('#btn-apri-modale-crea').on('click', function() {
+                console.log('ok button id');
+                modalBody.html('<p>Caricamento... </p>');
+                modal.show();
+
+                modalBody.load('/Eventi/CreaEventoManuale');
+            });
+
+            // --- 2. GESTIONE SALVATAGGIO VIA AJAX ---
+            $('#btn-salva-evento').on('click', function () {
+
+                const form = $('#form-crea-evento');
+
+                // Verifica la validazione lato client (se l'hai abilitata)
+                if (form.valid()) {
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: form.attr('method'),
+                        data: form.serialize(), // Prende tutti i dati del form
+                        success: function (response) {
+                            if (response.successo === true) {
+                                modal.hide();
+
+                                // --- LOGICA DI AGGIORNAMENTO DINAMICO ---
+
+                                // 1. Trova la colonna 'Inbox'. L'ID deve essere prevedibile.
+                                // Assumiamo che la colonna Inbox abbia id="colonna-inbox"
+                                const inboxColumn = $('#colonna-inbox .column-tasks');
+
+                                // 2. Aggiungi il nuovo HTML del cartellino in cima alla colonna
+                                if (inboxColumn.length) {
+                                    inboxColumn.prepend(response.nuovoCardHtml);
+
+                                    // 3. (Opzionale ma bello) Aggiorna il contatore dei task
+                                    const countSpan = $('#colonna-inbox .task-count');
+                                    const currentCount = parseInt(countSpan.text());
+                                    countSpan.text(currentCount + 1);
+                                } else {
+                                    // Se non troviamo la colonna, facciamo un fallback al reload
+                                    location.reload();
+                                }
+
+                            } else {
+                                // Se la validazione server-side è fallita,
+                                // il controller ha restituito l'HTML del form con gli errori.
+                                // Rimpiazziamo il corpo della modale con questo nuovo HTML.
+                                modalBody.html(response);
+                            }
+                        },
+                        error: function () {
+                            alert("Si è verificato un errore durante il salvataggio.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
