@@ -47,10 +47,14 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             //estrae tutti gli eventi non completati
             List<Evento> eventiAttivi = _serviziEvento.GetEventiAttivi();
 
+            //estrae eventi completati non scaduti negli ultimi 7 giorni
+            List<Evento> eventiCompletatiRecente = _serviziEvento.GetEventiCompletatiRecenti(7);
+
             //prioritizza gli eventi
             _serviziEvento.PrioritizzaEventi(eventiAttivi);
 
-            // raggruppa i task per il loro stato attuale 
+            // raggruppa i task per il loro stato attuale
+            eventiAttivi.AddRange(eventiCompletatiRecente);
             var taskRaggruppatiPerStato = eventiAttivi.GroupBy(task => task.Stato).ToDictionary(g => g.Key, g => g.ToList());
 
             // costruisco il ViewModel
@@ -61,7 +65,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
             foreach (var stato in statiWorkflow)
             {
-
                 var colonna = new BachecaEventiColonnaViewModel
                 {
                     Titolo = _serviziEvento.GetTitoloPerColonna(stato),
@@ -94,7 +97,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         }
 
         [HttpPost]
-        public IActionResult AggiornaStatoEvento([FromBody] AggiornaStatoEvento model) 
+        public async Task<IActionResult> AggiornaStatoEvento([FromBody] AggiornaStatoEvento model) 
         {
             if (!ModelState.IsValid) 
             {
@@ -102,7 +105,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             }
             try
             {
-                _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato, model.NuovaPosizione);
+                await _serviziEvento.AggiornaStatoEvento(model.EventoId, model.NuovoStato, model.NuovaPosizione);
                 return Json(new { successo = true });
             }
             catch (Exception ex)

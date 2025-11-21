@@ -4,34 +4,31 @@
     <section>
         @* L'id del form è fondamentale per il JavaScript *@
         <form id="form-crea-evento" asp-action="CreaEventoManuale" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
             <div class="form-grid-two-column">
-
-            @* Aggiungi un div per mostrare eventuali errori di validazione generali *@
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
 				<div class="form-field full-width">
 					<label asp-for="Titolo" class="form-label">Titolo</label>
 					<input asp-for="Titolo" class="form-control" />
-					<span asp-validation-for="Titolo" class="text-danger"></span>
+                    <span asp-validation-for="Titolo" class="validation-error"></span>
 				</div>
 
                 <div class="form-field">
                 @* Aggiunto margin-bottom *@
-                <label asp-for="TipoEventoSelezionato" class="form-label">Tipo di Evento</label>
+                    <label asp-for="TipoEventoSelezionato" class="form-label">Tipo di Evento <span class="required-asterisk">*</span> </label>
                 @Html.DropDownListFor(
                 m => m.TipoEventoSelezionato,
                         Model.OpzioniTipoEvento,
                         "Seleziona un tipo...",
                         new { @class = "form-control" }
                         )
-                <span asp-validation-for="TipoEventoSelezionato" class="text-danger"></span>
+                    <span asp-validation-for="TipoEventoSelezionato" class="validation-error"></span>
             </div>
 
 
             <div class="form-field full-width">
                 <label asp-for="Descrizione" class="form-label">Descrizione</label>
-                <input asp-for="Descrizione" type="text" class="form-control" />
-                <span asp-validation-for="Descrizione" class="text-danger"></span>
+                    <textarea asp-for="Descrizione" class="form-control form-control-large" class="form-control"></textarea>
+                    <span asp-validation-for="Descrizione" class="validation-error"></span>
             </div>
 
 @*                 <div class="form-field">
@@ -46,9 +43,13 @@
             </div> *@
 
                 <div class="form-field">
-                <label asp-for="DataScadenza" class="form-label">Data Scadenza</label>
-                <input asp-for="DataScadenza" type="date" class="form-control" />
-                <span asp-validation-for="DataScadenza" class="text-danger"></span>
+                    <label asp-for="DataScadenza" class="form-label">Data Scadenza <span class="required-asterisk">*</span></label>
+                    @{
+
+                        var dataScadenzaValue = Model.DataScadenza == DateTime.MinValue ? "" : Model.DataScadenza.ToString("yyyy-MM-dd");
+                    }
+                    <input asp-for="DataScadenza" type="date" class="form-control" value="@dataScadenzaValue"/>
+                    <span asp-validation-for="DataScadenza" class="validation-error"></span>
             </div>
 
             </div>

@@ -94,10 +94,10 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
         //Calcolo della priorità iniziale in base alla data di scadenza e al tipo di evento
         private int CalcolaPrioritaIniziale(DateTime dataScadenzaScheda, TipoEvento tipoEvento)
         {
-            int PriorityScore = 0;
-            int pesoEvento = 0;
-            int fattoreUrgenza = 0;
-            int giorniRimanenti = 0;
+            double PriorityScore = 0;
+            double pesoEvento = 0;
+            double fattoreUrgenza = 0;
+            double giorniRimanenti = 0;
             switch (tipoEvento)
             {
                 case TipoEvento.ScadenzaScheda:
@@ -121,7 +121,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             fattoreUrgenza = 1 / Math.Max(giorniRimanenti, 1);
 
             PriorityScore = pesoEvento * fattoreUrgenza;
-            return PriorityScore;
+            return (int)PriorityScore;
         }
 
         public List<Evento> GetEventiAttivi()
@@ -137,6 +137,18 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             {
                 int prioritaCalcolata = CalcolaPrioritaIniziale(evento.DataScadenza, evento.Tipo);
                 evento.Priorita = prioritaCalcolata;
+            }
+            try
+            {
+                _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)  
+            {
+                throw new InvalidOperationException("Concorrenza durante l'aggiornamento delle priorità degli eventi.");
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new InvalidOperationException("Errore durante l'aggiornamento delle priorità degli eventi.", dbEx);
             }
         }
 
@@ -198,14 +210,31 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             return icona;
         }
 
-        public void AggiornaStatoEvento(int eventoId, int nuovoStato, double nuovaPosizione)
+        public async Task AggiornaStatoEvento(int eventoId, int nuovoStato, double nuovaPosizione)
         {
-            var evento = _context.Eventi.Where(e => e.Id == eventoId).FirstOrDefault();
-            if (evento != null)
+            var evento = await _context.Eventi.FindAsync(eventoId);
+            if (evento == null) throw new KeyNotFoundException($"Evento con Id {eventoId} non trovato.");
+
+            if (!Enum.IsDefined(typeof(Evento.StatoWorkflow), nuovoStato))
+                throw new ArgumentOutOfRangeException(nameof(nuovoStato), "Valore di stato non valido.");
+
+            if (double.IsNaN(nuovaPosizione) || double.IsInfinity(nuovaPosizione))
+                throw new ArgumentOutOfRangeException(nameof(nuovaPosizione), "Posizione non valida.");
+
+
+            evento.Stato = (StatoWorkflow)nuovoStato;
+            evento.Posizione = nuovaPosizione;
+            try
             {
-                evento.Stato = (StatoWorkflow)nuovoStato;
-                evento.Posizione = nuovaPosizione;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException cEx)
+            {
+                throw new InvalidOperationException("Concorrenza durante l'aggiornamento dell'evento: " + cEx.Message);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new InvalidOperationException("Errore durante l'aggiornamento dello stato dell'evento.", dbEx);
             }
         }
 
@@ -304,7 +333,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 {
                     // Ordina per Priorita desc (null -> 0) e tie-breaker DataScadenza asc
                     ordinata = lista
-                        .OrderBy(e => e.Priorita ?? int.MaxValue)
+                        .OrderByDescending(e => e.Priorita ?? int.MinValue)
                         .ThenBy(e => e.DataScadenza == default ? DateTime.MaxValue : e.DataScadenza);
                 }
 
@@ -348,6 +377,15 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
 
                 _context.SaveChanges();
             }
+        }
+
+        public List<Evento> GetEventiCompletatiRecenti(int valoreScadenza)
+        {
+            return _context.Eventi
+                .Where(e => e.Stato == Evento.StatoWorkflow.Completato &&
+                            e.DataScadenza >= DateTime.UtcNow.AddDays(-valoreScadenza))
+                .OrderByDescending(e => e.DataScadenza)
+                .ToList();
         }
     }
 }
