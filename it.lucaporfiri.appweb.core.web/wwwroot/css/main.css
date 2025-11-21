@@ -2,6 +2,8 @@
 /* ================================================ */
 /*          PROGETTO PALESTRA - MAIN STYLESHEET       */
 /* ================================================ */
+/* Variabili */
+/* --- Variabili Dimensioni Layout --- */
 /* 1. Base */
 /* ================================================ */
 /*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
@@ -93,9 +95,50 @@ h2 i {
 }
 
 /* 2. Layout - Struttura della pagina, header */
-/* ================================================ */
-/*          HEADER                                  */
-/* ================================================ */
+/* =========================================
+  LAYOUT GENERALE (Griglia e Contenitori)
+  ========================================= */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+  overflow-x: hidden;
+}
+
+.main-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* Questo permette al contenuto di adattarsi quando la sidebar si restringe */
+  transition: margin-left 0.3s ease;
+}
+
+/* --- Topbar (Header superiore) --- */
+.topbar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  /* background-color: var(--surface);  <-- Decommenta se vuoi la barra bianca */
+}
+
+.mobile-toggle {
+  display: none; /* Nascosto su desktop */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.content-area {
+  padding: 2rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -175,6 +218,15 @@ h2 i {
   margin-bottom: 25px;
 }
 
+/* --- Responsive Layout --- */
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: block; /* Mostra hamburger su mobile */
+  }
+  .content-area {
+    padding: 1rem;
+  }
+}
 /* ================================================ */
 /*          STILI PER HEADER E NAVIGAZIONE          */
 /* ================================================ */
@@ -1181,7 +1233,188 @@ h2 i {
   border-bottom-color: #a5d6a7;
 }
 
-/* 5. Utils - Classi di aiuto */
+/* 5. Partials - Stili per le pagine parziali*/
+/* =========================================
+  COMPONENTE SIDEBAR
+  ========================================= */
+.sidebar {
+  width: 260px;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  /* Sticky behavior */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+  padding: 1.5rem 1rem;
+  flex-shrink: 0; /* Impedisce alla sidebar di schiacciarsi */
+}
+
+/* --- Header & Logo --- */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  gap: 12px;
+  overflow: hidden;
+}
+
+.brand-icon {
+  font-size: 28px;
+  color: var(--brand-red);
+  min-width: 30px;
+  text-align: center;
+}
+
+.brand-text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+/* --- Toggler Desktop --- */
+.sidebar-toggler {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.sidebar-toggler i {
+  transform: rotate(180deg); /* Ruota la freccia verso destra (>) */
+}
+
+/* --- Navigazione --- */
+.sidebar-nav {
+  flex-grow: 1;
+  overflow-y: auto;
+  /* Scrollbar fine per webkit */
+}
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 1.5rem 0 0.5rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.nav-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 1rem 0;
+}
+
+/* --- Link --- */
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+.nav-link:hover {
+  background-color: var(--brand-red-light);
+  color: var(--brand-red);
+}
+.nav-link.active {
+  background-color: var(--brand-red);
+  color: #fff;
+  box-shadow: 0 4px 12px var(--shadow-color-light);
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  margin-right: 12px;
+}
+
+/* =========================================
+   STATI DINAMICI (Collapsed & Mobile)
+   ========================================= */
+/* 1. Stato Collassato (Desktop) */
+body.sidebar-collapsed .sidebar {
+  width: 80px;
+  padding: 1.5rem 0.5rem;
+}
+
+body.sidebar-collapsed .brand-text,
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .nav-label {
+  display: none;
+}
+body.sidebar-collapsed .sidebar-header {
+  justify-content: center;
+  padding: 0;
+}
+body.sidebar-collapsed .nav-link {
+  justify-content: center;
+  padding: 12px;
+}
+body.sidebar-collapsed .nav-icon {
+  margin-right: 0;
+  font-size: 1.2rem;
+}
+
+/* 2. Responsive Mobile (< 768px) */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  }
+  .sidebar-toggler {
+    display: none;
+  }
+  /* Quando aperta su mobile */
+  body.mobile-sidebar-active .sidebar {
+    left: 0;
+  }
+}
+/* 6. Utils - Classi di aiuto */
 .hidden {
   display: none !important;
 }

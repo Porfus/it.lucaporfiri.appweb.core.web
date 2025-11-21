@@ -1,6 +1,51 @@
-﻿/* ================================================ */
-/*          HEADER                                  */
-/* ================================================ */
+﻿/* =========================================
+   LAYOUT GENERALE (Griglia e Contenitori)
+   ========================================= */
+$sidebar-width-expanded: 260px;
+$sidebar-width-collapsed: 80px;
+$topbar-height: 60px;
+$transition-speed: 0.3s;
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--background);
+    overflow-x: hidden;
+}
+
+.main-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Questo permette al contenuto di adattarsi quando la sidebar si restringe */
+    transition: margin-left $transition-speed ease;
+}
+
+/* --- Topbar (Header superiore) --- */
+.topbar {
+    height: $topbar-height;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    /* background-color: var(--surface);  <-- Decommenta se vuoi la barra bianca */
+}
+
+.mobile-toggle {
+    display: none; /* Nascosto su desktop */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.content-area {
+    padding: 2rem;
+    margin: 0 auto;
+    width: 100%;
+}
+
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -77,4 +122,15 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+}
+
+/* --- Responsive Layout --- */
+@media (max-width: 768px) {
+    .mobile-toggle {
+        display: block; /* Mostra hamburger su mobile */
+    }
+
+    .content-area {
+        padding: 1rem;
+    }
 }

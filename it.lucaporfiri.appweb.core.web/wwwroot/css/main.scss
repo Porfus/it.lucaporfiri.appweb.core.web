@@ -2,6 +2,9 @@
 /*          PROGETTO PALESTRA - MAIN STYLESHEET       */
 /* ================================================ */
 
+/* Variabili */
+@import '_variables.scss';
+
 /* 1. Base */
 @import 'base/base';
 
@@ -21,7 +24,10 @@
 @import 'pages/_athlete-detail.scss';
 @import 'pages/_abbonamento-detail.scss';
 @import 'pages/_bacheca-eventi.scss';
-/* 5. Utils - Classi di aiuto */
+
+/* 5. Partials - Stili per le pagine parziali*/
+@import 'partials/_sidebar.scss';
+/* 6. Utils - Classi di aiuto */
 @import 'utils/helpers';
 /*```
 

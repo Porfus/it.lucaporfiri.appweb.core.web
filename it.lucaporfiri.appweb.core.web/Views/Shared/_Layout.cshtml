@@ -22,60 +22,117 @@
 	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-
-    <header>
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <div class="header-logo">
-                    <a asp-controller="Home" asp-action="Index">
-                        <i class="fa-solid fa-dumbbell" style="font-size: 35px; color: var(--brand-red);"></i>
-                    </a>
-                    <div class="header-logo-text">
-                        <a asp-controller="Home" asp-action="Index" style="text-decoration: none; color: inherit;">
-                            <h1>Gestore Atleti</h1>
-                        </a>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-dumbbell"></i>
                     </div>
-                </div>
-                <div class="header-actions">
+                    <span class="brand-text">Gestore Atleti</span>
+                </a>
+                <!-- Pulsante per collassare la sidebar (visibile su desktop) -->
+                <button class="sidebar-toggler" id="sidebarToggler">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
 
-                <nav class="main-nav">
-                    <ul>
-                        <li><a class="nav-link" asp-controller="Home" asp-action="Index">Dashboard</a></li>
-                        <li><a class="nav-link" asp-controller="Atleta" asp-action="Index">Atleti</a></li>
-                        <li><a class="nav-link" asp-controller="Abbonamento" asp-action="Index">Abbonamenti</a></li>
-                        <li><a class="nav-link" asp-controller="Scheda" asp-action="Index">Schede</a></li>
-                    </ul>
-                </nav>
+            <!-- Menu di Navigazione -->
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <!-- Esempio di link con icone per la modalità collassata -->
+                    <!-- Dashboard -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Bacheca Eventi (NUOVO) -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Eventi" asp-action="BachecaEventi">
+                            <i class="fas fa-calendar-check nav-icon"></i>
+                            <span class="nav-text">Bacheca Eventi</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-divider"></li> <!-- Separatore -->
+                    <!-- Moduli Principali -->
+                    <li class="nav-label">Moduli</li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Atleta" asp-action="Index">
+                            <i class="fas fa-users nav-icon"></i>
+                            <span class="nav-text">Atleti</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Abbonamento" asp-action="Index">
+                            <i class="fas fa-receipt nav-icon"></i>
+                            <span class="nav-text">Abbonamenti</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Scheda" asp-action="Index">
+                            <i class="fa-solid fa-file-lines nav-icon"></i>
+                            <span class="nav-text">Schede</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Footer della Sidebar (es. Logout o Settings) -->
+            <div class="sidebar-footer">
+                <a href="/Home/Login" class="nav-link user-profile">
+                    <i class="fa-solid fa-user nav-icon"></i>
+                    <span class="nav-text">Profilo</span>
+                </a>
+            </div>
+        </aside>
+        <!-- 3. MAIN CONTENT AREA -->
+        <!-- Questa parte sta a destra della sidebar -->
+        <div class="main-wrapper">
+
+            <!-- Topbar (Header superiore per mobile toggle e theme switcher) -->
+            <header class="topbar">
+                <!-- Pulsante Hamburger (visibile solo su mobile) -->
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Azioni a destra (Theme Switcher, etc.) -->
+                <div class="topbar-actions">
                     <button class="theme-switcher" id="theme-switcher" aria-label="Cambia tema">
                         <i class="fas fa-moon"></i>
                         <i class="fas fa-sun"></i>
                     </button>
-
-                    <a href="/Home/Login" class="btn-user-profile" aria-label="Profilo utente">
-                        <i class="fa-solid fa-user"></i>
-                    </a>
                 </div>
-            </div>
-        </div>
-    </header>
+            </header>
 
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
+            <!-- Contenuto della Pagina (Quello che avevi nel <main>) -->
+            <main class="content-area">
+                @RenderBody()
+            </main>
 
-    <footer class="dashboard-footer">
-        <div class="footer-copyright">
-            © @DateTime.Now.Year - Gestore Atleti - Sviluppato da Luca Porfiri
+            <!-- Footer (opzionale, ora sta dentro il main wrapper) -->
+            <footer class="content-footer">
+                <div class="footer-copyright">
+					© @DateTime.Now.Year - Gestore Atleti - Porfus
+                </div>
+                <div class="footer-links">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                </div>
+            </footer>
         </div>
-        <div class="footer-links">
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-        </div>
-    </footer>
+    </div>
 
     <!-- Script essenziali -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
