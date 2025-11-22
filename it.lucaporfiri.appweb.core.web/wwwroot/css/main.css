@@ -95,14 +95,26 @@ h2 i {
 }
 
 /* 2. Layout - Struttura della pagina, header */
+body {
+  overflow-x: hidden;
+}
+
+body.mobile-sidebar-active {
+  overflow: hidden; /* Blocca completamente lo scroll della pagina */
+  height: 100vh; /* Blocca l'altezza per evitare rimbalzi su iOS */
+}
+
+.no-transitions * {
+  transition: none !important;
+}
+
 /* =========================================
-  LAYOUT GENERALE (Griglia e Contenitori)
-  ========================================= */
+   LAYOUT GENERALE (Griglia e Contenitori)
+   ========================================= */
 .app-container {
   display: flex;
   min-height: 100vh;
   background-color: var(--background);
-  overflow-x: hidden;
 }
 
 .main-wrapper {
@@ -116,7 +128,7 @@ h2 i {
 
 /* --- Topbar (Header superiore) --- */
 .topbar {
-  height: 60px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -218,6 +230,32 @@ h2 i {
   margin-bottom: 25px;
 }
 
+/* ================================================ */
+/*          STILI PER IL FOOTER                     */
+/* ================================================ */
+.content-footer {
+  max-width: 1400px;
+  margin: 0px auto 0 auto;
+  padding: 25px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.content-footer a {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.content-footer a:hover {
+  color: var(--brand-red);
+  text-decoration: underline;
+}
+
 /* --- Responsive Layout --- */
 @media (max-width: 768px) {
   .mobile-toggle {
@@ -286,32 +324,6 @@ h2 i {
 
 .btn-user-profile:hover {
   color: var(--brand-red);
-}
-
-/* ================================================ */
-/*          STILI PER IL FOOTER                     */
-/* ================================================ */
-.dashboard-footer {
-  max-width: 1400px;
-  margin: 0px auto 0 auto;
-  padding: 25px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9em;
-  color: var(--text-secondary);
-}
-
-.dashboard-footer a {
-  color: var(--text-secondary);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.dashboard-footer a:hover {
-  color: var(--brand-red);
-  text-decoration: underline;
 }
 
 /* 3. Components - Tutti i mattoncini della UI */
@@ -1297,8 +1309,13 @@ h2 i {
   padding: 5px;
 }
 
-.sidebar-toggler i {
-  transform: rotate(180deg); /* Ruota la freccia verso destra (>) */
+.sidebar-toggler > i {
+  transform: rotate(180deg);
+  transition: transform 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.sidebar-toggler > i.rotated {
+  transform: rotate(0deg);
 }
 
 /* --- Navigazione --- */
@@ -1402,7 +1419,14 @@ body.sidebar-collapsed .nav-icon {
   .sidebar {
     position: fixed;
     left: -100%;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    z-index: 1000;
     max-width: 300px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   }

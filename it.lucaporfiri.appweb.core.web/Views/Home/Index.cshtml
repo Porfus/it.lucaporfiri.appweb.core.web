@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtus Coaching Dashboard</title>
 </head>
-<body data-theme="dark">
+<body>
 
     <div class="dashboard-container">
         <header class="dashboard-header">
@@ -123,16 +123,6 @@
 
     </div>
 
-	<script>
-		const themeSwitcher = document.getElementById('theme-switcher');
-		const body = document.body;
-		const applyTheme = (theme) => { body.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); };
-		const toggleTheme = () => { const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; applyTheme(newTheme); };
-		themeSwitcher.addEventListener('click', toggleTheme);
-		const savedTheme = localStorage.getItem('theme');
-		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-		if (savedTheme) { applyTheme(savedTheme); } else if (prefersDark) { applyTheme('dark'); } else { applyTheme('light'); }
-	</script>
 	<script>
 		function jCaricaAtletiAttivi() {
 			window.location.href = '/Atleta/Index?soloAttivi=true';

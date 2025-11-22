@@ -5,13 +5,7 @@
 // Funzione per il Theme Switcher
 document.addEventListener('DOMContentLoaded', function () {
     const themeSwitcher = document.getElementById('theme-switcher');
-    const htmlElement = document.documentElement; // Seleziona l'elemento <html>
-
-    // Controlla se un tema è già stato salvato in localStorage
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme) {
-        htmlElement.setAttribute('data-theme', currentTheme);
-    }
+    const htmlElement = document.documentElement; 
 
     if (themeSwitcher) {
         themeSwitcher.addEventListener('click', function () {
@@ -30,32 +24,34 @@ document.addEventListener('DOMContentLoaded', function () {
 //Funzione per la Sidebar Collassabile e Mobile
 document.addEventListener("DOMContentLoaded", function () {
 
-    // --- SELEZIONE ELEMENTI ---
+    
     const body = document.body;
-    const sidebarToggler = document.getElementById('sidebarToggler'); // Freccia Desktop
-    const mobileToggle = document.getElementById('mobileToggle');     // Hamburger Mobile
+    const sidebarToggler = document.getElementById('sidebarToggler');
+    const mobileToggle = document.getElementById('mobileToggle');     
     const sidebar = document.getElementById('sidebar');
 
     // --- LOGICA STATO COLLASSATO (Desktop) ---
-
-    // 1. Controlla se c'è una preferenza salvata nel LocalStorage
-    // Questo serve per "ricordare" se l'utente aveva chiuso la sidebar anche dopo aver ricaricato la pagina.
-    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-
-    if (isCollapsed) {
-        body.classList.add('sidebar-collapsed');
-    }
-
-    // 2. Gestione Click sul Toggler Desktop
     if (sidebarToggler) {
+        const togglerIcon = sidebarToggler.querySelector('i');
         sidebarToggler.addEventListener('click', function () {
-            // Aggiunge/Rimuove la classe al body
+            
             body.classList.toggle('sidebar-collapsed');
 
-            // Salva la preferenza dell'utente
+            
             const isNowCollapsed = body.classList.contains('sidebar-collapsed');
             localStorage.setItem('sidebar-collapsed', isNowCollapsed);
+
+            
+            if (togglerIcon) {
+                togglerIcon.classList.toggle('rotated', isNowCollapsed);
+            }
         });
+
+        
+        const isCollapsed = body.classList.contains('sidebar-collapsed');
+        if (togglerIcon) {
+            togglerIcon.classList.toggle('rotated', isCollapsed);
+        }
     }
 
 
@@ -70,13 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // --- CHIUSURA SIDEBAR CLICCANDO FUORI (Mobile UX) ---
-    // Se l'utente clicca sul contenuto principale mentre la sidebar è aperta su mobile, chiudila.
     document.addEventListener('click', function (e) {
-        // Se la sidebar è aperta su mobile...
+        
         if (body.classList.contains('mobile-sidebar-active')) {
-            // ...e il click NON è avvenuto dentro la sidebar e NON è sul pulsante hamburger...
+        
             if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
-                // ...chiudi la sidebar.
+        
                 body.classList.remove('mobile-sidebar-active');
             }
         }

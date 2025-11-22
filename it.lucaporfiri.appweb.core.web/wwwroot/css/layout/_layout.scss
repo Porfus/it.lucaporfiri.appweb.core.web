@@ -1,15 +1,25 @@
-﻿/* =========================================
+﻿body {
+    overflow-x: hidden; 
+}
+
+body.mobile-sidebar-active {
+    overflow: hidden; /* Blocca completamente lo scroll della pagina */
+    height: 100vh; /* Blocca l'altezza per evitare rimbalzi su iOS */
+}
+
+.no-transitions * {
+    transition: none !important;
+}
+
+/* =========================================
    LAYOUT GENERALE (Griglia e Contenitori)
    ========================================= */
-$sidebar-width-expanded: 260px;
-$sidebar-width-collapsed: 80px;
-$topbar-height: 60px;
-$transition-speed: 0.3s;
+
+
 .app-container {
     display: flex;
     min-height: 100vh;
     background-color: var(--background);
-    overflow-x: hidden;
 }
 
 .main-wrapper {
@@ -122,6 +132,31 @@ $transition-speed: 0.3s;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+}
+/* ================================================ */
+/*          STILI PER IL FOOTER                     */
+/* ================================================ */
+.content-footer {
+    max-width: 1400px;
+    margin: 0px auto 0 auto;
+    padding: 25px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.content-footer a {
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.content-footer a:hover {
+    color: var(--brand-red);
+    text-decoration: underline;
 }
 
 /* --- Responsive Layout --- */

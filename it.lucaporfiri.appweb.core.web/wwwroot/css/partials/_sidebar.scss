@@ -1,10 +1,7 @@
 ﻿/* =========================================
    COMPONENTE SIDEBAR
    ========================================= */
-$sidebar-width-expanded: 260px;
-$sidebar-width-collapsed: 80px;
-$topbar-height: 60px;
-$transition-speed: 0.3s;
+
 .sidebar {
     width: $sidebar-width-expanded;
     background-color: var(--surface);
@@ -65,8 +62,13 @@ $transition-speed: 0.3s;
     padding: 5px;
 }
 
-.sidebar-toggler i {
-    transform: rotate(180deg); /* Ruota la freccia verso destra (>) */
+.sidebar-toggler > i {
+    transform: rotate(180deg);
+    transition: transform 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.sidebar-toggler > i.rotated {
+    transform: rotate(0deg);
 }
 
 /* --- Navigazione --- */
@@ -179,7 +181,14 @@ body.sidebar-collapsed {
     .sidebar {
         position: fixed;
         left: -100%;
+        top: 0;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        z-index: 1000;
         max-width: 300px;
         box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }

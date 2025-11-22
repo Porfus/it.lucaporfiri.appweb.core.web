@@ -60,28 +60,4 @@
     color: var(--brand-red);
 }
 
-/* ================================================ */
-/*          STILI PER IL FOOTER                     */
-/* ================================================ */
-.dashboard-footer {
-    max-width: 1400px;
-    margin: 0px auto 0 auto;
-    padding: 25px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9em;
-    color: var(--text-secondary);
-}
 
-.dashboard-footer a {
-    color: var(--text-secondary);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.dashboard-footer a:hover {
-    color: var(--brand-red);
-    text-decoration: underline;
-}

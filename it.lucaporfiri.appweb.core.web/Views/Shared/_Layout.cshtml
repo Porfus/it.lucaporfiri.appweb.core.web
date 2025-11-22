@@ -22,7 +22,54 @@
 	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <script>
+        (function() {
+            // Disabilita transizioni
+            document.body.classList.add('no-transitions');
+
+            // --- 1. SIDEBAR (sul body) ---
+            try {
+                var isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) document.body.classList.add('sidebar-collapsed');
+            } catch (e) {}
+
+            // --- 2. TEMA (sull'HTML) ---
+            try {
+                var savedTheme = localStorage.getItem('theme') || 'light'; // Default light
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch (e) {}
+
+            // Riabilita transizioni
+            window.addEventListener('load', function() {
+                setTimeout(() => document.body.classList.remove('no-transitions'), 100);
+            });
+        })();
+    </script>
+
     <div class="app-container">
+        @{
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+            var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+            string IsActive(string controller, string action)
+            {
+                if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase))
+                {
+                    return "active";
+                }
+                return "";
+            }
+
+            string IsControllerActive(string controller)
+            {
+                if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase))
+                {
+                    return "active";
+                }
+                return "";
+            }
+        }
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
@@ -33,7 +80,7 @@
                 </a>
                 <!-- Pulsante per collassare la sidebar (visibile su desktop) -->
                 <button class="sidebar-toggler" id="sidebarToggler">
-                    <i class="fas fa-chevron-left"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
 
@@ -43,7 +90,7 @@
                     <!-- Esempio di link con icone per la modalità collassata -->
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        <a class="nav-link @IsActive("Home", "Index")" asp-controller="Home" asp-action="Index">
                             <i class="fas fa-home nav-icon"></i>
                             <span class="nav-text">Dashboard</span>
                         </a>
@@ -51,7 +98,7 @@
 
                     <!-- Bacheca Eventi (NUOVO) -->
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Eventi" asp-action="BachecaEventi">
+                        <a class="nav-link @IsActive("Eventi", "BachecaEventi")" asp-controller="Eventi" asp-action="BachecaEventi">
                             <i class="fas fa-calendar-check nav-icon"></i>
                             <span class="nav-text">Bacheca Eventi</span>
                         </a>
@@ -62,21 +109,21 @@
                     <li class="nav-label">Moduli</li>
 
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Atleta" asp-action="Index">
+                        <a class="nav-link @IsControllerActive("Atleta")" asp-controller="Atleta" asp-action="Index">
                             <i class="fas fa-users nav-icon"></i>
                             <span class="nav-text">Atleti</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Abbonamento" asp-action="Index">
+                        <a class="nav-link @IsControllerActive("Abbonamento")" asp-controller="Abbonamento" asp-action="Index">
                             <i class="fas fa-receipt nav-icon"></i>
                             <span class="nav-text">Abbonamenti</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Scheda" asp-action="Index">
+                        <a class="nav-link @IsControllerActive("Scheda")" asp-controller="Scheda" asp-action="Index">
                             <i class="fa-solid fa-file-lines nav-icon"></i>
                             <span class="nav-text">Schede</span>
                         </a>
