@@ -2,22 +2,30 @@
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
+    [Authorize(Roles = "Coach")]
     public class AtletaController : Controller
     {
         private readonly ServiziAtleta serviziAtleta;
         private readonly ServiziAbbonamento serviziAbbonamento;
         private readonly ServiziScheda serviziScheda;
-        public AtletaController(ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda)
+
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<AtletaController> _logger;
+        public AtletaController(ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda,
+            UserManager<ApplicationUser> userManager, ILogger<AtletaController> logger)
         {
             this.serviziAtleta = serviziAtleta;
             this.serviziAbbonamento = serviziAbbonamento;
             this.serviziScheda = serviziScheda;
+            _userManager = userManager; 
+            _logger = logger;
         }
 
         // GET: Abbonamento

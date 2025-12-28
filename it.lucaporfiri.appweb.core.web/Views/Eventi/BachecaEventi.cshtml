@@ -22,8 +22,8 @@
             <div class="kanban-header">
                 <div>
                 <a href="/Eventi/OrdinaEventi?dataScadenza=true" class="btn btn-secondary">
-                    <i class="fas fa-calendar"></i>  @* Icona *@
-                    <span>Ordina Eventi per scadenza</span> @* Testo separato *@
+                    <i class="fas fa-calendar"></i>  
+                    <span>Ordina Eventi per scadenza</span> 
                 </a>
 
                     <a href="/Eventi/OrdinaEventi" class="btn btn-secondary">
@@ -56,7 +56,7 @@
                     </div>
                 }
             </div>
-            @* --- STRUTTURA DELLA MODALE BOOTSTRAP (vuota per ora) --- *@
+            @* --- STRUTTURA DELLA MODALE BOOTSTRAP --- *@
             <div class="modal fade" id="modal-crea-evento" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -163,11 +163,11 @@
 
             // Scatenato quando un elemento viene rilasciato con successo
 			drake.on('drop', function(el, target, source, sibling){
-                console.log('Elemento rilasciato!');
+                // console.log('Elemento rilasciato!');
 				const eventoId = $(el).data('evento-id');
                 const nuovaColonnaId = $(target).parent().attr('id');
                 const vecchiaColonnaId = $(source).parent().attr('id');
-                console.log(`Evento ${eventoId} spostato da ${vecchiaColonnaId} a ${nuovaColonnaId}`);
+                // console.log(`Evento ${eventoId} spostato da ${vecchiaColonnaId} a ${nuovaColonnaId}`);
 
                 //calcolo nuova posizione
                 let nuovaPosizione;
@@ -180,24 +180,24 @@
                     const posPrecedente = parseFloat(prevElem.data('posizione'));
                     const posSuccessiva = parseFloat(nextElem.data('posizione'));
                     nuovaPosizione = (posPrecedente + posSuccessiva) / 2.0;
-                    console.log('Rilasciato in mezzo. Nuova posizione: ' + nuovaPosizione);
+                    // console.log('Rilasciato in mezzo. Nuova posizione: ' + nuovaPosizione);
 
                 } else if (prevElem.length === 0 && nextElem.length > 0) {
                     // Caso 2: Rilasciato all'inizio della lista
                     const posSuccessiva = parseFloat(nextElem.data('posizione'));
                     nuovaPosizione = posSuccessiva / 2.0;
-                    console.log('Rilasciato all\'inizio. Nuova posizione: ' + nuovaPosizione);
+                    // console.log('Rilasciato all\'inizio. Nuova posizione: ' + nuovaPosizione);
 
                 } else if (prevElem.length > 0 && nextElem.length === 0) {
                     // Caso 3: Rilasciato alla fine della lista
                     const posPrecedente = parseFloat(prevElem.data('posizione'));
                     nuovaPosizione = posPrecedente + 1.0;
-                    console.log('Rilasciato alla fine. Nuova posizione: ' + nuovaPosizione);
+                    // console.log('Rilasciato alla fine. Nuova posizione: ' + nuovaPosizione);
 
                 } else {
                     // Caso 4: Unico elemento nella colonna
                     nuovaPosizione = 1.0;
-                    console.log('Unico elemento. Nuova posizione: ' + nuovaPosizione);
+                    // console.log('Unico elemento. Nuova posizione: ' + nuovaPosizione);
                 }
 
                 // Aggiorna il data-attribute e preparati a inviare al server

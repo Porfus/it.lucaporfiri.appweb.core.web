@@ -1,0 +1,50 @@
+﻿@using it.lucaporfiri.appweb.core.web.ViewModels
+@model LoginViewModel
+
+@{    
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Accedi";
+}
+<div class="login-page-wrapper">
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fa-solid fa-dumbbell"></i>
+            </div>
+            <h1 class="login-title">Gestore Atleti</h1>
+            <p class="login-subtitle">Inserisci le tue credenziali per accedere</p>
+        </div>
+
+        <form asp-action="Login" method="post" class="login-form">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control-login" placeholder="nome@esempio.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control-login" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check-login">
+                <input asp-for="Ricordami" type="checkbox" id="rememberMe" />
+                <label for="rememberMe">Resta connesso</label>
+            </div>
+
+            <button type="submit" class="btn-login">
+                Accedi <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

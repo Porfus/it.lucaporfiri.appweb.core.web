@@ -16,6 +16,10 @@ namespace it.lucaporfiri.appweb.core.web.Models
         public string? Telefono { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DataInizioIscrizione { get; set; }
+        
+        public string? ApplicationUserId { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
+
         public TipoCliente Tipo { get; set; }
         public StatoCliente Stato { get; set; }
         public virtual ICollection<Abbonamento> Abbonamenti { get; set; } = new List<Abbonamento>();

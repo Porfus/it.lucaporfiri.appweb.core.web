@@ -86,7 +86,8 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                             DataScadenzaLabel = _serviziEvento.FormattaDataScadenza(evento.DataScadenza),
                             IconaTipoTask = _serviziEvento.GetIconaPerTipoEvento(evento.Tipo),
                             IsCompletato = evento.Stato == StatoWorkflow.Completato,
-                            Posizione = evento.Posizione ?? 0
+                            Posizione = evento.Posizione ?? 0,
+                            PrioritaScore = evento.Priorita ?? 0
                         };
                         colonna.Eventi.Add(eventoVm);
                     }

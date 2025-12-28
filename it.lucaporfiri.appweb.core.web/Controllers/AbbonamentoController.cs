@@ -1,11 +1,13 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
+    [Authorize(Roles = "Coach")]
     public class AbbonamentoController : Controller
     {    
         private readonly ServiziAbbonamento serviziAbbonamento;

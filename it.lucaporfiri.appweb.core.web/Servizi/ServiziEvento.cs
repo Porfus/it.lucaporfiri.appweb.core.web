@@ -203,9 +203,9 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 case TipoEvento.AtletaDaContattare:
                     icona = "phone"; break;
                 case TipoEvento.AllenamentoPersonal:
-                    icona = "calendar_xmark"; break;
+                    icona = "calendar-times"; break;
                 default:
-                    icona = "note"; break;
+                    icona = "sticky-note"; break;
             }
             return icona;
         }

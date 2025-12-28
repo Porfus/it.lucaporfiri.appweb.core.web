@@ -1,0 +1,108 @@
+﻿/* --- STILI PAGINA LOGIN --- */
+
+.login-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Centra verticalmente */
+    background-color: var(--background);
+}
+
+.login-card {
+    background-color: var(--surface);
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px var(--shadow-color-dark);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.login-header {
+    margin-bottom: 2rem;
+}
+
+.login-icon {
+    font-size: 3rem;
+    color: var(--brand-red);
+    margin-bottom: 1rem;
+}
+
+.login-title {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.login-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control-login {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f8fafc;
+
+    &:focus {
+        border-color: var(--brand-red);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--brand-red-light);
+        background-color: #fff;
+    }
+}
+
+.form-check-login {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--brand-red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #b91c25;
+    }
+}
+
+.text-danger {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+}

@@ -2,6 +2,7 @@ using it.lucaporfiri.appweb.core.web.Data;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ using static it.lucaporfiri.appweb.core.web.ViewModels.SchedaAllenamentoViewMode
 
 namespace it.lucaporfiri.appweb.core.web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -148,11 +150,6 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
                 }
             }
             return View(vm);
-        }
-
-        public IActionResult Login()
-        {
-            return View();
         }
         public IActionResult Privacy()
         {

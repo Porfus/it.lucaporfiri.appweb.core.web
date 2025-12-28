@@ -11,5 +11,6 @@
         public string? IconaTipoTask { get; set; } // Es. "event_busy"
         public bool IsCompletato { get; set; }
         public double Posizione { get; set; }
+        public double PrioritaScore { get; set; }
     }
 }
