@@ -12,7 +12,9 @@ namespace it.lucaporfiri.appweb.core.web.Models
 
         [DataType(DataType.Date)]
         public DateTime? AnnoDiNascita { get; set; }
-        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "Il campo Email è obbligatorio.")]
+        public required string Email { get; set; }
         public string? Telefono { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DataInizioIscrizione { get; set; }

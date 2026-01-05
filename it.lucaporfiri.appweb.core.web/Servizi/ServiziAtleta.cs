@@ -104,10 +104,33 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
             //return query.Skip(skip).Take(pageSize).ToList();
         }
 
-        public async Task CreaAtleta(Atleta atleta)
+        public async Task AggiungiAtleta(AtletaCreateViewModel atleta, string userId)
         {
-            _context.Atleta.Add(atleta);
-            await _context.SaveChangesAsync();
+            var nuovoAtleta = new Atleta
+            {
+                Nome = atleta.Nome,
+                Cognome = atleta.Cognome,
+                AnnoDiNascita = atleta.AnnoDiNascita,
+                Email = atleta.Email,
+                Telefono = atleta.Telefono,
+                DataInizioIscrizione = atleta.DataInizioIscrizione,
+                Tipo = atleta.Tipo,
+                Stato = atleta.Stato,
+                ApplicationUserId = userId
+            };
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Atleta.Add(nuovoAtleta);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw; // Propaga l'eccezione al controller
+            }
         }
 
         public async Task ModificaAtleta(Atleta atleta)
@@ -289,6 +312,23 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 .Where(s => s.DataInizio <= DateTime.Now && s.DataFine >= DateTime.Now)
                 .OrderByDescending(s => s.DataFine)
                 .FirstOrDefault();
+        }
+
+        public ApplicationUser CreaUserIdentity(AtletaCreateViewModel atleta)
+        {
+            return new ApplicationUser
+            {
+                UserName = atleta.Email, // Usiamo l'email come username
+                Email = atleta.Email,
+                Nome = atleta.Nome,
+                Cognome = atleta.Cognome,
+                EmailConfirmed = true // Per ora lo consideriamo confermato dato che lo crea il coach
+            };
+        }
+
+        public string GeneraPasswordTemporanea()
+        {
+            return "PasswordTemp123!";
         }
     }
 }

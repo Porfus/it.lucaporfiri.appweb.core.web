@@ -119,14 +119,37 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Cognome,AnnoDiNascita,Email,Telefono,DataInizioIscrizione,Tipo,Stato")] Atleta atleta)
+        public async Task<IActionResult> Create(AtletaCreateViewModel atleta)
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(atleta);
-                //await _context.SaveChangesAsync();
-                await serviziAtleta.CreaAtleta(atleta);
-                return RedirectToAction(nameof(Details), new { id = atleta.Id});
+                try
+                {
+                    ApplicationUser user = serviziAtleta.CreaUserIdentity(atleta);
+                    var tempPassword = serviziAtleta.GeneraPasswordTemporanea();
+                    var result = await _userManager.CreateAsync(user, tempPassword);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("Utente creato con successo.");
+                        await _userManager.AddToRoleAsync(user, "Atleta");
+                        await serviziAtleta.AggiungiAtleta(atleta, user.Id);
+                        TempData["SuccessMessage"] = $"Atleta creato! La password temporanea è: {tempPassword}. Comunicala all'atleta.";
+                        return RedirectToAction(nameof(Index));
+
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Errore durante la creazione dell'atleta/utente.");
+                    ModelState.AddModelError(string.Empty, "Si è verificato un errore imprevisto.");
+                }
             }
             return View(atleta);
         }
