@@ -1,4 +1,5 @@
 using it.lucaporfiri.appweb.core.web.Data;
+using it.lucaporfiri.appweb.core.web.Filters;
 using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.Servizi;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,10 @@ builder.Services.AddScoped<ServiziScheda>();
 builder.Services.AddScoped<ServiziEvento>();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ControlloPrimoAccessoFilter>();
+});
 
 //Activate Identity services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

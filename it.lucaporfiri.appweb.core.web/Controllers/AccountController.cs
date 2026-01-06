@@ -1,5 +1,6 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
 using it.lucaporfiri.appweb.core.web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,11 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountController(SignInManager<ApplicationUser> signInManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -24,10 +27,25 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             if (ModelState.IsValid) 
             {
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: model.Ricordami, lockoutOnFailure: false);
                 if (result.Succeeded) 
                 {
-                    return RedirectToAction("Index", "Home");
+                    if (user != null) 
+                    {
+                        if (user.PrimoAccesso)
+                        {
+                            return RedirectToAction("CambiaPasswordPrimoAccesso");
+                        }
+                        if (await _userManager.IsInRoleAsync(user, "Coach"))
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Dashboard", "AtletaArea"); 
+                        }
+                    }
                 }
                 ModelState.AddModelError(string.Empty, "Tentativo di accesso non valido");
             }
@@ -39,6 +57,43 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult CambiaPasswordPrimoAccesso()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CambiaPasswordPrimoAccesso(PrimoAccessoViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null) return RedirectToAction("Login");
+
+            var result = await _userManager.ChangePasswordAsync(user, model.PasswordAttuale, model.NuovaPassword);
+
+            if (result.Succeeded)
+            {
+                user.PrimoAccesso = false;
+                await _userManager.UpdateAsync(user);
+                await _signInManager.RefreshSignInAsync(user);
+
+                return RedirectToAction("Dashboard", "AtletaArea"); 
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
         }
 
     }

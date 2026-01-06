@@ -322,6 +322,7 @@ namespace it.lucaporfiri.appweb.core.web.Servizi
                 Email = atleta.Email,
                 Nome = atleta.Nome,
                 Cognome = atleta.Cognome,
+                PrimoAccesso = true,
                 EmailConfirmed = true // Per ora lo consideriamo confermato dato che lo crea il coach
             };
         }
