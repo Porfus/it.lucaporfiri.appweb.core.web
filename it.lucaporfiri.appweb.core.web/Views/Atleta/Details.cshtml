@@ -218,6 +218,67 @@
         </section>
     </div>
 
+    @if (TempData["ShowPasswordModal"] as bool? == true)
+    {
+        <div class="modal fade" id="passwordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Atleta Creato con Successo</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center py-4">
+                        <p class="mb-3">L'atleta <strong>@TempData["NewAtletaName"]</strong> è stato registrato.</p>
+
+                        <p class="text-muted mb-2">Comunica questa password temporanea all'atleta.<br>Dovrà cambiarla al primo accesso.</p>
+
+                        <!-- Box Password in evidenza -->
+                        <div class="input-group mb-3 justify-content-center">
+                            <input type="text" class="form-control form-control-lg text-center font-monospace fw-bold bg-light"
+                                   value="@TempData["NewAtletaPassword"]" id="tempPasswordInput" readonly style="max-width: 300px;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copiaPassword()">
+                                <i class="fas fa-copy"></i> Copia
+                            </button>
+                        </div>
+
+                        <div class="alert alert-warning d-inline-block text-start small mb-0">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>Attenzione:</strong> Questa password non sarà più visibile dopo la chiusura di questa finestra.
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Ho copiato la password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCRIPT AUTO-OPEN -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+                myModal.show();
+            });
+
+            function copiaPassword() {
+                var copyText = document.getElementById("tempPasswordInput");
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); // Per mobile
+                navigator.clipboard.writeText(copyText.value);
+
+                // Feedback visivo (opzionale)
+                var btn = event.currentTarget;
+                var originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copiato!';
+                btn.classList.replace('btn-outline-secondary', 'btn-success');
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('btn-success', 'btn-outline-secondary');
+                }, 2000);
+            }
+        </script>
+    }
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const btnSetAttivo = document.getElementById('btnSetAttivo');

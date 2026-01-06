@@ -1252,6 +1252,9 @@ body.mobile-sidebar-active {
   align-items: center;
   min-height: 80vh; /* Centra verticalmente */
   background-color: var(--background);
+  min-height: 100vh;
+  padding: 2rem 0;
+  box-sizing: border-box;
 }
 
 .login-card {
@@ -1263,6 +1266,8 @@ body.mobile-sidebar-active {
   box-shadow: 0 10px 25px var(--shadow-color-dark);
   border: 1px solid var(--border-color);
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .login-header {

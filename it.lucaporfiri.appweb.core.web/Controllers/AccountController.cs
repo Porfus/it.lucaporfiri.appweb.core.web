@@ -1,4 +1,5 @@
 ﻿using it.lucaporfiri.appweb.core.web.Models;
+using it.lucaporfiri.appweb.core.web.Servizi;
 using it.lucaporfiri.appweb.core.web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +11,12 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        private readonly ServiziAccount _serviziAccount;
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ServiziAccount serviziAccount)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _serviziAccount = serviziAccount;
         }
 
         [HttpGet]
@@ -61,8 +64,25 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult CambiaPasswordPrimoAccesso()
+        public async Task<IActionResult> CambiaPasswordPrimoAccesso()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (!user.PrimoAccesso)
+            {
+                if (await _userManager.IsInRoleAsync(user, "Coach"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "AtletaArea");
+                }
+            }
             return View();
         }
 

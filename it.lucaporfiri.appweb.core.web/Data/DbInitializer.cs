@@ -30,7 +30,9 @@ namespace it.lucaporfiri.appweb.core.web.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     Nome = "SportCoach",
-                    Cognome = "Admin"
+                    Cognome = "Admin",
+                    PrimoAccesso = false,
+                    EmailConfirmed = true
                 };            
                 await userManager.CreateAsync(adminUser, "Admin123");
                 await userManager.AddToRoleAsync(adminUser, "Coach");

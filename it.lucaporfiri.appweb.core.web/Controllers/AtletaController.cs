@@ -15,10 +15,11 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
         private readonly ServiziAtleta serviziAtleta;
         private readonly ServiziAbbonamento serviziAbbonamento;
         private readonly ServiziScheda serviziScheda;
+        private readonly ServiziAccount serviziAccount;
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AtletaController> _logger;
-        public AtletaController(ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda,
+        public AtletaController(ServiziAtleta serviziAtleta, ServiziAbbonamento serviziAbbonamento, ServiziScheda serviziScheda, ServiziAccount serviziAccount,
             UserManager<ApplicationUser> userManager, ILogger<AtletaController> logger)
         {
             this.serviziAtleta = serviziAtleta;
@@ -26,6 +27,7 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             this.serviziScheda = serviziScheda;
             _userManager = userManager; 
             _logger = logger;
+            this.serviziAccount = serviziAccount;
         }
 
         // GET: Abbonamento
@@ -125,16 +127,33 @@ namespace it.lucaporfiri.appweb.core.web.Controllers
             {
                 try
                 {
-                    ApplicationUser user = serviziAtleta.CreaUserIdentity(atleta);
-                    var tempPassword = serviziAtleta.GeneraPasswordTemporanea();
+                    ApplicationUser user = serviziAccount.CreaUserIdentity(atleta);
+                    var tempPassword = serviziAccount.GeneraPasswordTemporanea();
                     var result = await _userManager.CreateAsync(user, tempPassword);
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("Utente creato con successo.");
                         await _userManager.AddToRoleAsync(user, "Atleta");
                         await serviziAtleta.AggiungiAtleta(atleta, user.Id);
-                        TempData["SuccessMessage"] = $"Atleta creato! La password temporanea è: {tempPassword}. Comunicala all'atleta.";
-                        return RedirectToAction(nameof(Index));
+                        //Che merda odio questo pezzo di codice
+                        var atletaDb = serviziAtleta.DaiAtleti().FirstOrDefault(a => a.Email == atleta.Email && a.ApplicationUserId == user.Id);
+                        if (atletaDb != null)
+                        {
+                            user.AtletaId = atletaDb.Id;
+                            await _userManager.UpdateAsync(user);
+
+                            TempData["NewAtletaName"] = $"{atleta.Nome} {atleta.Cognome}";
+                            TempData["NewAtletaPassword"] = tempPassword;
+                            TempData["ShowPasswordModal"] = true;
+
+                            return RedirectToAction(nameof(Details), new { id = atletaDb.Id });
+                        }
+                        else {
+                            _logger.LogWarning("L'utente è stato creato ma l'atleta non è stato trovato nel database. Email: {Email}, UserId: {UserId}", atleta.Email, user.Id);
+                            TempData["ErrorMessage"] = "L'utente è stato creato, ma si è verificato un problema nell'associazione con l'atleta. Contattare l'amministratore.";
+
+                            return RedirectToAction(nameof(Index));
+                        }
 
                     }
                     else
