@@ -1,0 +1,139 @@
+﻿@* @model AtletaDashboardViewModel *@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="athlete-container">
+
+    <!-- 1. HEADER COMPATTO (Richiesto da te) -->
+    <div class="dashboard-header-compact">
+
+        <!-- Saluto (Sinistra) -->
+        <div class="welcome-text">
+            <h1>Ciao Luca</h1>
+            <div class="date-today">Oggi è Giovedì, 09 Gennaio</div>
+        </div>
+
+        <!-- Statistiche "Inline" (Destra) -->
+        <div class="header-stats-inline">
+
+            <!-- Pillola Abbonamento (Stato Warning) -->
+            <div class="stat-pill is-warning" title="Scadenza Imminente">
+                <span class="status-dot"></span>
+                <span>Scadenza 15 Gen (6gg)</span>
+            </div>
+
+            <!-- Pillola Peso -->
+            <div class="stat-pill">
+                <i class="fas fa-weight-scale"></i>
+                <span>75.5 kg</span>
+            </div>
+
+            <!-- Pulsante Modifica Profilo -->
+            <a href="#" class="btn-edit-profile" title="Aggiorna i tuoi dati">
+                <i class="fas fa-pencil-alt"></i>
+            </a>
+
+        </div>
+    </div>
+
+
+    <!-- 2. CARD SCHEDA (Workout Hero) -->
+    <div class="workout-hero-card">
+
+        <!-- Copertina Scura con Titolo Sfondo -->
+        <div class="workout-cover">
+            <span class="cover-title">FORZA</span>
+        </div>
+
+        <div class="workout-body">
+
+            <!-- Intestazione Scheda + Bottoni -->
+            <div class="workout-main-info">
+                <div>
+                    <h2>Scheda Forza Base</h2>
+                    <div class="date-range">
+                        <i class="far fa-calendar"></i> 02 Gen — 28 Feb 2026
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn-icon-square" title="Scarica PDF">
+                        <i class="fas fa-download"></i>
+                    </a>
+                    <a href="#" class="btn-icon-square primary" title="Visualizza Dettagli">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Griglia Dettagli -->
+            <div class="workout-specs">
+                <div class="spec-item">
+                    <span class="label">Frequenza</span>
+                    <span class="value">4 × settimana</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Durata</span>
+                    <span class="value">60 — 75 min</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Obiettivo</span>
+                    <span class="value">Forza Max</span>
+                </div>
+            </div>
+
+            <!-- Nota del Coach -->
+            <div class="coach-note">
+                <span class="note-label">Nota del coach</span>
+                <p>Ottimo lavoro questa settimana! Ricordati di curare il recupero tra le serie pesanti. La prossima settimana aumentiamo l'intensità.</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 3. LISTA EVENTI -->
+    <h3 class="events-section-title">Prossimi Eventi</h3>
+
+    <div class="events-list-card">
+
+        <!-- Evento 1: Urgente -->
+        <div class="event-row">
+            <div class="event-icon-box warning">
+                <i class="fas fa-exclamation"></i>
+            </div>
+            <div class="event-main">
+                <h4>Rinnovo abbonamento</h4>
+                <span class="event-meta">Scadenza 15 Gennaio 2026</span>
+            </div>
+            <span class="event-tag urgent">Tra 6 giorni</span>
+        </div>
+
+        <!-- Evento 2: Info -->
+        <div class="event-row">
+            <div class="event-icon-box info">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="event-main">
+                <h4>Verifica progressi</h4>
+                <span class="event-meta">20 Gennaio 2026 • 10:00</span>
+            </div>
+            <span class="event-tag">Tra 11 giorni</span>
+        </div>
+
+        <!-- Evento 3: Futuro -->
+        <div class="event-row">
+            <div class="event-icon-box success">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="event-main">
+                <h4>Nuova scheda programmata</h4>
+                <span class="event-meta">Inizio 01 Marzo 2026</span>
+            </div>
+            <!-- Badge opzionale -->
+        </div>
+
+    </div>
+
+</div>

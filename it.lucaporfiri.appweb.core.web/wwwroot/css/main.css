@@ -1356,6 +1356,351 @@ body.mobile-sidebar-active {
   display: block;
 }
 
+/* --- DASHBOARD ATLETA (Stile Minimal/Swiss) --- */
+.athlete-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+/* --- 1. HEADER COMPATTO --- */
+.dashboard-header-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Allinea in basso per estetica */
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap; /* Per mobile */
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.welcome-text h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.welcome-text .date-today {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Statistiche "Inline" (a destra) */
+.header-stats-inline {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--surface);
+  padding: 6px 12px;
+  border-radius: 8px; /* Pillola squadrata */
+  border: 1px solid var(--border-color);
+  /* Varianti di stato */
+}
+.stat-pill.is-warning {
+  color: #b91c1c; /* Rosso scuro per testo */
+  background-color: #fef2f2; /* Rosso chiarissimo */
+  border-color: #fecaca;
+}
+.stat-pill.is-warning .status-dot {
+  background-color: #dc2626;
+}
+.stat-pill.is-active {
+  color: #15803d; /* Verde scuro */
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.stat-pill.is-active .status-dot {
+  background-color: #22c55e;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+}
+
+.btn-edit-profile {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-edit-profile:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: rotate(15deg);
+}
+
+/* --- 2. WORKOUT CARD (Hero) --- */
+.workout-hero-card {
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  margin-bottom: 3rem;
+}
+
+.workout-cover {
+  height: 200px; /* Ridotto leggermente rispetto al mockup per schermi laptop */
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); /* Mantengo scuro come piace a te */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* Linea rossa in basso */
+}
+.workout-cover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--brand-red);
+}
+.workout-cover .cover-title {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.08); /* Effetto watermark */
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.workout-body {
+  padding: 2rem;
+}
+
+.workout-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.workout-main-info h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+.workout-main-info .date-range {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-icon-square {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+.btn-icon-square:hover {
+  background-color: var(--background);
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.btn-icon-square.primary {
+  background-color: var(--brand-red);
+  border-color: var(--brand-red);
+  color: white;
+}
+.btn-icon-square.primary:hover {
+  background-color: #b91c1c; /* Rosso più scuro */
+}
+
+/* Griglia Dettagli */
+.workout-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.workout-specs .spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.workout-specs .label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.workout-specs .value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Nota Coach */
+.coach-note {
+  background-color: var(--background);
+  border-left: 3px solid var(--brand-red);
+  padding: 1.5rem;
+  border-radius: 0 8px 8px 0;
+}
+.coach-note .note-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.coach-note p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* --- 3. LISTA EVENTI --- */
+.events-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.events-list-card {
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.event-row {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.1s;
+  gap: 1rem;
+}
+.event-row:last-child {
+  border-bottom: none;
+}
+.event-row:hover {
+  background-color: var(--background);
+}
+.event-row .event-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.event-row .event-icon-box.warning {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+.event-row .event-icon-box.info {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+.event-row .event-icon-box.success {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+.event-row .event-main {
+  flex-grow: 1;
+}
+.event-row .event-main h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 2px 0;
+  color: var(--text-primary);
+}
+.event-row .event-main .event-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.event-row .event-tag {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  background-color: var(--background);
+  color: var(--text-secondary);
+}
+.event-row .event-tag.urgent {
+  background-color: var(--brand-red);
+  color: white;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .dashboard-header-compact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .header-stats-inline {
+    width: 100%;
+    overflow-x: auto; /* Permette scroll orizzontale se le stat sono tante */
+    padding-bottom: 5px;
+  }
+  .workout-main-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .workout-specs {
+    grid-template-columns: 1fr; /* Una colonna per le specifiche */
+    gap: 1.5rem;
+  }
+}
 /* 5. Partials - Stili per le pagine parziali*/
 /* =========================================
   COMPONENTE SIDEBAR
