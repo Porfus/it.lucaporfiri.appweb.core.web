@@ -1,8 +1,5 @@
 ﻿.profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
+    @include flex-between-start(20px);
     flex-wrap: wrap;
     margin-bottom: 30px;
 }
@@ -21,10 +18,8 @@
 }
 
 .profile-actions {
-    display: flex;
-    flex-direction: column;
+    @include flex-column(10px);
     align-items: flex-end;
-    gap: 10px;
 }
 
 .state-buttons .btn {
@@ -33,15 +28,11 @@
 }
 
 .history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    @include flex-column(15px);
 }
 
 .history-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    @include flex-between-center;
     background-color: var(--background);
     padding: 15px;
     border-radius: 8px;
@@ -49,9 +40,7 @@
 }
 
 .history-item-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    @include flex-column(4px);
 }
 
     .history-item-details strong {
@@ -64,9 +53,7 @@
     }
 
 .history-item-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    @include flex-start-center(10px);
 }
 
 .file-link {

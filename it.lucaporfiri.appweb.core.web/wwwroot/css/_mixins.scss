@@ -1,0 +1,221 @@
+/* _mixins.scss
+ * Questo file contiene tutti i mixin SCSS riutilizzabili per il progetto.
+ */
+
+/* =========================================
+   1. FLEXBOX LAYOUTS
+   Pattern comuni per l'allineamento con Flexbox.
+   ========================================= */
+
+/**
+ * Crea un container flex con elementi spaziati agli estremi e allineati verticalmente al centro.
+ * Ideale per header di card, barre di navigazione o righe di tabelle.
+ */
+@mixin flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/**
+ * Crea un container flex con elementi spaziati agli estremi e allineati in alto.
+ * Ideale per header di card con testo multiriga o icone.
+ * @param $gap: Spazio opzionale (default: 0).
+ */
+@mixin flex-between-start($gap: 0) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $gap;
+}
+
+/**
+ * Crea un container flex con elementi allineati a sinistra (start) e centrati verticalmente.
+ * @param $gap: Spazio tra gli elementi (default: 0).
+ */
+@mixin flex-start-center($gap: 0) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: $gap;
+}
+
+/**
+ * Centra perfettamente il contenuto sia orizzontalmente che verticalmente.
+ * @param $gap: Spazio tra gli elementi interni (default: 0).
+ */
+@mixin flex-center-all($gap: 0) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $gap;
+}
+
+/**
+ * Crea una colonna flex verticale.
+ * @param $gap: Spazio verticale tra gli elementi (default: 0).
+ */
+@mixin flex-column($gap: 0) {
+    display: flex;
+    flex-direction: column;
+    gap: $gap;
+}
+
+/* =========================================
+   2. CARDS & CONTAINERS
+   ========================================= */
+
+/**
+ * Stile base per una card (sfondo, bordi, ombreggiatura leggera).
+ * @param $padding: Padding interno (default: 20px).
+ * @param $radius: Arrotondamento bordi (default: 12px).
+ */
+@mixin card-base($padding: 20px, $radius: 12px) {
+    background-color: var(--surface);
+    border-radius: $radius;
+    padding: $padding;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color-light);
+}
+
+/**
+ * Effetto hover per le card interattive.
+ * Solleva leggermente l'elemento e intensifica l'ombra.
+ */
+@mixin card-hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px var(--shadow-color-light);
+    }
+}
+
+/* =========================================
+   3. BUTTONS & INTERACTIVTY
+   Stili base per elementi cliccabili.
+   ========================================= */
+
+/**
+ * Struttura base per un bottone (layout, font, reset bordi).
+ * NON include i colori (background/text), da definire a parte.
+ * @param $padding: Padding interno (default: 10px 18px).
+ * @param $radius: Arrotondamento (default: 8px).
+ */
+@mixin btn-base($padding: 10px 18px, $radius: 8px) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: $padding;
+    border-radius: $radius;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+/**
+ * Effetto hover semplice per bottoni o link: sollevamento e ombra leggera.
+ */
+@mixin hover-lift-shadow {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   4. GRIDS & RESPONSIVE
+   gestione griglie e media queries.
+   ========================================= */
+
+/**
+ * Crea una griglia responsive che adatta automaticamente il numero di colonne.
+ * Le colonne avranno larghezza minima $min-width e si espanderanno per riempire lo spazio.
+ * @param $min-width: Larghezza minima di una colonna prima che vada a capo (default: 240px).
+ * @param $gap: Spazio tra le celle (default: 20px).
+ */
+@mixin grid-responsive($min-width: 240px, $gap: 20px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+    gap: $gap;
+}
+
+/**
+ * Media Query Mobile-First (min-width).
+ * Applica gli stili solo da una certa larghezza in su.
+ * @param $breakpoint: es. 768px.
+ */
+@mixin media-up($breakpoint) {
+    @media (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+/**
+ * Media Query Desktop-First (max-width).
+ * Applica gli stili solo fino a una certa larghezza.
+ * @param $breakpoint: es. 768px.
+ */
+@mixin media-down($breakpoint) {
+    @media (max-width: $breakpoint) {
+        @content;
+    }
+}
+
+/* =========================================
+   5. TEXT & UTILS
+   ========================================= */
+
+/**
+ * Tronca il testo con '...' se supera una singola riga.
+ * Richiede che l'elemento abbia una larghezza definita (o flex).
+ */
+@mixin text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/**
+ * Personalizza la scrollbar (funziona su Webkit: Chrome, Edge, Safari).
+ * Utile per contenitori scrollabili interni come la dashboard o liste.
+ * @param $width: Larghezza barra (default: 8px).
+ * @param $thumb-color: Colore del cursore (default: #ccc).
+ * @param $track-color: Colore dello sfondo (default: #f1f1f1).
+ */
+@mixin custom-scrollbar($width: 8px, $thumb-color: #ccc, $track-color: #f1f1f1) {
+    &::-webkit-scrollbar {
+        width: $width;
+        height: $width; /* Per scrollbar orizzontale */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $track-color;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $thumb-color;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: darken($thumb-color, 10%);
+    }
+}
+
+/**
+ * Nasconde un elemento visivamente ma lo mantiene accessibile agli screen reader.
+ */
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+

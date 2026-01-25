@@ -10,9 +10,8 @@
 
 /* --- 1. HEADER COMPATTO --- */
 .dashboard-header-compact {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end; /* Allinea in basso per estetica */
+    @include flex-between-center;
+    align-items: flex-end; /* Override per estetica */
     margin-bottom: 2.5rem;
     flex-wrap: wrap; /* Per mobile */
     gap: 1.5rem;
@@ -40,22 +39,18 @@
 
 /* Statistiche "Inline" (a destra) */
 .header-stats-inline {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    @include flex-start-center(1.5rem);
 }
 
 .stat-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    background-color: var(--surface);
-    padding: 6px 12px;
-    border-radius: 8px; /* Pillola squadrata */
-    border: 1px solid var(--border-color);
+@include flex-start-center(8px);
+font-size: 0.9rem;
+font-weight: 600;
+color: var(--text-secondary);
+background-color: var(--surface);
+padding: 6px 12px;
+border-radius: 8px; /* Pillola squadrata */
+border: 1px solid var(--border-color);
     /* Varianti di stato */
     &.is-warning {
         color: #b91c1c; /* Rosso scuro per testo */
@@ -88,9 +83,7 @@
 .btn-edit-profile {
     width: 36px;
     height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center-all;
     border-radius: 50%;
     background-color: var(--surface);
     border: 1px solid var(--border-color);
@@ -108,21 +101,17 @@
 
 /* --- 2. WORKOUT CARD (Hero) --- */
 .workout-hero-card {
-    background: var(--surface);
-    border-radius: 12px;
+    @include card-base(0, 12px); /* Padding 0 perché gestito internamente */
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05); /* Override shadow */
     margin-bottom: 3rem;
 }
 
 .workout-cover {
-    height: 200px; /* Ridotto leggermente rispetto al mockup per schermi laptop */
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); /* Mantengo scuro come piace a te */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+height: 200px; 
+background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+@include flex-center-all;
+position: relative;
     /* Linea rossa in basso */
     &::after {
         content: '';
@@ -150,12 +139,10 @@
 }
 
 .workout-main-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+@include flex-between-start;
+margin-bottom: 2rem;
+padding-bottom: 1.5rem;
+border-bottom: 1px solid var(--border-color);
 
     h2 {
         font-family: var(--font-heading);
@@ -168,9 +155,7 @@
         color: var(--text-secondary);
         font-size: 0.95rem;
         font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        @include flex-start-center(8px);
     }
 }
 
@@ -180,18 +165,16 @@
 }
 
 .btn-icon-square {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: var(--surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    transition: all 0.2s;
-    font-size: 1.1rem;
-    text-decoration: none;
+width: 44px;
+height: 44px;
+border-radius: 8px;
+border: 1px solid var(--border-color);
+background: var(--surface);
+@include flex-center-all;
+color: var(--text-secondary);
+transition: all 0.2s;
+font-size: 1.1rem;
+text-decoration: none;
 
     &:hover {
         background-color: var(--background);
@@ -218,9 +201,7 @@
     margin-bottom: 2rem;
 
     .spec-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        @include flex-column(5px);
     }
 
     .label {
@@ -272,10 +253,9 @@
 }
 
 .events-list-card {
-    background: var(--surface);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
+    @include card-base(0, 12px);
     overflow: hidden;
+    box-shadow: none; /* remove shadow if not needed or keep default */
 }
 
 .event-row {
@@ -298,9 +278,7 @@
         width: 40px;
         height: 40px;
         border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include flex-center-all;
         font-size: 1rem;
         flex-shrink: 0;
 

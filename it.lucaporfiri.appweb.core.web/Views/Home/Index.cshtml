@@ -1,13 +1,6 @@
 ﻿@using it.lucaporfiri.appweb.core.web.ViewModels
 @model DashboardViewModel
-@{
-    var subtitle = DateTime.Now.Hour < 12 && DateTime.Now.Hour > 4 ? "Buongiorno, Riccardo" 
-    : DateTime.Now.Hour < 19 && DateTime.Now.Hour >=12  
-    ? "Buon pomeriggio, Riccardo" : "Buonasera, Riccardo";
 
-    ViewData["Title"] = "Home Page";
-
-}
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -18,12 +11,6 @@
 <body>
 
     <div class="dashboard-container">
-        <header class="dashboard-header">
-            <div class="header-logo">
-                <p> @subtitle</p>
-            </div>
-        </header>
-
         <div class="stat-cards">
             <div class="stat-card" onclick="jCaricaTotaleAtleti()" style="cursor:pointer;">
                 <div class="stat-card-icon icon-total"><i class="fas fa-users"></i></div>

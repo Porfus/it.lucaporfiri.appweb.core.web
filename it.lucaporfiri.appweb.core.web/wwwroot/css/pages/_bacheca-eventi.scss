@@ -17,15 +17,14 @@
 
 /* Contenitore principale che permette lo scroll orizzontale */
 .kanban-board {
-    display: flex;
-    gap: 20px;
+    @include flex-start-center(20px);
+    align-items: flex-start;
     overflow-x: auto; /* Abilita lo scroll orizzontale se le colonne non ci stanno */
     padding-bottom: 20px; /* Spazio per la barra di scorrimento */
 }
 
 .kanban-header {
-    display: flex;
-    justify-content: space-between;
+    @include flex-between-center;
     align-items: flex-start;
     gap: 20px;
     flex-wrap: wrap;
@@ -47,9 +46,7 @@
 .column-header {
     padding: 15px;
     border-bottom: 2px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    @include flex-between-center;
 }
 
 .column-header h2 {
@@ -78,9 +75,7 @@
 /* --- STILE DEI "CARTELLINI" (TASK CARD) --- */
 
 .task-card {
-    background-color: #fff;
-    border-radius: 6px;
-    padding: 15px;
+    @include card-base(12px, 6px);
     margin-bottom: 15px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     cursor: grab; /* Indica che l'elemento è trascinabile */
@@ -146,9 +141,7 @@
 }
 
 .task-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include flex-between-center;
     font-size: 0.8rem;
     color: var(--colore-testo-secondario);
 }

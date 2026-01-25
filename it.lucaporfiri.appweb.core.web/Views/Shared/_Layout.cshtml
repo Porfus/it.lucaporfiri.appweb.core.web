@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var subtitle = DateTime.Now.Hour < 12 && DateTime.Now.Hour > 4 ? "Buongiorno"
+    : DateTime.Now.Hour < 19 && DateTime.Now.Hour >= 12
+    ? "Buon pomeriggio" : "Buonasera";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -131,12 +136,17 @@
                 </ul>
             </nav>
 
-            <!-- Footer della Sidebar (es. Logout o Settings) -->
+            <!-- Footer della Sidebar -->
             <div class="sidebar-footer">
+                
                 <a href="/Home/Login" class="nav-link user-profile">
                     <i class="fa-solid fa-user nav-icon"></i>
                     <span class="nav-text">Profilo</span>
-                </a>
+				</a>
+                <button class=" theme-switcher mobile-toggle" id="theme-switcher-mobileToggle" aria-label="Cambia tema">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+				</button>
             </div>
         </aside>
         <!-- 3. MAIN CONTENT AREA -->
@@ -149,10 +159,24 @@
                 <button class="mobile-toggle" id="mobileToggle">
                     <i class="fas fa-bars"></i>
                 </button>
+                <div class="user-greeting">
+                    
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <span class="text-muted small d-block d-md-none">@subtitle,</span>
+                        <h2 class="m-0" style="font-size: 1.2rem;">
+                            @(User.Identity.Name ?? "Utente") 
+                        </h2>
+                    }
+                    else
+                    {
+                        <h2 class="m-0">Gestore Atleti</h2>
+                    }
+                </div>
 
                 <!-- Azioni a destra (Theme Switcher, etc.) -->
                 <div class="topbar-actions">
-                    <button class="theme-switcher" id="theme-switcher" aria-label="Cambia tema">
+                    <button class="nav-link theme-switcher sidebar-toggler d-none d-md-flex" id="theme-switcher-desktop" aria-label="Cambia tema">
                         <i class="fas fa-moon"></i>
                         <i class="fas fa-sun"></i>
                     </button>

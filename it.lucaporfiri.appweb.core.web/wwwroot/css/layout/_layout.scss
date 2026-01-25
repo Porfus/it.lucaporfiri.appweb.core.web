@@ -34,11 +34,22 @@ body.mobile-sidebar-active {
 /* --- Topbar (Header superiore) --- */
 .topbar {
     height: $topbar-height;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    /* background-color: var(--surface);  <-- Decommenta se vuoi la barra bianca */
+    @include flex-between-center;
+    padding: 0 1.5rem;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border-color);
+}
+.topbar-left {
+    @include flex-start-center(15px)
+}
+
+.user-greeting {
+    h2 {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
 }
 
 .mobile-toggle {
@@ -57,15 +68,11 @@ body.mobile-sidebar-active {
 }
 
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include flex-between-center;
 }
 
 .header-logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    @include flex-start-center(15px);
 }
 
     .header-logo img {
@@ -115,9 +122,7 @@ body.mobile-sidebar-active {
 }
 
 .main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    @include flex-column(20px);
 }
 
 .main-actions {
@@ -128,10 +133,8 @@ body.mobile-sidebar-active {
 }
 
 .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
+    @include flex-between-center;
+    margin-bottom: 20px;
 }
 /* ================================================ */
 /*          STILI PER IL FOOTER                     */
@@ -141,9 +144,7 @@ body.mobile-sidebar-active {
     margin: 0px auto 0 auto;
     padding: 25px;
     border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include flex-between-center;
     font-size: 0.9em;
     color: var(--text-secondary);
 }

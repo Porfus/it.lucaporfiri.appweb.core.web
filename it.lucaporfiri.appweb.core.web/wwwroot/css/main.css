@@ -4,6 +4,97 @@
 /* ================================================ */
 /* Variabili */
 /* --- Variabili Dimensioni Layout --- */
+/* Mixins */
+/* _mixins.scss
+ * Questo file contiene tutti i mixin SCSS riutilizzabili per il progetto.
+ */
+/* =========================================
+   1. FLEXBOX LAYOUTS
+   Pattern comuni per l'allineamento con Flexbox.
+   ========================================= */
+/**
+ * Crea un container flex con elementi spaziati agli estremi e allineati verticalmente al centro.
+ * Ideale per header di card, barre di navigazione o righe di tabelle.
+ */
+/**
+ * Crea un container flex con elementi spaziati agli estremi e allineati in alto.
+ * Ideale per header di card con testo multiriga o icone.
+ * @param $gap: Spazio opzionale (default: 0).
+ */
+/**
+ * Crea un container flex con elementi allineati a sinistra (start) e centrati verticalmente.
+ * @param $gap: Spazio tra gli elementi (default: 0).
+ */
+/**
+ * Centra perfettamente il contenuto sia orizzontalmente che verticalmente.
+ * @param $gap: Spazio tra gli elementi interni (default: 0).
+ */
+/**
+ * Crea una colonna flex verticale.
+ * @param $gap: Spazio verticale tra gli elementi (default: 0).
+ */
+/* =========================================
+   2. CARDS & CONTAINERS
+   ========================================= */
+/**
+ * Stile base per una card (sfondo, bordi, ombreggiatura leggera).
+ * @param $padding: Padding interno (default: 20px).
+ * @param $radius: Arrotondamento bordi (default: 12px).
+ */
+/**
+ * Effetto hover per le card interattive.
+ * Solleva leggermente l'elemento e intensifica l'ombra.
+ */
+/* =========================================
+   3. BUTTONS & INTERACTIVTY
+   Stili base per elementi cliccabili.
+   ========================================= */
+/**
+ * Struttura base per un bottone (layout, font, reset bordi).
+ * NON include i colori (background/text), da definire a parte.
+ * @param $padding: Padding interno (default: 10px 18px).
+ * @param $radius: Arrotondamento (default: 8px).
+ */
+/**
+ * Effetto hover semplice per bottoni o link: sollevamento e ombra leggera.
+ */
+/* =========================================
+   4. GRIDS & RESPONSIVE
+   gestione griglie e media queries.
+   ========================================= */
+/**
+ * Crea una griglia responsive che adatta automaticamente il numero di colonne.
+ * Le colonne avranno larghezza minima $min-width e si espanderanno per riempire lo spazio.
+ * @param $min-width: Larghezza minima di una colonna prima che vada a capo (default: 240px).
+ * @param $gap: Spazio tra le celle (default: 20px).
+ */
+/**
+ * Media Query Mobile-First (min-width).
+ * Applica gli stili solo da una certa larghezza in su.
+ * @param $breakpoint: es. 768px.
+ */
+/**
+ * Media Query Desktop-First (max-width).
+ * Applica gli stili solo fino a una certa larghezza.
+ * @param $breakpoint: es. 768px.
+ */
+/* =========================================
+   5. TEXT & UTILS
+   ========================================= */
+/**
+ * Tronca il testo con '...' se supera una singola riga.
+ * Richiede che l'elemento abbia una larghezza definita (o flex).
+ */
+/**
+ * Personalizza la scrollbar (funziona su Webkit: Chrome, Edge, Safari).
+ * Utile per contenitori scrollabili interni come la dashboard o liste.
+ * @param $width: Larghezza barra (default: 8px).
+ * @param $thumb-color: Colore del cursore (default: #ccc).
+ * @param $track-color: Colore dello sfondo (default: #f1f1f1).
+ */
+/**
+ * Nasconde un elemento visivamente ma lo mantiene accessibile agli screen reader.
+ */
 /* 1. Base */
 /* ================================================ */
 /*          1. DEFINIZIONE DEL TEMA (CSS VARIABILI) */
@@ -130,10 +221,25 @@ body.mobile-sidebar-active {
 .topbar {
   height: 50px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  /* background-color: var(--surface);  <-- Decommenta se vuoi la barra bianca */
+  align-items: center;
+  padding: 0 1.5rem;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.user-greeting h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
 .mobile-toggle {
@@ -160,6 +266,7 @@ body.mobile-sidebar-active {
 .header-logo {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 15px;
 }
 
@@ -227,7 +334,7 @@ body.mobile-sidebar-active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 /* ================================================ */
@@ -328,15 +435,17 @@ body.mobile-sidebar-active {
 
 /* 3. Components - Tutti i mattoncini della UI */
 .btn {
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
   border: 1px solid transparent;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -380,17 +489,20 @@ body.mobile-sidebar-active {
 }
 
 .btn-danger-outline {
-  background-color: transparent;
-  color: var(--brand-red);
-  border: 2px solid var(--brand-red);
-  padding: 8px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
   transition: all 0.2s;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--brand-red);
+  border: 1px solid var(--brand-red);
 }
 
 .btn-danger-outline:hover {
@@ -408,21 +520,21 @@ body.mobile-sidebar-active {
   background-color: var(--surface);
   border-radius: 12px;
   padding: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color-light);
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 20px;
-  border: 1px solid var(--border-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 6px -1px var(--shadow-color-light);
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px var(--shadow-color-light);
 }
 
 [data-theme=dark] .stat-card {
   box-shadow: 0 4px 6px -1px var(--shadow-color-dark);
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px var(--shadow-color-light);
 }
 
 [data-theme=dark] .stat-card:hover {
@@ -851,8 +963,8 @@ body.mobile-sidebar-active {
 .profile-actions {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: 10px;
+  align-items: flex-end;
 }
 
 .state-buttons .btn {
@@ -868,8 +980,8 @@ body.mobile-sidebar-active {
 
 .history-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   background-color: var(--background);
   padding: 15px;
   border-radius: 8px;
@@ -894,6 +1006,7 @@ body.mobile-sidebar-active {
 .history-item-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
 }
 
@@ -926,10 +1039,22 @@ body.mobile-sidebar-active {
 .page-header-details .header-content {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 20px;
 }
 
 .page-header-details .btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
   font-size: 1.5em;
   color: var(--text-secondary);
   text-decoration: none;
@@ -938,10 +1063,6 @@ body.mobile-sidebar-active {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
 }
 
 .page-header-details .btn-back:hover {
@@ -965,10 +1086,11 @@ body.mobile-sidebar-active {
 /* Card principale */
 .details-card {
   background-color: var(--surface);
-  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Override shadow */
 }
 
 /* Griglia per le informazioni chiave */
@@ -1016,13 +1138,18 @@ body.mobile-sidebar-active {
 .athlete-link-section a {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 700;
   text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
   font-size: 1.2em;
   font-weight: 600;
   color: var(--brand-red);
-  padding: 10px 15px;
-  border-radius: 8px;
   background-color: var(--brand-red-light);
   transition: all 0.2s;
 }
@@ -1058,7 +1185,10 @@ body.mobile-sidebar-active {
 /* Contenitore principale che permette lo scroll orizzontale */
 .kanban-board {
   display: flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 20px;
+  align-items: flex-start;
   overflow-x: auto; /* Abilita lo scroll orizzontale se le colonne non ci stanno */
   padding-bottom: 20px; /* Spazio per la barra di scorrimento */
 }
@@ -1066,6 +1196,7 @@ body.mobile-sidebar-active {
 .kanban-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   align-items: flex-start;
   gap: 20px;
   flex-wrap: wrap;
@@ -1088,8 +1219,8 @@ body.mobile-sidebar-active {
   padding: 15px;
   border-bottom: 2px solid #dee2e6;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .column-header h2 {
@@ -1117,9 +1248,11 @@ body.mobile-sidebar-active {
 
 /* --- STILE DEI "CARTELLINI" (TASK CARD) --- */
 .task-card {
-  background-color: #fff;
+  background-color: var(--surface);
   border-radius: 6px;
-  padding: 15px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color-light);
   margin-bottom: 15px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: grab; /* Indica che l'elemento è trascinabile */
@@ -1369,7 +1502,8 @@ body.mobile-sidebar-active {
 .dashboard-header-compact {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end; /* Allinea in basso per estetica */
+  align-items: center;
+  align-items: flex-end; /* Override per estetica */
   margin-bottom: 2.5rem;
   flex-wrap: wrap; /* Per mobile */
   gap: 1.5rem;
@@ -1396,12 +1530,14 @@ body.mobile-sidebar-active {
 .header-stats-inline {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 1.5rem;
 }
 
 .stat-pill {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -1442,6 +1578,7 @@ body.mobile-sidebar-active {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
   border-radius: 50%;
   background-color: var(--surface);
   border: 1px solid var(--border-color);
@@ -1458,20 +1595,24 @@ body.mobile-sidebar-active {
 
 /* --- 2. WORKOUT CARD (Hero) --- */
 .workout-hero-card {
-  background: var(--surface);
+  background-color: var(--surface);
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 0;
   border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color-light);
+  /* Padding 0 perché gestito internamente */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Override shadow */
   margin-bottom: 3rem;
 }
 
 .workout-cover {
-  height: 200px; /* Ridotto leggermente rispetto al mockup per schermi laptop */
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); /* Mantengo scuro come piace a te */
+  height: 200px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
   position: relative;
   /* Linea rossa in basso */
 }
@@ -1502,6 +1643,7 @@ body.mobile-sidebar-active {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 0;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
@@ -1518,6 +1660,7 @@ body.mobile-sidebar-active {
   font-weight: 500;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
 }
 
@@ -1535,6 +1678,7 @@ body.mobile-sidebar-active {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
   color: var(--text-secondary);
   transition: all 0.2s;
   font-size: 1.1rem;
@@ -1611,10 +1755,13 @@ body.mobile-sidebar-active {
 }
 
 .events-list-card {
-  background: var(--surface);
+  background-color: var(--surface);
   border-radius: 12px;
+  padding: 0;
   border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color-light);
   overflow: hidden;
+  box-shadow: none; /* remove shadow if not needed or keep default */
 }
 
 .event-row {
@@ -1638,6 +1785,7 @@ body.mobile-sidebar-active {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
   font-size: 1rem;
   flex-shrink: 0;
 }
