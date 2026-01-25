@@ -219,13 +219,15 @@ body.mobile-sidebar-active {
 
 /* --- Topbar (Header superiore) --- */
 .topbar {
-  height: 50px;
+  height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1.5rem;
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border-color);
+  padding: 0 25px;
+  background-color: var(--background);
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .topbar-left {
@@ -238,6 +240,7 @@ body.mobile-sidebar-active {
 .user-greeting h2 {
   font-family: var(--font-heading);
   font-weight: 700;
+  font-size: 1.7rem;
   color: var(--text-primary);
   line-height: 1.2;
 }
@@ -252,7 +255,7 @@ body.mobile-sidebar-active {
 }
 
 .content-area {
-  padding: 2rem;
+  padding: 0.5rem 2rem 2rem;
   margin: 0 auto;
   width: 100%;
 }

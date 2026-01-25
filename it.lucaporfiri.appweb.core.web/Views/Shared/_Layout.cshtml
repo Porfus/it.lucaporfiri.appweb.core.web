@@ -150,7 +150,6 @@
             </div>
         </aside>
         <!-- 3. MAIN CONTENT AREA -->
-        <!-- Questa parte sta a destra della sidebar -->
         <div class="main-wrapper">
 
             <!-- Topbar (Header superiore per mobile toggle e theme switcher) -->
@@ -164,7 +163,7 @@
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <span class="text-muted small d-block d-md-none">@subtitle,</span>
-                        <h2 class="m-0" style="font-size: 1.2rem;">
+                        <h2 class="m-0">
                             @(User.Identity.Name ?? "Utente") 
                         </h2>
                     }
