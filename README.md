@@ -1,4 +1,4 @@
-# Gestione attività per Coach Sportivo
+# Gestione di attività per Coach Sportivo
 
 Applicazione web full-stack progettata per aiutare i coach sportivi a gestire le attività, le scadenze e il flusso di lavoro legato ai loro atleti. Questo progetto è stato sviluppato come contributo originale per la mia tesi di laurea triennale in Informatica, generalizzando i concetti di scheduling appresi durante un'esperienza di stage in un contesto manifatturiero.
 
